@@ -1,0 +1,419 @@
+﻿<!--<!DOCTYPE html>-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Product App</title>
+</head>
+<body>
+
+    <div>
+        <h2>All Products</h2>
+        <ul id="products" />
+    </div>
+    <div>
+        <h2>Search by ID</h2>
+        <input type="text" id="prodId" size="5" />
+        <input type="button" value="Search" onclick="find();" />
+        <p id="aluno" />
+    </div>
+
+    <form>
+        <div>
+            <label for="fileUpload" />
+            Select File to Upload: <input id="fileUpload" type="file" />
+
+            <input id="btnUploadFile" type="button" value="Upload File" />
+        </div>
+    </form>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+
+
+    <script>
+        var uri = 'api/alunoes';
+
+
+
+
+        $(document).ready(function () {
+
+            $('#btnUploadFile').on('click', function () {
+
+                //var arquivo = new FormData();
+
+                //var files = $("#fileUpload").get(0).files;
+
+                //// Add the uploaded image content to the form data collection
+                //if (files.length > 0) {
+                //    arquivo.append("UploadedImage", files[0]);
+                //    arquivo.append("autonumero", 4752);
+                //}
+                //$.ajax({
+                //    type: "POST",
+                //    url: "/DataProdutos/UploadFile",
+                //    contentType: false,
+                //    processData: false,
+                //    dataType: 'json',
+                //    data: arquivo,
+                //    success: function (result) {
+                //        alert(1);
+                //    },
+                //    error: function (request, message, error) {
+
+                //    }
+                //});
+
+
+
+                //$.ajax({
+                //    type: "POST",
+                //    url: "/DataPedidoItem/AddPedido/?" +
+                //    (jQuery.param( {
+                //        autonumeroProduto: 1,
+                //        codBarra: '123',
+                //        nomeProduto: 'aaaa',
+                //        qtdePedida: 2,
+                //        precoItem: 3,
+                //        autonumeroCliente:4,
+                //        nomeCliente: 'bbb',
+                //        cpfCnpj:'5'
+                //    })),
+                //    success: function (result) {
+                //        alert(1);
+                //    },
+                //    error: function (request, message, error) {
+
+                //    }
+                //});
+
+
+                //var arquivo = new FormData();
+                //arquivo.append("autonumeroProduto", 5424);
+                //arquivo.append("codBarra", '123');
+                //arquivo.append("nomeProduto", 'aaaaa');
+                //arquivo.append("qtdePedida", 1);
+                //arquivo.append("precoItem", 6);
+                //arquivo.append("autonumeroCliente", 123);
+                //arquivo.append("nomeCliente", 'bbbbb');
+                //arquivo.append("cpfCnpj", '5');
+
+                //$.ajax({
+                //    type: "POST",
+                //    url: "/DataPedidoItem/AddPedido",
+                //    contentType: false,
+                //    processData: false,
+                //    dataType: 'json',
+                //    data: arquivo,
+                //    success: function (result) {
+                //        if (result) {
+                //            alert(result);
+                //        } else {
+                //            alert(0);
+                //        }
+                //    },
+                //    error: function (request) {
+                //        alert(request);
+
+                //    }
+                //});
+
+
+
+
+
+            });
+        });
+
+        function find() {
+
+
+            //var xhr = new XMLHttpRequest();
+            //var pdfsrc = '/api/dataimprimir/ImprimirOs?codigoOs=2FST-00145-2018&modelo=2&valor=48087.59999999999';
+            ////pdfsrc = 'http://191.252.64.183/apimidas/dataimprimir/ImprimirOs';
+            //xhr.open('GET', pdfsrc, true);
+            //xhr.responseType = "arraybuffer";
+            ////xhr.data = {
+            ////    codigoOs: 'QWE000392018'
+            ////};
+
+            //xhr.addEventListener("load", function (evt) {
+            //    var data = evt.target.response;
+            //    if (this.status === 200) {
+
+
+            //        var ieEdge = navigator.userAgent.match(/Edge/g);
+            //        var ie = navigator.userAgent.match(/.NET/g); // IE 11+
+            //        var oldIe = navigator.userAgent.match(/MSIE/g);
+
+            //        var blob = new window.Blob([data], { type: 'application/pdf' });
+
+            //        if (ie || oldIe || ieEdge) {
+            //            window.navigator.msSaveBlob(blob, 'Pagamento.Pdf');
+            //        }
+            //        else {
+            //            var fileUrl = URL.createObjectURL(blob);
+            //            window.open(fileUrl);
+            //        }
+
+            //    }
+            //}, false);
+
+            //xhr.send();
+
+
+            //$.ajax({
+            //    type: "GET",
+            //    headers: { 'content-type': 'application/json' },
+            //    contentType: "application/json",
+            //    url: "api/dataos/GetAllItensParaOS",
+            //    data: {
+            //        autonumeroCliente: 45, data1: '23/06/2019', data2: '22/07/2019', autonumeroSistema: 3, autonumeroServico: 2, codigoOs: ""},
+
+            //    success: function (result) {
+            //        alert(result)
+            //        if (result)
+            //        {
+
+            //        }
+            //    },
+            //    error: function (request, message, error) {
+            //        alert(request);
+            //    }
+            //});
+
+
+            var arquivo = new FormData();
+
+
+            //arquivo.append("data1", "01/09/2018");
+            //arquivo.append("data2", "05/10/2019");
+            //arquivo.append("autonumeroCliente", 20);
+            //arquivo.append("tipoVencto", "E");
+
+            //arquivo.append("autonumero", "148");
+            //arquivo.append("autonumeroCliente", 29);
+            //arquivo.append("nomeCliente", "Hospital Maternidade Carmela Dutra");
+            //arquivo.append("autonumeroSistema", "2");
+            //arquivo.append("nomeSistema", "ELÉTRICA");
+            //arquivo.append("autonumeroSubSistema", "31");
+            //arquivo.append("nomeSubSistema", "Aterramento");
+            //arquivo.append("autonumeroPredio", "49");
+            //arquivo.append("nomePredio", "Manutencao");
+            //arquivo.append("autonumeroSetor", "103");
+            //arquivo.append("nomeSetor", "Acolhimento");
+            //arquivo.append("autonumeroLocal", "239");
+            //arquivo.append("nomeLocal", "Abrigo de residuos");
+            //arquivo.append("autonumeroLocalFisico", "1");
+            //arquivo.append("nomeLocalFisico", "Casa de Maquinas");
+            //arquivo.append("autonumeroEquipe", "2");
+            //arquivo.append("nomeEquipe", "2pr");
+            //arquivo.append("serie", "2");
+            //arquivo.append("modelo", "1");
+            //arquivo.append("capacidade", "3");
+            //arquivo.append("patrimonio", "4");
+            //arquivo.append("diaUtil", "5");
+            //arquivo.append("grupo", "6");
+            //arquivo.append("fabricante", "7");
+            //arquivo.append("dataPrevista", "03/03/2003");
+            //arquivo.append("dataCompra", "01/01/2000");
+            //arquivo.append("dataGarantia", "02/02/2002");
+            //arquivo.append("mesManuAno", 1);
+            // arquivo.append("mesManuSem01", 2);
+            // arquivo.append("mesManuSem02", 3);
+            // arquivo.append("mesManuTri01", 4);
+            // arquivo.append("mesManuTri02", 5);
+            // arquivo.append("mesManuTri03", 6);
+            // arquivo.append("mesManuTri04", 7);
+            // arquivo.append("periodicidade", 0);
+            // arquivo.append("endereco", "");
+
+
+
+
+            //arquivo.append("tipoData","18/12/2018");
+            //arquivo.append("data1", "18/01/2019");
+            //arquivo.append("data2", "");
+            //arquivo.append("autonumeroCliente", 37);
+            //arquivo.append("autonumeroPredio", 0);
+            //arquivo.append("autonumeroSetor", 0);
+            //arquivo.append("autonumeroSistema", 0);
+            //arquivo.append("autonumeroSubSistema", 0);
+            //arquivo.append("autonumeroLocalAtendido", 0);
+            //arquivo.append("autonumeroLocalFisico", 0);
+
+
+
+            //arquivo.append("endFrom", "m3programa01@gmail.com");
+            //arquivo.append("endNomeFrom", "M3 Manutenção e Montagens");
+            //arquivo.append("endTo", "antoniomaxcarvalho@gmail.com");
+            //arquivo.append("endNomeTo", "Nome do Usuario");
+            //arquivo.append("Subject", "O.S Imediata");
+
+            //arquivo.append("nroOs", "AMM-00005-2018");
+            //arquivo.append("nomeUsuario", "Antonio max Mattos");
+            //arquivo.append("descricaoOs", "Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos. Lorem Ipsum sobreviveu não só a cinco séculos, como também ao salto para a editoração eletrônica, permanecendo essencialmente inalterado. Se popularizou na década de 60, quando a Letraset lançou decalques contendo passagens de Lorem Ipsum, e mais recentemente quando passou a ser integrado a softwares de editoração eletrônica como Aldus PageMaker.");
+            //arquivo.append("siglaCliente", "AMM");
+            //arquivo.append("nomeCliente", "Antonio msc mstood");
+
+            //arquivo.append("modelo", "C");
+            //arquivo.append("data1", "24/09/2018");
+            //arquivo.append("data2", "24/09/2018");
+            //arquivo.append("autonumeroCliente", 20);
+            //arquivo.append("autonumeroPrioridade", 1);
+            //arquivo.append("autonumeroServico", 2);
+            //arquivo.append("nomeStatus", "Aberta");
+            //arquivo.append("autonumeroUsuario", 81);
+            //arquivo.append("autonumeroPredio", 2);
+            //arquivo.append("autonumeroSetor", 20);
+            //arquivo.append("autonumeroLocalFisico", 6);
+            //arquivo.append("autonumeroSistema",7);
+            //arquivo.append("autonumeroSubSistema", 83);
+            //arquivo.append("tipoVencto", "E");
+
+
+            //arquivo.append("sigla", "HSMS");
+            //arquivo.append("autonumeroCliente", 20);
+            //arquivo.append("nomeCliente", "Hospitais SMS");
+            //arquivo.append("autonumeroUsuario", 81);
+            //arquivo.append("nomeUsuario", "Alexandre Badin de Vasconcellos");
+            //arquivo.append("dataSolicitacao", "25/07/2018");
+
+            //arquivo.append("nomePredio", "aaaabbbb");
+            ////arquivo.append("autonumeroCliente", 20);
+
+
+
+            // arquivo.append("modelo", "C");
+            // arquivo.append("data1", "24/12/2018");
+            // arquivo.append("data2", "24/01/2019");
+            //arquivo.append("autonumeroCliente", 37);
+            // arquivo.append("autonumeroPrioridade", 0);
+            // arquivo.append("autonumeroServico", 0);
+            // arquivo.append("nomeStatus", "[Aberta]");
+            // arquivo.append("autonumeroUsuario", 0);
+            // arquivo.append("autonumeroPredio", 0);
+            // arquivo.append("autonumeroSetor", 0);
+            // arquivo.append("autonumeroLocalFisico", 0);
+            //// arquivo.append("autonumeroSistema", 0);
+            // arquivo.append("autonumeroSubSistema", 86);
+            // arquivo.append("tipoVencto", "E");
+            // arquivo.append("obs", "");
+            // arquivo.append("contrato", "");
+
+
+            //arquivo.append("autonumero", 0);
+            //arquivo.append("dataLimite", '20/02/2019');
+
+
+
+            //arquivo.append("autonumero", 9267);
+            //arquivo.append("autonumeroCliente", 20);
+            //arquivo.append("prazoInicialMeses", 10);
+            //arquivo.append("prorrogacoesMeses", 20);
+            //arquivo.append("obra","");
+            //arquivo.append("endereco", "Est.do Pontal 855 apt 106 bl 3b");
+            //arquivo.append("contrato", "12345678901234567890");
+            //arquivo.append("medicao", "1");
+            //arquivo.append("etapa", "1");
+            //arquivo.append("valorGlobalPrevisto", 0);
+            //arquivo.append("valorGlobalMedido", 0);
+            //arquivo.append("reducao", 0);
+            //arquivo.append("valorMedicao", 0);
+            //arquivo.append("variacaoContratualPercentual", 0);
+            //arquivo.append("aFaturar", 0);
+            //arquivo.append("dataInicio", "01/01/2019");
+            //arquivo.append("dataFim", "20/02/2019");
+            //arquivo.append("dataInicioMedicao", "05/07/2019");
+            //arquivo.append("dataFimMedicao", "05/07/2019");
+
+            //arquivo.append("autonumeroMedicao", 165);
+            //arquivo.append("autonumeroCliente", 20);
+            //arquivo.append("medicao", "1");
+            //arquivo.append("etapa", "Etapa 1");
+            //arquivo.append("dataInicioMedicao", "01/04/2019");
+            //arquivo.append("dataFimMedicao", "30/04/2019");
+
+
+            //sigla: NISE
+            //autonumeroCliente: 29
+            //nomeCliente: Instituto Municipal Nise da Silveira
+            //nomeUsuario: Antonio max Mattos
+            //dataEmissao: 20 / 09 / 2019
+            //dataInicio: 23 / 08 / 2019
+            //dataFim: 20 / 09 / 2019
+            //valor: 1139, 89
+            //nomeSistema: HIDRO - SANITÁRIAS
+            //autonumeroSistema: 5
+            //processo: 06 / 500.155 / 2019
+            //cap: 3.2
+            //enderecoCliente: Rua Ramiro Magalhães, 521 - 521 - - Rio de Janeiro - Rio de Janeiro
+            //solicitante: Antonio max Mattos
+            //nomeItem: Elétrica
+            //tipoAtendimento: P
+            //autonumeroServico: 1
+            //siglaItem: EL
+            //resumoServico: TROCA DE FECHADURAS, DE CADEADOS, ABERTURA DE ARMÁRIO
+            //quantidadeSS: 19
+            //situacao: Cancelado
+            //local: Serviços de recuperação, operação e conservação predial e de equipamentos eletromecânicos, para o Instituto Municipal de Assistência à Saúde Nise da Silveira e nos CAPS a eles associados.
+            //    codigoOs: 
+
+
+            //arquivo.append("sigla", "NISE");
+            //arquivo.append("autonumeroCliente", 29);
+            //arquivo.append("nomeCliente",' Instituto Municipal Nise da Silveira');
+            //arquivo.append("nomeUsuario","h");
+            //arquivo.append("dataEmissao","20/09/2019");
+            //arquivo.append("dataInicio","23/08/2019");
+            //arquivo.append("dataFim","20/09/2019");
+            //arquivo.append("valor","1139,89");
+            //arquivo.append("nomeSistema","HIDRO - SANITÁRIAS");
+            //arquivo.append("autonumeroSistema", 5);
+            //arquivo.append("processo", "06 / 500.155 / 2019");
+            //arquivo.append("cap", "46");
+            //arquivo.append("enderecoCliente", "Antonio max Mattos");
+            //arquivo.append("solicitante", "Antonio max Mattos");
+            //arquivo.append("nomeItem", "Elétrica");
+            //arquivo.append("tipoAtendimento", "p");
+            //arquivo.append("autonumeroServico", "1");
+            //arquivo.append("siglaItem","EL");
+            //arquivo.append("resumoServico", "TROCA DE FECHADURAS, DE CADEADOS, ABERTURA DE ARMÁRIO");
+            //arquivo.append("quantidadeSS", "19");
+            //arquivo.append("situacao", "Cancelado");
+            //arquivo.append("local", "erviços de recuperação, operação e conservação predial e de equipamentos eletromecânicos, para o Instituto Municipal de Assistência à Saúde Nise da Silveira e nos CAPS a eles associados.");
+            //arquivo.append("codigoOs", "");
+            //arquivo.append("nroOsInformado", "");
+
+
+
+            arquivo.append("ano", 2020);
+            arquivo.append("mes", 01);
+            arquivo.append("autonumeroCliente", 29);
+            arquivo.append("nroMaxDiasUteis", 18);
+
+
+            $.ajax({
+                type: "POST",
+                url: "/api/dataequipamento/CalcularPMOC",
+                contentType: false,
+                processData: false,
+                data: arquivo,
+                success: function (result) {
+                    if (result) {
+                        alert(result);
+                    } else {
+                        alert(0);
+                    }
+                },
+                error: function (request) {
+                    alert(request);
+
+                }
+            });
+
+
+
+
+        }
+    </script>
+</body>
+</html>
