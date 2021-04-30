@@ -17,14 +17,14 @@ namespace apinovo
         public long autonumero { get; set; }
         public Nullable<long> autonumeroOs { get; set; }
         public string codigoOs { get; set; }
+        public Nullable<int> autonumeroContrato { get; set; }
+        public string nomeContrato { get; set; }
         public Nullable<int> autonumeroFuncionario { get; set; }
         public string nomeFuncionario { get; set; }
         public Nullable<int> autonumeroProfissao { get; set; }
         public string nomeProfissao { get; set; }
         public Nullable<System.TimeSpan> totalHoras { get; set; }
         public string cancelado { get; set; }
-        public Nullable<int> autonumeroContrato { get; set; }
-        public string nomeContrato { get; set; }
         public Nullable<long> totalSegundos { get; set; }
     }
 }

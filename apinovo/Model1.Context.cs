@@ -87,7 +87,7 @@ namespace apinovo
         public DbSet<usuariopredio> usuariopredio { get; set; }
         public DbSet<tb_funcionario> tb_funcionario { get; set; }
         public DbSet<tb_os> tb_os { get; set; }
-        public DbSet<osfuncionario> osfuncionario { get; set; }
         public DbSet<funcionario> funcionario { get; set; }
+        public DbSet<osfuncionario> osfuncionario { get; set; }
     }
 }

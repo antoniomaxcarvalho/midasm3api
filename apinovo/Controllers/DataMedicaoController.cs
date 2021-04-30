@@ -789,7 +789,7 @@ namespace apinovo.Controllers
                              }).ToList();
 
 
-                    var valorMedicaoAtual = 0m;
+                    //var valorMedicaoAtual = 0m;
                     foreach (var i in itens)
                     {
 
@@ -798,7 +798,7 @@ namespace apinovo.Controllers
                             continue;
                         }
 
-                        valorMedicaoAtual = valorMedicaoAtual + (decimal)i.valorAposMedicao;
+                        //valorMedicaoAtual = valorMedicaoAtual + (decimal)i.valorAposMedicao;
                         var k = new tb_medicaoitens
                         {
                             autonumeroMedicao = autonumeroMedicao,
@@ -823,6 +823,11 @@ namespace apinovo.Controllers
                         dc.tb_medicaoitens.Add(k);
 
                     }
+
+
+                    var valorMedicaoAtual =  (decimal) dc.tb_ordemservico.Where(k => k.medicao == medicao && k.etapa == etapa && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S").Sum(k => (k.valor));
+
+
 
                     var pf = dc.tb_planilhafechada.Where(a => a.autonumeroCliente == autonumeroCliente).ToList();
                     foreach (var i in pf)
@@ -898,15 +903,39 @@ namespace apinovo.Controllers
 
                     }
 
+
                     var linha = dc.tb_medicao.Find(autonumeroMedicao); // sempre irá procurar pela chave primaria
                     if (linha != null && linha.cancelado != "S")
                     {
+                        //var c2 = 1;
 
-                        var valorTotalBdiServico = valorMedicaoAtual * (bdiServico / 100);
+                        var valorTotalBdiServico = Math.Truncate(valorMedicaoAtual * (bdiServico / 100) * 100) / 100;
+               
+
+                        //Debug.WriteLine("valorMedicaoAtual = " + valorMedicaoAtual.ToString());
+                        //Debug.WriteLine("linha.reducao = " + linha.reducao.ToString());
+
+           
                         valorMedicaoAtual = valorMedicaoAtual + valorTotalBdiServico;
-                        var vContratual = ((decimal)linha.reducao / 100) * valorMedicaoAtual;
+                        var vContratual = Math.Truncate((((decimal)linha.reducao / 100) * valorMedicaoAtual) * 100) / 100;
+                        //Debug.WriteLine("linha.vContratual = " + vContratual.ToString());
+
+
+                        //var c3 = 1;
+
+                        //var valorTotalBdiServico = valorMedicaoAtual * (bdiServico / 100);
+                        //valorMedicaoAtual = valorMedicaoAtual + valorTotalBdiServico;
+                        //var vContratual = ((decimal)linha.reducao / 100) * valorMedicaoAtual;
 
                         var aFaturar = (valorMedicaoAtual - vContratual);
+
+
+                        //Debug.WriteLine("linha.valorMedicao = " + valorMedicaoAtual.ToString());
+                        //Debug.WriteLine("linha.valorGlobalPrevisto = " + valorGlobalPrevisto.ToString());
+                        //Debug.WriteLine("linha.valorGlobalMedido = " + (valorGlobalMedido + aFaturar).ToString());
+                        //Debug.WriteLine("linha.vContratual = " + vContratual.ToString()); Debug.WriteLine("linha.valorMedicao = " + valorMedicaoAtual.ToString());
+                        //Debug.WriteLine("linha.aFaturar = " + aFaturar.ToString());
+                        //Debug.WriteLine("linha.valorTotalBdiServico = " + valorTotalBdiServico.ToString());
 
                         linha.valorMedicao = valorMedicaoAtual;
                         linha.valorGlobalPrevisto = valorGlobalPrevisto;
@@ -1241,6 +1270,26 @@ namespace apinovo.Controllers
                 var unidadeDaSMS = HttpContext.Current.Request.Form["unidadeDaSMS"].ToString();
 
                 var filtro = "{tb_ordemservico1.siglaItem} <> '' AND {tb_medicao1.cancelado} <> 'S' and {tb_ordemservico1.cancelado} <> 'S'  and { tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente + " and { tb_ordemservico1.medicao} = '" + medicao.Trim() + "'  and { tb_ordemservico1.etapa} =  '" + etapa.Trim() + "'";
+
+
+
+                //var totalPF = dc.tb_os_itens.Where(k => k.codigoOrdemServico == x.codigoOs && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S")
+                //.Sum(j => (Math.Truncate((decimal)j.quantidadePF * (decimal)j.precoUnitarioPF * 100)) / 100);
+
+                //var ordem = (from p in dc.tb_ordemservico
+                //             join k in dc.tb_medicao
+                //             on p.medicao equals k.medicao
+                //             where p.autonumeroCliente == autonumeroCliente && p.cancelado != "S" && p.siglaItem != "" && p.medicao == medicao && p.etapa == etapa && k.cancelado != ""
+
+                //             select new
+                //             {
+                //                 p
+
+                //             }).ToList();
+
+
+                //var bdi = ordem.Sum(j => (Math.Truncate((decimal)j.p.valor * (decimal)j.p.bd * 100)) / 100);
+
 
                 using (var rd = new ReportDocument())
                 {

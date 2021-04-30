@@ -22,5 +22,6 @@ namespace apinovo
         public Nullable<System.DateTime> fimCurso { get; set; }
         public Nullable<System.DateTime> validade { get; set; }
         public string cancelado { get; set; }
+        public string inativo { get; set; }
     }
 }

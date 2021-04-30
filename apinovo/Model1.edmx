@@ -249,6 +249,7 @@
           <Property Name="fimCurso" Type="date" />
           <Property Name="validade" Type="date" />
           <Property Name="cancelado" Type="char" MaxLength="1" />
+          <Property Name="inativo" Type="char" MaxLength="1" />
         </EntityType>
         <EntityType Name="funcionariodocumento">
           <Key>
@@ -602,7 +603,7 @@
             <PropertyRef Name="autonumero" />
           </Key>
           <Property Name="autonumero" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="nome" Type="varchar" MaxLength="1000" />
+          <Property Name="nome" Type="varchar" MaxLength="330" />
           <Property Name="unidade" Type="varchar" MaxLength="8" />
           <Property Name="preco" Type="double" />
           <Property Name="codigo" Type="varchar" MaxLength="10" />
@@ -625,7 +626,7 @@
           <Property Name="autonumero" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="autonumeroCliente" Type="int" />
           <Property Name="nome" Type="varchar" MaxLength="70" />
-          <Property Name="nomeCliente" Type="varchar" MaxLength="60" />
+          <Property Name="nomeCliente" Type="varchar" MaxLength="45" />
           <Property Name="cancelado" Type="char" MaxLength="1" />
         </EntityType>
         <EntityType Name="tb_local_fisico">
@@ -680,7 +681,7 @@
           <Property Name="autonumeroPlanilhaFechada" Type="bigint" />
           <Property Name="item" Type="bigint" />
           <Property Name="codigo" Type="varchar" MaxLength="20" />
-          <Property Name="nome" Type="varchar" MaxLength="600" />
+          <Property Name="nome" Type="varchar" MaxLength="330" />
           <Property Name="unidade" Type="varchar" MaxLength="6" />
           <Property Name="preco" Type="decimal" Precision="10" Scale="2" />
           <Property Name="qtdeContratada" Type="decimal" Precision="10" Scale="4" />
@@ -890,8 +891,8 @@
           <Property Name="item" Type="bigint" Nullable="false" />
           <Property Name="codigo" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="nome" Type="varchar" MaxLength="1050" Nullable="false" />
-          <Property Name="unidade" Type="varchar" MaxLength="8" Nullable="false" />
-          <Property Name="qtdeContratada" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="unidade" Type="varchar" MaxLength="6" Nullable="false" />
+          <Property Name="qtdeContratada" Type="decimal" Precision="10" Scale="4" Nullable="false" />
           <Property Name="preco" Type="decimal" Precision="10" Scale="3" Nullable="false" />
           <Property Name="estoque" Type="decimal" Precision="10" Scale="4" Nullable="false" />
           <Property Name="qtdeCustoFixo" Type="decimal" Precision="10" Scale="4" Nullable="false" />
@@ -1242,8 +1243,8 @@
           <EntitySet Name="usuariopredio" EntityType="manutModel.usuariopredio" />
           <EntitySet Name="tb_funcionario" EntityType="manutModel.tb_funcionario" />
           <EntitySet Name="tb_os" EntityType="manutModel.tb_os" />
-          <EntitySet Name="osfuncionario" EntityType="manutModel.osfuncionario" />
           <EntitySet Name="funcionario" EntityType="manutModel.funcionario" />
+          <EntitySet Name="osfuncionario" EntityType="manutModel.osfuncionario" />
         </EntityContainer>
         <EntityType Name="tb_tipo_usuario">
           <Key>
@@ -1831,6 +1832,7 @@
           <Property Name="fimCurso" Type="DateTime" />
           <Property Name="validade" Type="DateTime" />
           <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="inativo" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="contratofuncionario">
           <Key>
@@ -2268,23 +2270,6 @@
           <Property Name="autonumeroAutorizado" Type="Int32" />
           <Property Name="nomeAutorizado" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="osfuncionario">
-          <Key>
-            <PropertyRef Name="autonumero" />
-          </Key>
-          <Property Name="autonumero" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="autonumeroOs" Type="Int64" />
-          <Property Name="codigoOs" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroFuncionario" Type="Int32" />
-          <Property Name="nomeFuncionario" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroProfissao" Type="Int32" />
-          <Property Name="nomeProfissao" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="totalHoras" Type="Time" />
-          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroContrato" Type="Int32" />
-          <Property Name="nomeContrato" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
-          <Property Name="totalSegundos" Type="Int64" />
-        </EntityType>
         <EntityType Name="funcionario">
           <Key>
             <PropertyRef Name="autonumero" />
@@ -2304,6 +2289,23 @@
           <Property Name="nomeContrato" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
           <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="cpf" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="osfuncionario">
+          <Key>
+            <PropertyRef Name="autonumero" />
+          </Key>
+          <Property Name="autonumero" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="autonumeroOs" Type="Int64" />
+          <Property Name="codigoOs" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroContrato" Type="Int32" />
+          <Property Name="nomeContrato" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroFuncionario" Type="Int32" />
+          <Property Name="nomeFuncionario" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroProfissao" Type="Int32" />
+          <Property Name="nomeProfissao" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="totalHoras" Type="Time" />
+          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="totalSegundos" Type="Int64" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2950,6 +2952,7 @@
           <EntitySetMapping Name="funcionariocurso">
             <EntityTypeMapping TypeName="manutModel.funcionariocurso">
               <MappingFragment StoreEntitySet="funcionariocurso">
+                <ScalarProperty Name="inativo" ColumnName="inativo" />
                 <ScalarProperty Name="cancelado" ColumnName="cancelado" />
                 <ScalarProperty Name="validade" ColumnName="validade" />
                 <ScalarProperty Name="fimCurso" ColumnName="fimCurso" />
@@ -3416,24 +3419,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="osfuncionario">
-            <EntityTypeMapping TypeName="manutModel.osfuncionario">
-              <MappingFragment StoreEntitySet="osfuncionario">
-                <ScalarProperty Name="totalSegundos" ColumnName="totalSegundos" />
-                <ScalarProperty Name="nomeContrato" ColumnName="nomeContrato" />
-                <ScalarProperty Name="autonumeroContrato" ColumnName="autonumeroContrato" />
-                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
-                <ScalarProperty Name="totalHoras" ColumnName="totalHoras" />
-                <ScalarProperty Name="nomeProfissao" ColumnName="nomeProfissao" />
-                <ScalarProperty Name="autonumeroProfissao" ColumnName="autonumeroProfissao" />
-                <ScalarProperty Name="nomeFuncionario" ColumnName="nomeFuncionario" />
-                <ScalarProperty Name="autonumeroFuncionario" ColumnName="autonumeroFuncionario" />
-                <ScalarProperty Name="codigoOs" ColumnName="codigoOs" />
-                <ScalarProperty Name="autonumeroOs" ColumnName="autonumeroOs" />
-                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="funcionario">
             <EntityTypeMapping TypeName="manutModel.funcionario">
               <MappingFragment StoreEntitySet="funcionario">
@@ -3451,6 +3436,24 @@
                 <ScalarProperty Name="nome" ColumnName="nome" />
                 <ScalarProperty Name="nomeProfissao" ColumnName="nomeProfissao" />
                 <ScalarProperty Name="autonumeroProfissao" ColumnName="autonumeroProfissao" />
+                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="osfuncionario">
+            <EntityTypeMapping TypeName="manutModel.osfuncionario">
+              <MappingFragment StoreEntitySet="osfuncionario">
+                <ScalarProperty Name="totalSegundos" ColumnName="totalSegundos" />
+                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
+                <ScalarProperty Name="totalHoras" ColumnName="totalHoras" />
+                <ScalarProperty Name="nomeProfissao" ColumnName="nomeProfissao" />
+                <ScalarProperty Name="autonumeroProfissao" ColumnName="autonumeroProfissao" />
+                <ScalarProperty Name="nomeFuncionario" ColumnName="nomeFuncionario" />
+                <ScalarProperty Name="autonumeroFuncionario" ColumnName="autonumeroFuncionario" />
+                <ScalarProperty Name="nomeContrato" ColumnName="nomeContrato" />
+                <ScalarProperty Name="autonumeroContrato" ColumnName="autonumeroContrato" />
+                <ScalarProperty Name="codigoOs" ColumnName="codigoOs" />
+                <ScalarProperty Name="autonumeroOs" ColumnName="autonumeroOs" />
                 <ScalarProperty Name="autonumero" ColumnName="autonumero" />
               </MappingFragment>
             </EntityTypeMapping>
