@@ -67,12 +67,20 @@ namespace apinovo
         public DbSet<tb_medicaoitens> tb_medicaoitens { get; set; }
         public DbSet<pmocequipamentocontingencia> pmocequipamentocontingencia { get; set; }
         public DbSet<pmocequipamentofuncionario> pmocequipamentofuncionario { get; set; }
-        public DbSet<funcionariocurso> funcionariocurso { get; set; }
         public DbSet<contratofuncionario> contratofuncionario { get; set; }
         public DbSet<local> local { get; set; }
         public DbSet<tb_cadastro> tb_cadastro { get; set; }
         public DbSet<tb_orcamento> tb_orcamento { get; set; }
         public DbSet<tb_orcamento_itens> tb_orcamento_itens { get; set; }
+        public DbSet<documentocontrato> documentocontrato { get; set; }
+        public DbSet<funcionariodocumento> funcionariodocumento { get; set; }
+        public DbSet<profissaocurso> profissaocurso { get; set; }
+        public DbSet<tb_usuario> tb_usuario { get; set; }
+        public DbSet<usuariopredio> usuariopredio { get; set; }
+        public DbSet<tb_funcionario> tb_funcionario { get; set; }
+        public DbSet<osfuncionario> osfuncionario { get; set; }
+        public DbSet<tb_os> tb_os { get; set; }
+        public DbSet<funcionario> funcionario { get; set; }
         public DbSet<checklist> checklist { get; set; }
         public DbSet<checklisthistitem> checklisthistitem { get; set; }
         public DbSet<checklisthistitemnrofolha> checklisthistitemnrofolha { get; set; }
@@ -80,14 +88,7 @@ namespace apinovo
         public DbSet<checklisthistoricocivil> checklisthistoricocivil { get; set; }
         public DbSet<checklisthistoricocivilitem> checklisthistoricocivilitem { get; set; }
         public DbSet<checklisthistoriconrofolha> checklisthistoriconrofolha { get; set; }
-        public DbSet<documentocontrato> documentocontrato { get; set; }
-        public DbSet<funcionariodocumento> funcionariodocumento { get; set; }
-        public DbSet<profissaocurso> profissaocurso { get; set; }
-        public DbSet<tb_usuario> tb_usuario { get; set; }
-        public DbSet<usuariopredio> usuariopredio { get; set; }
-        public DbSet<tb_funcionario> tb_funcionario { get; set; }
-        public DbSet<tb_os> tb_os { get; set; }
-        public DbSet<funcionario> funcionario { get; set; }
-        public DbSet<osfuncionario> osfuncionario { get; set; }
+        public DbSet<checklistveiculo> checklistveiculo { get; set; }
+        public DbSet<funcionariocurso> funcionariocurso { get; set; }
     }
 }

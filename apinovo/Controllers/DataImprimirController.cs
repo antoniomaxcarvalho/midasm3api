@@ -2101,7 +2101,10 @@ namespace apinovo.Controllers
                 case 50: /*Centrífuga */
                     local = HttpContext.Current.Server.MapPath("~/rpt/centrifuga.rpt");
                     break;
-                case 41: /*Chiller Elétrico a Agua*/
+                case 41: /*Chiller Elétrico a ar*/
+                    local = HttpContext.Current.Server.MapPath("~/rpt/chiller.rpt");
+                    break;
+                case 137: /*Chiller Elétrico a Agua*/
                     local = HttpContext.Current.Server.MapPath("~/rpt/chiller.rpt");
                     break;
                 case 124: /*Coifa e exaustor de cozinha*/

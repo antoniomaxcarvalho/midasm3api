@@ -239,6 +239,9 @@
     <Compile Include="checklisthistoriconrofolha.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="checklistveiculo.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="contratofuncionario.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
