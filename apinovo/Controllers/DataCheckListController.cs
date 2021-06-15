@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
@@ -50,6 +51,26 @@ namespace apinovo.Controllers
                 return user.ToList(); ;
             }
         }
+
+        [HttpGet]
+        public IEnumerable GetAllCheckListExistente( long autonumeroContrato)
+        {
+            var c = 1;
+            using (var dc = new manutEntities())
+            {
+
+                var user = (from o in dc.checklist
+                            where o.cancelado != "S" && o.autonumeroContrato == autonumeroContrato
+                            select new
+                            {
+                                o.nomeSistema,
+                                o.nomeSubSistema,
+                            }).Distinct().OrderBy(o => o.nomeSistema).ThenBy(o => o.nomeSubSistema);
+                return user.ToList();
+            }
+        }
+
+
         [HttpPost]
         public string IncluirAlterarCheckList()
         {

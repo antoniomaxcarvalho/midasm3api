@@ -674,6 +674,38 @@ namespace apinovo.Controllers
 
         }
 
+        public string AutorizarOCLinha()
+        {
+
+            using (var dc = new manutEntities())
+            {
+
+                var c = 1;
+                var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
+                var autonumeroSubsistema = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroSubsistema"].ToString());
+
+                var linha = dc.tb_subsistemacliente.Find(autonumeroCliente, autonumeroSubsistema); // sempre irá procurar pela chave primaria
+                if (linha != null )
+                {
+
+
+                    if (linha.chkTodoMes > 0)
+                    {
+                        linha.chkTodoMes = 0;
+                    }
+                    else
+                    {
+                        linha.chkTodoMes = 1;
+                    }
+                    dc.tb_subsistemacliente.AddOrUpdate(linha);
+                    dc.SaveChanges();
+                }
+                return "";
+            }
+
+        }
+
+
         public class Condicao
         {
             public int? autonumeroSubSistema { get; set; }
@@ -1583,7 +1615,10 @@ namespace apinovo.Controllers
 
                     //FIM Apagar PMOC anterior-----------------------------------------------------------------------------------
 
+                    //lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.cancelado != "S").ToList()
                     lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.cancelado != "S").ToList()
+                             join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                             where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
                              select new checklisthistorico
                              {
                                  anoMes = anoMes,
@@ -1638,7 +1673,12 @@ namespace apinovo.Controllers
                     dc.checklisthistorico.AddRange(lista);
                     dc.SaveChanges();
 
-                    var lista3 = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.cancelado != "S") select i).ToList();
+                    //var lista3 = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.cancelado != "S") select i).ToList();
+                    var lista3 = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.cancelado != "S").ToList()
+                                  join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                  where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                  select i).ToList();
+
                     var lista4 = (from i in dc.checklist.Where(i => i.autonumeroContrato == autonumeroCliente && i.cancelado != "S") select i).ToList();
 
                     var lista5 = (from k in lista3
