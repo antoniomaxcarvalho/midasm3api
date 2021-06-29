@@ -211,7 +211,7 @@ namespace apinovo.Controllers
 
                         var Os = new tb_os_itens
                         {
-    
+
                             nome = nome,
                             nomeFonte = nomeFonte,
                             unidade = unidade,
@@ -340,6 +340,63 @@ namespace apinovo.Controllers
                 }
             }
         }
+
+
+        [HttpPost]
+        public string IncluirItemPrecoZeroPlanilha()
+        {
+            var message = "* Erro Não foi possível atualizar o banco de dados";
+
+            var autonumero = Convert.ToInt64(HttpContext.Current.Request.Form["autonumero"]);
+            try
+            {
+                using (var dc = new manutEntities())
+                {
+                    var linha = dc.tb_os_itens.Find(autonumero); // sempre irá procurar pela chave primaria
+                    if (linha != null && linha.cancelado != "S")
+                    {
+
+                        //linha.nome = "";
+                        //linha.unidade = "";
+                        linha.unidadePF = "";
+                        linha.quantidade = 0;
+                        //linha.precoUnitario = 0;
+                        linha.total = 0;
+                        linha.quantidadePF = 0;
+                        linha.precoUnitarioPF = 0;
+                        linha.totalPF = 0;
+                        linha.nomeFontePF = "";
+                        linha.nomePF = "";
+                        linha.itemPF = 0;
+                        linha.codigoPF = "";
+
+                        linha.codigoOrdemServico = "";
+
+                        dc.tb_os_itens.Add(linha);
+                        dc.SaveChanges();
+
+
+
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                var c = string.Empty;
+                if (ex.InnerException != null)
+                {
+                    c = ex.InnerException.ToString().Substring(0, 130);
+                }
+                message = message + ex.Message + " ---- " + c;
+                //message = ex.InnerException  != null ? ex.InnerException.ToString().Substring(0, 130) : ex.Message;
+            }
+            return message;
+
+        }
+
+
 
         //[HttpPost]
         //public void AlterarItemQtde()
@@ -928,7 +985,7 @@ namespace apinovo.Controllers
                         var unidadePF = HttpContext.Current.Request.Form["unidadePF"].ToString();
 
                         //totalPF = Math.Truncate(totalPF * 100) / 100;
-                        totalPF =(Math.Truncate((decimal)quantidadePF * (decimal)precoUnitarioPF * 100)) / 100;
+                        totalPF = (Math.Truncate((decimal)quantidadePF * (decimal)precoUnitarioPF * 100)) / 100;
 
                         var k = dc.tb_os_itens.FirstOrDefault(a => a.autonumero == autonumero && a.cancelado != "S");
                         if (k != null)

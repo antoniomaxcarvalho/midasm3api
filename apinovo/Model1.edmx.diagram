@@ -64,12 +64,12 @@
         <EntityTypeShape EntityType="manutModel.checklist" Width="1.5" PointX="2.125" PointY="5.375" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.checklisthistitem" Width="1.5" PointX="4.125" PointY="5.375" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.checklisthistitemnrofolha" Width="1.5" PointX="6.125" PointY="5.375" IsExpanded="false" />
-        <EntityTypeShape EntityType="manutModel.checklisthistorico" Width="1.5" PointX="8.125" PointY="5.375" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.checklisthistoricocivil" Width="1.5" PointX="10.125" PointY="5.375" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.checklisthistoricocivilitem" Width="1.5" PointX="12.125" PointY="5.375" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.checklisthistoriconrofolha" Width="1.5" PointX="2.125" PointY="5.875" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.checklistveiculo" Width="1.5" PointX="14" PointY="5.375" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.funcionariocurso" Width="1.5" PointX="1.125" PointY="6.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="manutModel.checklisthistorico" Width="1.5" PointX="7.875" PointY="5.375" IsExpanded="false" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

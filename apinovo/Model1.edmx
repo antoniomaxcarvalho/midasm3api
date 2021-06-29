@@ -1253,12 +1253,12 @@
           <EntitySet Name="checklist" EntityType="manutModel.checklist" />
           <EntitySet Name="checklisthistitem" EntityType="manutModel.checklisthistitem" />
           <EntitySet Name="checklisthistitemnrofolha" EntityType="manutModel.checklisthistitemnrofolha" />
-          <EntitySet Name="checklisthistorico" EntityType="manutModel.checklisthistorico" />
           <EntitySet Name="checklisthistoricocivil" EntityType="manutModel.checklisthistoricocivil" />
           <EntitySet Name="checklisthistoricocivilitem" EntityType="manutModel.checklisthistoricocivilitem" />
           <EntitySet Name="checklisthistoriconrofolha" EntityType="manutModel.checklisthistoriconrofolha" />
           <EntitySet Name="checklistveiculo" EntityType="manutModel.checklistveiculo" />
           <EntitySet Name="funcionariocurso" EntityType="manutModel.funcionariocurso" />
+          <EntitySet Name="checklisthistorico" EntityType="manutModel.checklisthistorico" />
         </EntityContainer>
         <EntityType Name="tb_tipo_usuario">
           <Key>
@@ -2190,47 +2190,6 @@
           <Property Name="equip7" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="equip8" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="checklisthistorico">
-          <Key>
-            <PropertyRef Name="autonumero" />
-          </Key>
-          <Property Name="autonumero" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="autonumeroCliente" Type="Int32" />
-          <Property Name="nomeCliente" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
-          <Property Name="anoMes" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroEquipamento" Type="Int64" />
-          <Property Name="endereco" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroSistema" Type="Int32" />
-          <Property Name="nomeSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroSubSistema" Type="Int32" />
-          <Property Name="nomeSubSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroLocalFisico" Type="Int32" />
-          <Property Name="nomeLocalFisico" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroSetor" Type="Int32" />
-          <Property Name="nomeSetor" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroPredio" Type="Int32" />
-          <Property Name="nomePredio" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="serie" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="modelo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="capacidade" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="patrimonio" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="grupo" Type="Int32" />
-          <Property Name="fabricante" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="dataPrevista" Type="DateTime" />
-          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="mesManuAno" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="mesManuSemestre" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="contadorPmocEquipamento" Type="Int64" />
-          <Property Name="obsLocal" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroFuncionario" Type="Int32" />
-          <Property Name="nomeFuncionario" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroProfissao" Type="Int32" />
-          <Property Name="nomeProfissao" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="totalHoras" Type="Time" />
-          <Property Name="dataInicio" Type="DateTime" />
-          <Property Name="dataFim" Type="DateTime" />
-          <Property Name="fechado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="checklisthistoricocivil">
           <Key>
             <PropertyRef Name="autonumero" />
@@ -2332,6 +2291,47 @@
           <Property Name="validade" Type="DateTime" />
           <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="inativo" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="checklisthistorico">
+          <Key>
+            <PropertyRef Name="autonumero" />
+          </Key>
+          <Property Name="autonumero" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="autonumeroCliente" Type="Int32" />
+          <Property Name="nomeCliente" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="anoMes" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroEquipamento" Type="Int64" />
+          <Property Name="endereco" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroSistema" Type="Int32" />
+          <Property Name="nomeSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroSubSistema" Type="Int32" />
+          <Property Name="nomeSubSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroLocalFisico" Type="Int32" />
+          <Property Name="nomeLocalFisico" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroSetor" Type="Int32" />
+          <Property Name="nomeSetor" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroPredio" Type="Int32" />
+          <Property Name="nomePredio" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="serie" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="modelo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="capacidade" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="patrimonio" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="grupo" Type="Int32" />
+          <Property Name="fabricante" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="dataPrevista" Type="DateTime" />
+          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="mesManuAno" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="mesManuSemestre" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="contadorPmocEquipamento" Type="Int64" />
+          <Property Name="obsLocal" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroFuncionario" Type="Int32" />
+          <Property Name="nomeFuncionario" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroProfissao" Type="Int32" />
+          <Property Name="nomeProfissao" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="totalHoras" Type="Time" />
+          <Property Name="dataInicio" Type="DateTime" />
+          <Property Name="dataFim" Type="DateTime" />
+          <Property Name="fechado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3348,48 +3348,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="checklisthistorico">
-            <EntityTypeMapping TypeName="manutModel.checklisthistorico">
-              <MappingFragment StoreEntitySet="checklisthistorico">
-                <ScalarProperty Name="fechado" ColumnName="fechado" />
-                <ScalarProperty Name="dataFim" ColumnName="dataFim" />
-                <ScalarProperty Name="dataInicio" ColumnName="dataInicio" />
-                <ScalarProperty Name="totalHoras" ColumnName="totalHoras" />
-                <ScalarProperty Name="nomeProfissao" ColumnName="nomeProfissao" />
-                <ScalarProperty Name="autonumeroProfissao" ColumnName="autonumeroProfissao" />
-                <ScalarProperty Name="nomeFuncionario" ColumnName="nomeFuncionario" />
-                <ScalarProperty Name="autonumeroFuncionario" ColumnName="autonumeroFuncionario" />
-                <ScalarProperty Name="obsLocal" ColumnName="obsLocal" />
-                <ScalarProperty Name="contadorPmocEquipamento" ColumnName="contadorPmocEquipamento" />
-                <ScalarProperty Name="mesManuSemestre" ColumnName="mesManuSemestre" />
-                <ScalarProperty Name="mesManuAno" ColumnName="mesManuAno" />
-                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
-                <ScalarProperty Name="dataPrevista" ColumnName="dataPrevista" />
-                <ScalarProperty Name="fabricante" ColumnName="fabricante" />
-                <ScalarProperty Name="grupo" ColumnName="grupo" />
-                <ScalarProperty Name="patrimonio" ColumnName="patrimonio" />
-                <ScalarProperty Name="capacidade" ColumnName="capacidade" />
-                <ScalarProperty Name="modelo" ColumnName="modelo" />
-                <ScalarProperty Name="serie" ColumnName="serie" />
-                <ScalarProperty Name="nomePredio" ColumnName="nomePredio" />
-                <ScalarProperty Name="autonumeroPredio" ColumnName="autonumeroPredio" />
-                <ScalarProperty Name="nomeSetor" ColumnName="nomeSetor" />
-                <ScalarProperty Name="autonumeroSetor" ColumnName="autonumeroSetor" />
-                <ScalarProperty Name="nomeLocalFisico" ColumnName="nomeLocalFisico" />
-                <ScalarProperty Name="autonumeroLocalFisico" ColumnName="autonumeroLocalFisico" />
-                <ScalarProperty Name="nomeSubSistema" ColumnName="nomeSubSistema" />
-                <ScalarProperty Name="autonumeroSubSistema" ColumnName="autonumeroSubSistema" />
-                <ScalarProperty Name="nomeSistema" ColumnName="nomeSistema" />
-                <ScalarProperty Name="autonumeroSistema" ColumnName="autonumeroSistema" />
-                <ScalarProperty Name="endereco" ColumnName="endereco" />
-                <ScalarProperty Name="autonumeroEquipamento" ColumnName="autonumeroEquipamento" />
-                <ScalarProperty Name="anoMes" ColumnName="anoMes" />
-                <ScalarProperty Name="nomeCliente" ColumnName="nomeCliente" />
-                <ScalarProperty Name="autonumeroCliente" ColumnName="autonumeroCliente" />
-                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="checklisthistoricocivil">
             <EntityTypeMapping TypeName="manutModel.checklisthistoricocivil">
               <MappingFragment StoreEntitySet="checklisthistoricocivil">
@@ -3493,6 +3451,48 @@
                 <ScalarProperty Name="nome" ColumnName="nome" />
                 <ScalarProperty Name="nomeFuncionario" ColumnName="nomeFuncionario" />
                 <ScalarProperty Name="autonumeroFuncionario" ColumnName="autonumeroFuncionario" />
+                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="checklisthistorico">
+            <EntityTypeMapping TypeName="manutModel.checklisthistorico">
+              <MappingFragment StoreEntitySet="checklisthistorico">
+                <ScalarProperty Name="fechado" ColumnName="fechado" />
+                <ScalarProperty Name="dataFim" ColumnName="dataFim" />
+                <ScalarProperty Name="dataInicio" ColumnName="dataInicio" />
+                <ScalarProperty Name="totalHoras" ColumnName="totalHoras" />
+                <ScalarProperty Name="nomeProfissao" ColumnName="nomeProfissao" />
+                <ScalarProperty Name="autonumeroProfissao" ColumnName="autonumeroProfissao" />
+                <ScalarProperty Name="nomeFuncionario" ColumnName="nomeFuncionario" />
+                <ScalarProperty Name="autonumeroFuncionario" ColumnName="autonumeroFuncionario" />
+                <ScalarProperty Name="obsLocal" ColumnName="obsLocal" />
+                <ScalarProperty Name="contadorPmocEquipamento" ColumnName="contadorPmocEquipamento" />
+                <ScalarProperty Name="mesManuSemestre" ColumnName="mesManuSemestre" />
+                <ScalarProperty Name="mesManuAno" ColumnName="mesManuAno" />
+                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
+                <ScalarProperty Name="dataPrevista" ColumnName="dataPrevista" />
+                <ScalarProperty Name="fabricante" ColumnName="fabricante" />
+                <ScalarProperty Name="grupo" ColumnName="grupo" />
+                <ScalarProperty Name="patrimonio" ColumnName="patrimonio" />
+                <ScalarProperty Name="capacidade" ColumnName="capacidade" />
+                <ScalarProperty Name="modelo" ColumnName="modelo" />
+                <ScalarProperty Name="serie" ColumnName="serie" />
+                <ScalarProperty Name="nomePredio" ColumnName="nomePredio" />
+                <ScalarProperty Name="autonumeroPredio" ColumnName="autonumeroPredio" />
+                <ScalarProperty Name="nomeSetor" ColumnName="nomeSetor" />
+                <ScalarProperty Name="autonumeroSetor" ColumnName="autonumeroSetor" />
+                <ScalarProperty Name="nomeLocalFisico" ColumnName="nomeLocalFisico" />
+                <ScalarProperty Name="autonumeroLocalFisico" ColumnName="autonumeroLocalFisico" />
+                <ScalarProperty Name="nomeSubSistema" ColumnName="nomeSubSistema" />
+                <ScalarProperty Name="autonumeroSubSistema" ColumnName="autonumeroSubSistema" />
+                <ScalarProperty Name="nomeSistema" ColumnName="nomeSistema" />
+                <ScalarProperty Name="autonumeroSistema" ColumnName="autonumeroSistema" />
+                <ScalarProperty Name="endereco" ColumnName="endereco" />
+                <ScalarProperty Name="autonumeroEquipamento" ColumnName="autonumeroEquipamento" />
+                <ScalarProperty Name="anoMes" ColumnName="anoMes" />
+                <ScalarProperty Name="nomeCliente" ColumnName="nomeCliente" />
+                <ScalarProperty Name="autonumeroCliente" ColumnName="autonumeroCliente" />
                 <ScalarProperty Name="autonumero" ColumnName="autonumero" />
               </MappingFragment>
             </EntityTypeMapping>

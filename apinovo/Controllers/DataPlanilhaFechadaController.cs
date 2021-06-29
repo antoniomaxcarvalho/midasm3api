@@ -474,11 +474,14 @@ namespace apinovo.Controllers
 
                 if (acrescimoEstoque > 0m)
                 {
-                    var multiplicador = ( 1 + (acrescimoEstoque / 100));
+                    //var multiplicador = ( 1 + (acrescimoEstoque / 100));
+
+                    var multiplicador =  (acrescimoEstoque / 100);
 
                     dc.tb_planilhafechada.Where(p => p.autonumeroCliente == autonumeroCliente).ToList().ForEach(x =>
                    {
-                       x.estoque = x.estoque * multiplicador;
+                       //x.estoque = x.estoque * multiplicador;
+                       x.estoque = x.estoque + (x.qtdeContratada * multiplicador);
                        dc.tb_planilhafechada.AddOrUpdate(x);
 
                    });

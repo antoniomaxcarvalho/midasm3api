@@ -84,11 +84,11 @@ namespace apinovo
         public DbSet<checklist> checklist { get; set; }
         public DbSet<checklisthistitem> checklisthistitem { get; set; }
         public DbSet<checklisthistitemnrofolha> checklisthistitemnrofolha { get; set; }
-        public DbSet<checklisthistorico> checklisthistorico { get; set; }
         public DbSet<checklisthistoricocivil> checklisthistoricocivil { get; set; }
         public DbSet<checklisthistoricocivilitem> checklisthistoricocivilitem { get; set; }
         public DbSet<checklisthistoriconrofolha> checklisthistoriconrofolha { get; set; }
         public DbSet<checklistveiculo> checklistveiculo { get; set; }
         public DbSet<funcionariocurso> funcionariocurso { get; set; }
+        public DbSet<checklisthistorico> checklisthistorico { get; set; }
     }
 }

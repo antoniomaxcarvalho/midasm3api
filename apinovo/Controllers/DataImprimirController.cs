@@ -4257,6 +4257,118 @@ namespace apinovo.Controllers
             return result;
         }
 
+        [HttpPost]
+        public HttpResponseMessage ImprimirPmocEquipamentoGeral()
+
+        {
+            var message = String.Empty;
+
+            try
+            {
+
+                var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
+                var anoMes = HttpContext.Current.Request.Form["anoMes"].ToString();
+                var modelo = HttpContext.Current.Request.Form["modelo"].ToString().Trim();
+
+                var filtro = "{checklisthistorico1.cancelado} <> 'S'  and {checklisthistorico1.anoMes} = '" + anoMes + "' ";
+                var local = HttpContext.Current.Server.MapPath("~/rpt/PmocGeral.rpt");
+
+                if (modelo == "SubSistema")
+                {
+                    local = HttpContext.Current.Server.MapPath("~/rpt/PmocGeralSubSistema.rpt");
+                }
+
+
+                if (autonumeroCliente > 0) { filtro = filtro + " and {checklisthistorico1.autonumeroCliente} = " + autonumeroCliente; }
+                var cc = anoMes.Substring(4, 2);
+                var ano = Convert.ToInt32(anoMes.Substring(0, 4));
+                var mes = Convert.ToInt32(anoMes.Substring(4, 2));
+
+                string nomeMes = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(mes).ToUpper();
+
+                var p1 = "PMOC REFERENTE AO MÊS DE " + nomeMes + " / " + ano.ToString();
+
+                using (var rd = new ReportDocument())
+                {
+                    var Response = HttpContext.Current.ApplicationInstance.Response;
+
+
+                    rd.Load(local);
+                    rd.SetParameterValue("@p1", p1);
+
+                    rd.RecordSelectionFormula = filtro;
+
+                    Response.Buffer = false;
+                    //Response.ClearContent();
+                    //Response.ClearHeaders();
+
+                    var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    ////75 is my print job limit.
+                    //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
+                    //return CreateReport(reportClass);
+
+                    rd.Close();
+                    rd.Dispose();
+
+                    var resp = Request.CreateResponse(HttpStatusCode.OK);
+                    resp.Content = new StreamContent(stream);
+                    return resp;
+
+                }
+            }
+
+            catch (LogOnException ex)
+            {
+                var c = string.Empty;
+                if (ex.InnerException != null)
+                {
+                    c = ex.InnerException.ToString().Substring(0, 130);
+                }
+                message = message + ex.Message + " ---- " + c;
+                //message = "Incorrect Logon Parameters. Check your user name and password";
+            }
+            catch (DataSourceException ex)
+            {
+                var c = string.Empty;
+                if (ex.InnerException != null)
+                {
+                    c = ex.InnerException.ToString().Substring(0, 130);
+                }
+                message = message + ex.Message + " ---- " + c;
+                //message = "An error has occurred while connecting to the database.";
+            }
+            catch (EngineException ex)
+            {
+                var c = string.Empty;
+                if (ex.InnerException != null)
+                {
+                    c = ex.InnerException.ToString().Substring(0, 130);
+                }
+                message = message + ex.Message + " ---- " + c;
+                //message = ex.InnerException  != null ? ex.InnerException.ToString().Substring(0, 130) : ex.Message;
+            }
+            catch (Exception ex)
+            {
+                var c = string.Empty;
+                if (ex.InnerException != null)
+                {
+                    c = ex.InnerException.ToString().Substring(0, 130);
+                }
+                message = message + ex.Message + " ---- " + c;
+                //message = ex.InnerException  != null ? ex.InnerException.ToString().Substring(0, 130) : ex.Message;
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
+            }
+            return null;
+        }
+
 
 
     }
