@@ -120,6 +120,7 @@
           <Property Name="dataInicio" Type="date" />
           <Property Name="dataFim" Type="date" />
           <Property Name="fechado" Type="char" MaxLength="1" />
+          <Property Name="imprimir" Type="char" MaxLength="1" />
         </EntityType>
         <EntityType Name="checklisthistoricocivil">
           <Key>
@@ -2332,6 +2333,7 @@
           <Property Name="dataInicio" Type="DateTime" />
           <Property Name="dataFim" Type="DateTime" />
           <Property Name="fechado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="imprimir" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3458,6 +3460,7 @@
           <EntitySetMapping Name="checklisthistorico">
             <EntityTypeMapping TypeName="manutModel.checklisthistorico">
               <MappingFragment StoreEntitySet="checklisthistorico">
+                <ScalarProperty Name="imprimir" ColumnName="imprimir" />
                 <ScalarProperty Name="fechado" ColumnName="fechado" />
                 <ScalarProperty Name="dataFim" ColumnName="dataFim" />
                 <ScalarProperty Name="dataInicio" ColumnName="dataInicio" />

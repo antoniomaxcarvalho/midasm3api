@@ -50,5 +50,6 @@ namespace apinovo
         public Nullable<System.DateTime> dataInicio { get; set; }
         public Nullable<System.DateTime> dataFim { get; set; }
         public string fechado { get; set; }
+        public string imprimir { get; set; }
     }
 }

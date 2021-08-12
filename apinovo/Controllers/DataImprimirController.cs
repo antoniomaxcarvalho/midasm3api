@@ -951,6 +951,7 @@ namespace apinovo.Controllers
                 csql.Append("SELECT nomeSistema, coalesce(sum(nomeStatus = 'Aberta'), 0) aberta, ");
                 csql.Append("coalesce(sum(nomeStatus = 'Fechada'), 0)  fechada, ");
                 csql.Append("coalesce(sum(nomeStatus = 'Autorizado'), 0)  autorizado, ");
+                csql.Append("coalesce(sum(nomeStatus = 'Rejeitado'), 0)  rejeitado, ");
                 csql.Append("coalesce(sum(nomeStatus = 'O.S. Medida'), 0)  osMedida, ");
                 csql.Append("coalesce(sum(nomeStatus = 'Espera material/mo'), 0)  esperaMaterialMo, ");
                 csql.Append("coalesce(sum(nomeStatus = 'Espera Fiscal'), 0)  esperaFiscal, ");
@@ -1206,6 +1207,7 @@ namespace apinovo.Controllers
                 csql.Append("SELECT nomeSetor, coalesce(sum(nomeStatus = 'Aberta'), 0) aberta, ");
                 csql.Append("coalesce(sum(nomeStatus = 'Fechada'), 0)  fechada, ");
                 csql.Append("coalesce(sum(nomeStatus = 'Autorizado'), 0)  autorizado, ");
+                csql.Append("coalesce(sum(nomeStatus = 'Rejeitado'), 0)  rejeitado, ");
                 csql.Append("coalesce(sum(nomeStatus = 'O.S. Medida'), 0)  osMedida, ");
                 csql.Append("coalesce(sum(nomeStatus = 'Espera material/mo'), 0)  esperaMaterialMo, ");
                 csql.Append("coalesce(sum(nomeStatus = 'Espera Fiscal'), 0)  esperaFiscal, ");
@@ -1398,6 +1400,7 @@ namespace apinovo.Controllers
                 csql.Append("SELECT nomeLocalFisico as nomeSetor, coalesce(sum(nomeStatus = 'Aberta'), 0) aberta, ");
                 csql.Append("coalesce(sum(nomeStatus = 'Fechada'), 0)  fechada, ");
                 csql.Append("coalesce(sum(nomeStatus = 'Autorizado'), 0)  autorizado, ");
+                csql.Append("coalesce(sum(nomeStatus = 'Rejeitado'), 0)  rejeitado, ");
                 csql.Append("coalesce(sum(nomeStatus = 'O.S. Medida'), 0)  osMedida, ");
                 csql.Append("coalesce(sum(nomeStatus = 'Espera material/mo'), 0)  esperaMaterialMo, ");
                 csql.Append("coalesce(sum(nomeStatus = 'Espera Fiscal'), 0)  esperaFiscal, ");
@@ -3786,6 +3789,198 @@ namespace apinovo.Controllers
 
 
 
+        //[HttpPost]
+        //public HttpResponseMessage ImprimirPmocEquipamento()
+
+        //{
+        //    var message = String.Empty;
+
+        //    try
+        //    {
+
+        //        var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
+        //        //var nomeCliente = HttpContext.Current.Request.Form["nomeCliente"].ToString().Trim();
+        //        //var autonumeroPredio = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroPredio"].ToString());
+        //        //var nomePredio = HttpContext.Current.Request.Form["nomePredio"].ToString().Trim();
+        //        //var autonumeroSetor = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroSetor"].ToString());
+        //        var anoMes = HttpContext.Current.Request.Form["anoMes"].ToString();
+        //        var sigla = HttpContext.Current.Request.Form["sigla"].ToString().Trim();
+        //        var modelo = HttpContext.Current.Request.Form["modelo"].ToString().Trim();
+
+
+        //        var filtro = "{checklisthistorico1.cancelado} <> 'S'  and {checklisthistorico1.anoMes} = '" + anoMes + "' ";
+
+        //        var filtroDoSubReport = "{checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and {checklisthistitemnrofolha1.d} = 'N'  and {checklisthistitemnrofolha1.e} = 'N' and {checklisthistitemnrofolha1.q} = 'N' ";
+
+        //        var local = HttpContext.Current.Server.MapPath("~/rpt/PmocEquipamento.rpt");
+        //        var csql = new StringBuilder();
+
+        //        csql.Append("DROP TABLE IF EXISTS `tempSubSistema`; ");
+        //        csql.Append("CREATE table tempSubSistema( ");
+
+        //        if (modelo == "Diário")
+        //        {
+        //            csql.Append("SELECT distinct autonumeroSubSistema from checklisthistitemnrofolha as ch where ch.d = 'S' and ch.autonumeroCliente = {0} and ");
+        //            csql.Append("ch.anoMes = {1} ) ");
+
+        //            filtroDoSubReport = "{checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and ({checklisthistitemnrofolha1.d} = 'S' ) ";
+        //            local = HttpContext.Current.Server.MapPath("~/rpt/PmocEquipamentoDSQ.rpt");
+        //        }
+
+        //        if (modelo == "Semanal")
+        //        {
+        //            csql.Append("SELECT distinct autonumeroSubSistema from checklisthistitemnrofolha as ch where ch.e = 'S' and ch.autonumeroCliente = {0} and ");
+        //            csql.Append("ch.anoMes = {1} ) ");
+
+        //            filtroDoSubReport = "{checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and ({checklisthistitemnrofolha1.e} = 'S' ) ";
+        //            local = HttpContext.Current.Server.MapPath("~/rpt/PmocEquipamentoDSQ.rpt");
+        //        }
+
+        //        if (modelo == "Quinzenal")
+        //        {
+        //            csql.Append("SELECT distinct autonumeroSubSistema from checklisthistitemnrofolha as ch where ch.q = 'S' and ch.autonumeroCliente = {0} and ");
+        //            csql.Append("ch.anoMes = {1} ) ");
+
+        //            filtroDoSubReport = "{checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and ({checklisthistitemnrofolha1.q} = 'S' ) ";
+        //            local = HttpContext.Current.Server.MapPath("~/rpt/PmocEquipamentoDSQ.rpt");
+        //        }
+
+        //        if (modelo != "Mensal")
+        //        {
+        //            using (var dc = new manutEntities())
+        //            {
+        //                var user = dc.Database.ExecuteSqlCommand(@csql.ToString(), new object[] { autonumeroCliente, anoMes });
+        //            }
+        //        }
+
+        //        if (autonumeroCliente > 0) { filtro = filtro + " and {checklisthistorico1.autonumeroCliente} = " + autonumeroCliente; }
+
+
+
+        //        using (var rd = new ReportDocument())
+        //        {
+        //            var Response = HttpContext.Current.ApplicationInstance.Response;
+
+
+        //            rd.Load(local);
+        //            rd.SetParameterValue("@modelo", modelo);
+        //            rd.OpenSubreport("checklist").RecordSelectionFormula = filtroDoSubReport;
+
+        //            rd.RecordSelectionFormula = filtro;
+
+
+
+
+        //            //var caminho = string.Concat("~/UploadedFiles/PmocEquipamento/", sigla);
+
+        //            ////// Criar a pasta se não existir ou devolver informação sobre a pasta
+        //            //var inf = Directory.CreateDirectory(HttpContext.Current.Server.MapPath(caminho));
+
+
+        //            ////var extension = "pdf";
+        //            //var fileName = Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + extension;
+
+        //            //var fileName = string.Concat("PmocEquipamento-", anoMes.Replace("/", ""), ".pdf");
+        //            //var fileName = string.Concat("PmocEquipamento-", sigla, "-", anoMes.Replace("/", ""), ".pdf");
+        //            //var fileSavePath = Path.Combine(HttpContext.Current.Server.MapPath(caminho), fileName);
+
+        //            //if (File.Exists(fileSavePath))
+        //            //{
+        //            //    File.Delete(fileSavePath);
+        //            //}
+
+
+        //            //// Declare variables and get the export options.
+        //            //ExportOptions exportOpts = new ExportOptions();
+        //            //PdfFormatOptions pdfFormatOpts = new PdfFormatOptions();
+        //            //DiskFileDestinationOptions diskOpts = new DiskFileDestinationOptions();
+        //            //exportOpts = rd.ExportOptions;
+
+
+        //            //exportOpts.ExportFormatType = ExportFormatType.PortableDocFormat;
+        //            //exportOpts.FormatOptions = pdfFormatOpts;
+
+        //            //// Set the disk file options and export.
+        //            //exportOpts.ExportDestinationType = ExportDestinationType.DiskFile;
+        //            //diskOpts.DiskFileName = fileSavePath;
+        //            //exportOpts.DestinationOptions = diskOpts;
+
+        //            //rd.Export();
+
+
+
+        //            Response.Buffer = false;
+        //            Response.ClearContent();
+        //            Response.ClearHeaders();
+
+        //            var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
+        //            stream.Seek(0, SeekOrigin.Begin);
+
+        //            ////75 is my print job limit.
+        //            //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
+        //            //return CreateReport(reportClass);
+
+        //            rd.Close();
+        //            rd.Dispose();
+
+        //            var resp = Request.CreateResponse(HttpStatusCode.OK);
+        //            resp.Content = new StreamContent(stream);
+        //            return resp;
+
+        //        }
+        //    }
+
+        //    catch (LogOnException ex)
+        //    {
+        //        var c = string.Empty;
+        //        if (ex.InnerException != null)
+        //        {
+        //            c = ex.InnerException.ToString().Substring(0, 130);
+        //        }
+        //        message = message + ex.Message + " ---- " + c;
+        //        //message = "Incorrect Logon Parameters. Check your user name and password";
+        //    }
+        //    catch (DataSourceException ex)
+        //    {
+        //        var c = string.Empty;
+        //        if (ex.InnerException != null)
+        //        {
+        //            c = ex.InnerException.ToString().Substring(0, 130);
+        //        }
+        //        message = message + ex.Message + " ---- " + c;
+        //        //message = "An error has occurred while connecting to the database.";
+        //    }
+        //    catch (EngineException ex)
+        //    {
+        //        var c = string.Empty;
+        //        if (ex.InnerException != null)
+        //        {
+        //            c = ex.InnerException.ToString().Substring(0, 130);
+        //        }
+        //        message = message + ex.Message + " ---- " + c;
+        //        //message = ex.InnerException  != null ? ex.InnerException.ToString().Substring(0, 130) : ex.Message;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var c = string.Empty;
+        //        if (ex.InnerException != null)
+        //        {
+        //            c = ex.InnerException.ToString().Substring(0, 130);
+        //        }
+        //        message = message + ex.Message + " ---- " + c;
+        //        //message = ex.InnerException  != null ? ex.InnerException.ToString().Substring(0, 130) : ex.Message;
+        //    }
+        //    finally
+        //    {
+        //        GC.Collect();
+        //        GC.WaitForPendingFinalizers();
+        //        GC.Collect();
+
+        //    }
+        //    return null;
+        //}
+
+
         [HttpPost]
         public HttpResponseMessage ImprimirPmocEquipamento()
 
@@ -3796,61 +3991,160 @@ namespace apinovo.Controllers
             {
 
                 var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
-                //var nomeCliente = HttpContext.Current.Request.Form["nomeCliente"].ToString().Trim();
-                //var autonumeroPredio = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroPredio"].ToString());
-                //var nomePredio = HttpContext.Current.Request.Form["nomePredio"].ToString().Trim();
-                //var autonumeroSetor = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroSetor"].ToString());
+
+                var autonumeroPredio = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroPredio"].ToString());
+                var autonumeroSetor = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroSetor"].ToString());
+                var autonumeroLocal = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroLocal"].ToString());
+
                 var anoMes = HttpContext.Current.Request.Form["anoMes"].ToString();
                 var sigla = HttpContext.Current.Request.Form["sigla"].ToString().Trim();
                 var modelo = HttpContext.Current.Request.Form["modelo"].ToString().Trim();
 
 
+
+                var filtroLocal = "";
+                if (autonumeroLocal > 0)
+                {
+                    filtroLocal = " and {checklisthistorico1.autonumeroLocalFisico} = " + autonumeroLocal;
+                }
+                else
+                {
+                    if (autonumeroSetor > 0)
+                    {
+                        filtroLocal = " and {checklisthistorico1.autonumeroSetor} = " + autonumeroSetor;
+                    }
+                    else
+                    {
+                        if (autonumeroPredio > 0)
+                        {
+                            filtroLocal = " and {checklisthistorico1.autonumeroPredio} = " + autonumeroPredio;
+                        }
+                    }
+
+                }
+
+
                 var filtro = "{checklisthistorico1.cancelado} <> 'S'  and {checklisthistorico1.anoMes} = '" + anoMes + "' ";
 
-                var filtroDoSubReport = "{checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and {checklisthistitemnrofolha1.d} = 'N'  and {checklisthistitemnrofolha1.e} = 'N' and {checklisthistitemnrofolha1.q} = 'N' ";
+                var filtroDoSubReport = "{checklisthistoriconrofolha1.autonumeroCliente} = " + autonumeroCliente.ToString() + " and {checklisthistoriconrofolha1.autonumeroCliente} =  {subsistemacliente1.autonumeroCliente} and {checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and {checklisthistitemnrofolha1.d} = 'N'  and {checklisthistitemnrofolha1.e} = 'N' and {checklisthistitemnrofolha1.q} = 'N' ";
 
                 var local = HttpContext.Current.Server.MapPath("~/rpt/PmocEquipamento.rpt");
                 var csql = new StringBuilder();
+
+                var executarConsulta = false;
 
                 csql.Append("DROP TABLE IF EXISTS `tempSubSistema`; ");
                 csql.Append("CREATE table tempSubSistema( ");
 
                 if (modelo == "Diário")
                 {
+                    executarConsulta = true;
                     csql.Append("SELECT distinct autonumeroSubSistema from checklisthistitemnrofolha as ch where ch.d = 'S' and ch.autonumeroCliente = {0} and ");
                     csql.Append("ch.anoMes = {1} ) ");
 
-                    filtroDoSubReport = "{checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and ({checklisthistitemnrofolha1.d} = 'S' ) ";
+                    filtroDoSubReport = "{checklisthistoriconrofolha1.autonumeroCliente} = " + autonumeroCliente.ToString() + " and {checklisthistoriconrofolha1.autonumeroCliente} =  {subsistemacliente1.autonumeroCliente} and {checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and ({checklisthistitemnrofolha1.d} = 'S' ) ";
                     local = HttpContext.Current.Server.MapPath("~/rpt/PmocEquipamentoDSQ.rpt");
                 }
 
                 if (modelo == "Semanal")
                 {
+                    executarConsulta = true;
                     csql.Append("SELECT distinct autonumeroSubSistema from checklisthistitemnrofolha as ch where ch.e = 'S' and ch.autonumeroCliente = {0} and ");
                     csql.Append("ch.anoMes = {1} ) ");
 
-                    filtroDoSubReport = "{checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and ({checklisthistitemnrofolha1.e} = 'S' ) ";
+                    filtroDoSubReport = "{checklisthistoriconrofolha1.autonumeroCliente} = " + autonumeroCliente.ToString() + " and {checklisthistoriconrofolha1.autonumeroCliente} =  {subsistemacliente1.autonumeroCliente} and {checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and ({checklisthistitemnrofolha1.e} = 'S' ) ";
                     local = HttpContext.Current.Server.MapPath("~/rpt/PmocEquipamentoDSQ.rpt");
                 }
 
                 if (modelo == "Quinzenal")
                 {
+                    executarConsulta = true;
                     csql.Append("SELECT distinct autonumeroSubSistema from checklisthistitemnrofolha as ch where ch.q = 'S' and ch.autonumeroCliente = {0} and ");
                     csql.Append("ch.anoMes = {1} ) ");
 
-                    filtroDoSubReport = "{checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and ({checklisthistitemnrofolha1.q} = 'S' ) ";
+                    filtroDoSubReport = "{checklisthistoriconrofolha1.autonumeroCliente} = " + autonumeroCliente.ToString() + " and {checklisthistoriconrofolha1.autonumeroCliente} =  {subsistemacliente1.autonumeroCliente} and {checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and ({checklisthistitemnrofolha1.q} = 'S' ) ";
                     local = HttpContext.Current.Server.MapPath("~/rpt/PmocEquipamentoDSQ.rpt");
                 }
 
-                if (modelo != "Mensal")
+                if (executarConsulta)
                 {
                     using (var dc = new manutEntities())
                     {
                         var user = dc.Database.ExecuteSqlCommand(@csql.ToString(), new object[] { autonumeroCliente, anoMes });
                     }
                 }
+                else
+                {
+                    var c = 1;
 
-                if (autonumeroCliente > 0) { filtro = filtro + " and {checklisthistorico1.autonumeroCliente} = " + autonumeroCliente; }
+                    using (var dc = new manutEntities())
+                    {
+
+                        if (modelo != "Mensal Todas Tarefas")
+                        {
+
+                            dc.checklisthistorico.Where(x => x.autonumeroCliente == autonumeroCliente && x.anoMes == anoMes && x.cancelado != "S").ToList().ForEach(x =>
+                            {
+                                x.imprimir = "N";
+                            });
+
+                            dc.SaveChanges();
+
+                            var lista4 = (from x in dc.checklisthistorico.Where(x => x.autonumeroCliente == autonumeroCliente && x.anoMes == anoMes && x.cancelado != "S") select x).ToList();
+                            var lista2 = dc.checklisthistitem.Where(p => p.autonumeroContrato == 20000).ToList();
+
+
+                            if (modelo == "Mensal")
+                            {
+                                lista2 = dc.checklisthistitem.Where(p => p.autonumeroContrato == autonumeroCliente && p.anoMes == anoMes && p.m == "S").ToList();
+                                filtroDoSubReport = filtroDoSubReport + " and {checklisthistitemnrofolha1.m} = 'S'  ";
+                            }
+                            if (modelo == "Bimestral")
+                            {
+                                lista2 = dc.checklisthistitem.Where(p => p.autonumeroContrato == autonumeroCliente && p.anoMes == anoMes && p.b == "S").ToList();
+                                filtroDoSubReport = filtroDoSubReport + " and {checklisthistitemnrofolha1.b} = 'S' ";
+                            }
+                            if (modelo == "Trimestral")
+                            {
+                                lista2 = dc.checklisthistitem.Where(p => p.autonumeroContrato == autonumeroCliente && p.anoMes == anoMes && p.t == "S").ToList();
+                                filtroDoSubReport = filtroDoSubReport + " and {checklisthistitemnrofolha1.t} = 'S' ";
+                            }
+                            if (modelo == "Semestral")
+                            {
+                                lista2 = dc.checklisthistitem.Where(p => p.autonumeroContrato == autonumeroCliente && p.anoMes == anoMes && p.s == "S").ToList();
+                                filtroDoSubReport = filtroDoSubReport + " and {checklisthistitemnrofolha1.s} = 'S' ";
+                            }
+                            if (modelo == "Anual")
+                            {
+                                lista2 = dc.checklisthistitem.Where(p => p.autonumeroContrato == autonumeroCliente && p.anoMes == anoMes && p.a == "S").ToList();
+                                filtroDoSubReport = filtroDoSubReport + " and {checklisthistitemnrofolha1.a} = 'S' ";
+                            }
+
+
+                            filtro = filtro + " and { checklisthistorico1.imprimir} = 'S' ";
+
+                            var lista5 = (from k in lista2
+                                          join o in lista4 on k.autonumeroSubSistema equals o.autonumeroSubSistema
+                                          select new
+                                          {
+                                              o
+                                          }).ToList();
+
+                            lista5.ForEach(x =>
+                            {
+                                x.o.imprimir = "S";
+                            });
+                            dc.SaveChanges();
+                        }
+
+
+                    }
+
+                }
+
+                if (autonumeroCliente > 0) { filtro = filtro + filtroLocal + " and {checklisthistorico1.autonumeroCliente} = " + autonumeroCliente; }
+
+
 
 
 
@@ -3868,13 +4162,13 @@ namespace apinovo.Controllers
 
 
 
-                    //var caminho = string.Concat("~/UploadedFiles/PmocEquipamento/", sigla);
+                    var caminho = string.Concat("~/UploadedFiles/PmocEquipamento/", sigla);
 
-                    ////// Criar a pasta se não existir ou devolver informação sobre a pasta
-                    //var inf = Directory.CreateDirectory(HttpContext.Current.Server.MapPath(caminho));
+                    //// Criar a pasta se não existir ou devolver informação sobre a pasta
+                    var inf = Directory.CreateDirectory(HttpContext.Current.Server.MapPath(caminho));
 
 
-                    ////var extension = "pdf";
+                    //var extension = "pdf";
                     //var fileName = Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + extension;
 
                     //var fileName = string.Concat("PmocEquipamento-", anoMes.Replace("/", ""), ".pdf");
@@ -3907,8 +4201,8 @@ namespace apinovo.Controllers
 
 
                     Response.Buffer = false;
-                    Response.ClearContent();
-                    Response.ClearHeaders();
+                    //Response.ClearContent();
+                    //Response.ClearHeaders();
 
                     var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
                     stream.Seek(0, SeekOrigin.Begin);
@@ -3976,6 +4270,118 @@ namespace apinovo.Controllers
             }
             return null;
         }
+
+        [HttpPost]
+        public HttpResponseMessage ImprimirPmocEquipamentoGeral()
+
+        {
+            var message = String.Empty;
+
+            try
+            {
+
+                var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
+                var anoMes = HttpContext.Current.Request.Form["anoMes"].ToString();
+                var modelo = HttpContext.Current.Request.Form["modelo"].ToString().Trim();
+
+                var filtro = "{checklisthistorico1.cancelado} <> 'S'  and {checklisthistorico1.anoMes} = '" + anoMes + "' ";
+                var local = HttpContext.Current.Server.MapPath("~/rpt/PmocGeral.rpt");
+
+                if (modelo == "SubSistema")
+                {
+                    local = HttpContext.Current.Server.MapPath("~/rpt/PmocGeralSubSistema.rpt");
+                }
+
+                if (autonumeroCliente > 0) { filtro = filtro + " and {checklisthistorico1.autonumeroCliente} = " + autonumeroCliente; }
+                var cc = anoMes.Substring(4, 2);
+                var ano = Convert.ToInt32(anoMes.Substring(0, 4));
+                var mes = Convert.ToInt32(anoMes.Substring(4, 2));
+
+                string nomeMes = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(mes).ToUpper();
+
+                var p1 = "PMOC REFERENTE AO MÊS DE " + nomeMes + " / " + ano.ToString();
+
+                using (var rd = new ReportDocument())
+                {
+                    var Response = HttpContext.Current.ApplicationInstance.Response;
+
+
+                    rd.Load(local);
+                    rd.SetParameterValue("@p1", p1);
+
+                    rd.RecordSelectionFormula = filtro;
+
+                    Response.Buffer = false;
+                    //Response.ClearContent();
+                    //Response.ClearHeaders();
+
+                    var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    ////75 is my print job limit.
+                    //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
+                    //return CreateReport(reportClass);
+
+                    rd.Close();
+                    rd.Dispose();
+
+                    var resp = Request.CreateResponse(HttpStatusCode.OK);
+                    resp.Content = new StreamContent(stream);
+                    return resp;
+
+                }
+            }
+
+            catch (LogOnException ex)
+            {
+                var c = string.Empty;
+                if (ex.InnerException != null)
+                {
+                    c = ex.InnerException.ToString().Substring(0, 130);
+                }
+                message = message + ex.Message + " ---- " + c;
+                //message = "Incorrect Logon Parameters. Check your user name and password";
+            }
+            catch (DataSourceException ex)
+            {
+                var c = string.Empty;
+                if (ex.InnerException != null)
+                {
+                    c = ex.InnerException.ToString().Substring(0, 130);
+                }
+                message = message + ex.Message + " ---- " + c;
+                //message = "An error has occurred while connecting to the database.";
+            }
+            catch (EngineException ex)
+            {
+                var c = string.Empty;
+                if (ex.InnerException != null)
+                {
+                    c = ex.InnerException.ToString().Substring(0, 130);
+                }
+                message = message + ex.Message + " ---- " + c;
+                //message = ex.InnerException  != null ? ex.InnerException.ToString().Substring(0, 130) : ex.Message;
+            }
+            catch (Exception ex)
+            {
+                var c = string.Empty;
+                if (ex.InnerException != null)
+                {
+                    c = ex.InnerException.ToString().Substring(0, 130);
+                }
+                message = message + ex.Message + " ---- " + c;
+                //message = ex.InnerException  != null ? ex.InnerException.ToString().Substring(0, 130) : ex.Message;
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
+            }
+            return null;
+        }
+
 
 
 
@@ -4256,119 +4662,6 @@ namespace apinovo.Controllers
             result.Content.Headers.ContentLength = stream.Length;
             return result;
         }
-
-        [HttpPost]
-        public HttpResponseMessage ImprimirPmocEquipamentoGeral()
-
-        {
-            var message = String.Empty;
-
-            try
-            {
-
-                var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
-                var anoMes = HttpContext.Current.Request.Form["anoMes"].ToString();
-                var modelo = HttpContext.Current.Request.Form["modelo"].ToString().Trim();
-
-                var filtro = "{checklisthistorico1.cancelado} <> 'S'  and {checklisthistorico1.anoMes} = '" + anoMes + "' ";
-                var local = HttpContext.Current.Server.MapPath("~/rpt/PmocGeral.rpt");
-
-                if (modelo == "SubSistema")
-                {
-                    local = HttpContext.Current.Server.MapPath("~/rpt/PmocGeralSubSistema.rpt");
-                }
-
-
-                if (autonumeroCliente > 0) { filtro = filtro + " and {checklisthistorico1.autonumeroCliente} = " + autonumeroCliente; }
-                var cc = anoMes.Substring(4, 2);
-                var ano = Convert.ToInt32(anoMes.Substring(0, 4));
-                var mes = Convert.ToInt32(anoMes.Substring(4, 2));
-
-                string nomeMes = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(mes).ToUpper();
-
-                var p1 = "PMOC REFERENTE AO MÊS DE " + nomeMes + " / " + ano.ToString();
-
-                using (var rd = new ReportDocument())
-                {
-                    var Response = HttpContext.Current.ApplicationInstance.Response;
-
-
-                    rd.Load(local);
-                    rd.SetParameterValue("@p1", p1);
-
-                    rd.RecordSelectionFormula = filtro;
-
-                    Response.Buffer = false;
-                    //Response.ClearContent();
-                    //Response.ClearHeaders();
-
-                    var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
-                    stream.Seek(0, SeekOrigin.Begin);
-
-                    ////75 is my print job limit.
-                    //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
-                    //return CreateReport(reportClass);
-
-                    rd.Close();
-                    rd.Dispose();
-
-                    var resp = Request.CreateResponse(HttpStatusCode.OK);
-                    resp.Content = new StreamContent(stream);
-                    return resp;
-
-                }
-            }
-
-            catch (LogOnException ex)
-            {
-                var c = string.Empty;
-                if (ex.InnerException != null)
-                {
-                    c = ex.InnerException.ToString().Substring(0, 130);
-                }
-                message = message + ex.Message + " ---- " + c;
-                //message = "Incorrect Logon Parameters. Check your user name and password";
-            }
-            catch (DataSourceException ex)
-            {
-                var c = string.Empty;
-                if (ex.InnerException != null)
-                {
-                    c = ex.InnerException.ToString().Substring(0, 130);
-                }
-                message = message + ex.Message + " ---- " + c;
-                //message = "An error has occurred while connecting to the database.";
-            }
-            catch (EngineException ex)
-            {
-                var c = string.Empty;
-                if (ex.InnerException != null)
-                {
-                    c = ex.InnerException.ToString().Substring(0, 130);
-                }
-                message = message + ex.Message + " ---- " + c;
-                //message = ex.InnerException  != null ? ex.InnerException.ToString().Substring(0, 130) : ex.Message;
-            }
-            catch (Exception ex)
-            {
-                var c = string.Empty;
-                if (ex.InnerException != null)
-                {
-                    c = ex.InnerException.ToString().Substring(0, 130);
-                }
-                message = message + ex.Message + " ---- " + c;
-                //message = ex.InnerException  != null ? ex.InnerException.ToString().Substring(0, 130) : ex.Message;
-            }
-            finally
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-
-            }
-            return null;
-        }
-
 
 
     }

@@ -177,7 +177,7 @@ namespace apinovo.Controllers
                         linha.dataInicio = Convert.ToDateTime(HttpContext.Current.Request.Form["dataInicio"].ToString());
                     }
 
-                    if (nomeStatus == "Autorizado")
+                    if (nomeStatus == "Autorizado" || nomeStatus == "Rejeitado")
                     {
                         linha.autonumeroAutorizado = autonumeroUsuario;
                         linha.nomeAutorizado = nomeUsuario;
