@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Web;
 using System.Web.Http;
@@ -570,7 +572,7 @@ namespace apinovo.Controllers
 
                 // FIM - INCLUIR No cliente se não existir SUBSISTEMA -----------------------------------------------------
 
-                 
+
                 var csql = new StringBuilder();
 
                 csql.Append("SELECT c.autonumeroSubSistema,c.nomeSubSistema,count(c.autonumeroSubSistema) as qtdeAparelho, ");
@@ -685,7 +687,7 @@ namespace apinovo.Controllers
                 var autonumeroSubsistema = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroSubsistema"].ToString());
 
                 var linha = dc.tb_subsistemacliente.Find(autonumeroCliente, autonumeroSubsistema); // sempre irá procurar pela chave primaria
-                if (linha != null )
+                if (linha != null)
                 {
 
 
@@ -740,7 +742,7 @@ namespace apinovo.Controllers
                 var ano = Convert.ToInt32(HttpContext.Current.Request.Form["ano"].ToString());
                 var mes = Convert.ToInt32(HttpContext.Current.Request.Form["mes"].ToString());
                 var nroMaxDiasUteis = Convert.ToInt32(HttpContext.Current.Request.Form["nroMaxDiasUteis"].ToString());
-                var pmocCheckList =HttpContext.Current.Request.Form["pmocCheckList"].ToString();
+                var pmocCheckList = HttpContext.Current.Request.Form["pmocCheckList"].ToString();
 
                 List<DiaUtil> listaDiaUtil = null;
 
@@ -1076,6 +1078,7 @@ namespace apinovo.Controllers
 
         }
 
+                [HttpPost]
         public string CalcularPMOCEquipamento()
 
         {
@@ -1091,11 +1094,11 @@ namespace apinovo.Controllers
 
                 var anoMes = string.Concat(ano.ToString(), mes.ToString().PadLeft(2, '0'));
 
-
-                var c = 1;
-
                 List<DiaUtil> listaDiaUtil = null;
 
+
+                //CalcularQtdeSubSistema(autonumeroCliente, anoMes);
+                //return "";
                 //if (IsDate(HttpContext.Current.Request.Form["dataInicio"]) &&
                 //    IsDate(HttpContext.Current.Request.Form["dataFim"]))
                 //{
@@ -1118,24 +1121,41 @@ namespace apinovo.Controllers
 
                 Debug.WriteLine("LimparPMOC");
                 long contadorPmocEquipamento = 0;
+                string nomeCliente = string.Empty;
                 using (var dc = new manutEntities())
                 {
                     var cli = dc.tb_cliente.Find(autonumeroCliente); // sempre irá procurar pela chave primaria
                     if (cli == null)
                     {
-                        throw new ArgumentException("Erro: Tabela Contrato Não Encontrada");
+                        throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, "Erro: Tabela Contrato Não Encontrada"));
                     }
                     contadorPmocEquipamento = (long)cli.contadorPmocEquipamento;
+                    nomeCliente = cli.nome;
                 }
+
+
 
                 using (var dc = new manutEntities())
                 {
+                    dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S").ToList().ForEach(x =>
+                    {
+                        x.contadorPmocEquipamento = 0;
+                        x.grupo = 0;
+                        x.dataPrevista = null;
+
+                    });
+                    dc.SaveChanges();
 
                     var condi = GetCondicoes(autonumeroCliente, nroMaxDiasUteis, null);
+
+
                     int contGrupo = 0;
 
                     if (condi != null)
                     {
+
+                        // Apenas os marcados ----------------
+                        condi = condi.Where(p => p.chkTodoMes == 1).ToList();
 
                         int contRegistroDia = 0;
                         int? autonumeroSubSistema = 0;
@@ -1255,7 +1275,7 @@ namespace apinovo.Controllers
 
 
                             Debug.WriteLine(" autonumeroSubSistema: " + autonumeroSubSistema);
-                            var k = GetEquipamentoEmOrdemVisita(autonumeroCliente, autonumeroSubSistema);
+                            var k = GetEquipamentoEmOrdemVisita(autonumeroCliente, autonumeroSubSistema, mes);
 
                             //DateTime? ultimaData = DateTime.Now.AddYears(10);
                             qtdPorGrupoRelatorioDia = 0;
@@ -1366,6 +1386,7 @@ namespace apinovo.Controllers
 
                                     }
                                 }
+                                var c = 1;
 
                                 dc.tb_cadastro.AddOrUpdate(equipamento);
 
@@ -1388,6 +1409,7 @@ namespace apinovo.Controllers
                         var linha = dc.tb_cliente.Find(autonumeroCliente); // sempre irá procurar pela chave primaria
                         if (linha != null)
                         {
+                            contadorPmocEquipamento--;
                             linha.contadorPmocEquipamento = contadorPmocEquipamento;
                             dc.tb_cliente.AddOrUpdate(linha);
                             dc.SaveChanges();
@@ -1402,7 +1424,12 @@ namespace apinovo.Controllers
                 //var imp = new DataImprimirController();
                 //imp.ImprimirPmocEquipamento(autonumeroCliente, sigla, anoMes);
 
-                SalvarPmocEquipamento(autonumeroCliente, ano, mes);
+                SalvarPmocEquipamentoNovo(autonumeroCliente, ano, mes);
+
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -1923,6 +1950,4353 @@ namespace apinovo.Controllers
                 }
 
             }
+
+        }
+
+
+
+        [HttpPost]
+        public string SalvarPmocEquipamentoNovo(int autonumeroCliente, int ano, int mes)
+        {
+            var c = 1;
+
+            //var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
+            //var ano = Convert.ToInt32(HttpContext.Current.Request.Form["ano"].ToString());
+            //var mes = Convert.ToInt32(HttpContext.Current.Request.Form["mes"].ToString());
+
+            var anoMes = string.Concat(ano.ToString(), mes.ToString().PadLeft(2, '0'));
+
+            using (var dc = new manutEntities())
+            {
+                try
+                {
+
+                    //Apagar PMOC anterior -----------------------------------------------------------------------------
+                    var lista = dc.checklisthistorico.Where(p => p.autonumeroCliente == autonumeroCliente && p.anoMes == anoMes).ToList();
+                    if (lista.Count > 0)
+                    {
+                        if (lista[0].fechado == "S")
+                        {
+                            throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, "Erro - PMOC Fechado"));
+                        }
+                    }
+                    dc.checklisthistorico.RemoveRange(lista);
+                    dc.SaveChanges();
+
+                    lista.Clear();
+
+                    var lista2 = dc.checklisthistitem.Where(p => p.autonumeroContrato == autonumeroCliente && p.anoMes == anoMes).ToList();
+                    dc.checklisthistitem.RemoveRange(lista2);
+                    dc.SaveChanges();
+
+                    lista2.Clear();
+
+                    //FIM Apagar PMOC anterior-----------------------------------------------------------------------------------
+
+
+                    // i.dataPrevista != null Apenas os Equipamentos filtrados (ano,mes,sem .... ) no cadastro -------------------------------------
+
+
+                    switch (mes)
+                    {
+                        case 1:
+                            lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.dataPrevista != null && i.cancelado != "S").ToList()
+                                     join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                     where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                     select new checklisthistorico
+                                     {
+                                         anoMes = anoMes,
+                                         autonumeroCliente = autonumeroCliente,
+                                         autonumeroEquipamento = i.autonumero,
+                                         autonumeroLocalFisico = i.autonumeroLocalFisico,
+                                         autonumeroPredio = i.autonumeroPredio,
+                                         autonumeroSetor = i.autonumeroSetor,
+                                         autonumeroSistema = i.autonumeroSistema,
+                                         autonumeroSubSistema = i.autonumeroSubSistema,
+                                         cancelado = "N",
+                                         capacidade = i.capacidade,
+                                         contadorPmocEquipamento = i.contadorPmocEquipamento,
+                                         dataPrevista = i.dataPrevista,
+                                         endereco = i.endereco,
+                                         fabricante = i.fabricante,
+                                         fechado = "N",
+                                         grupo = i.grupo,
+                                         mesManuAno = i.mesManuAno,
+                                         mesManuSemestre = i.mesManuSemestre,
+                                         modelo = i.modelo,
+                                         nomeCliente = i.nomeCliente,
+                                         nomeLocalFisico = i.nomeLocalFisico,
+                                         nomePredio = i.nomePredio,
+                                         nomeSetor = i.nomeSetor,
+                                         nomeSistema = i.nomeSistema,
+                                         nomeSubSistema = i.nomeSubSistema,
+                                         obsLocal = i.obsLocal,
+                                         patrimonio = i.patrimonio,
+                                         serie = i.serie,
+                                         autonumeroFuncionario = 0,
+                                         nomeFuncionario = "",
+                                         autonumeroProfissao = 0,
+                                         nomeProfissao = "",
+                                         dataInicio = null,
+                                         dataFim = null,
+                                         totalHoras = TimeSpan.Parse("00:00"),
+                                         mensal = i.mes01,
+                                         bimestral = i.bim01,
+                                         trimestral = i.tri01,
+                                         semestral = i.sem01,
+                                         anual = i.ano01,
+                                     }).ToList();
+                            break;
+                        case 2:
+                            lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.dataPrevista != null && i.cancelado != "S").ToList()
+                                     join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                     where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                     select new checklisthistorico
+                                     {
+                                         anoMes = anoMes,
+                                         autonumeroCliente = autonumeroCliente,
+                                         autonumeroEquipamento = i.autonumero,
+                                         autonumeroLocalFisico = i.autonumeroLocalFisico,
+                                         autonumeroPredio = i.autonumeroPredio,
+                                         autonumeroSetor = i.autonumeroSetor,
+                                         autonumeroSistema = i.autonumeroSistema,
+                                         autonumeroSubSistema = i.autonumeroSubSistema,
+                                         cancelado = "N",
+                                         capacidade = i.capacidade,
+                                         contadorPmocEquipamento = i.contadorPmocEquipamento,
+                                         dataPrevista = i.dataPrevista,
+                                         endereco = i.endereco,
+                                         fabricante = i.fabricante,
+                                         fechado = "N",
+                                         grupo = i.grupo,
+                                         mesManuAno = i.mesManuAno,
+                                         mesManuSemestre = i.mesManuSemestre,
+                                         modelo = i.modelo,
+                                         nomeCliente = i.nomeCliente,
+                                         nomeLocalFisico = i.nomeLocalFisico,
+                                         nomePredio = i.nomePredio,
+                                         nomeSetor = i.nomeSetor,
+                                         nomeSistema = i.nomeSistema,
+                                         nomeSubSistema = i.nomeSubSistema,
+                                         obsLocal = i.obsLocal,
+                                         patrimonio = i.patrimonio,
+                                         serie = i.serie,
+                                         autonumeroFuncionario = 0,
+                                         nomeFuncionario = "",
+                                         autonumeroProfissao = 0,
+                                         nomeProfissao = "",
+                                         dataInicio = null,
+                                         dataFim = null,
+                                         totalHoras = TimeSpan.Parse("00:00"),
+                                         mensal = i.mes02,
+                                         bimestral = i.bim02,
+                                         trimestral = i.tri02,
+                                         semestral = i.sem02,
+                                         anual = i.ano02,
+                                     }).ToList();
+                            break;
+                        case 3:
+                            lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.dataPrevista != null && i.cancelado != "S").ToList()
+                                     join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                     where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                     select new checklisthistorico
+                                     {
+                                         anoMes = anoMes,
+                                         autonumeroCliente = autonumeroCliente,
+                                         autonumeroEquipamento = i.autonumero,
+                                         autonumeroLocalFisico = i.autonumeroLocalFisico,
+                                         autonumeroPredio = i.autonumeroPredio,
+                                         autonumeroSetor = i.autonumeroSetor,
+                                         autonumeroSistema = i.autonumeroSistema,
+                                         autonumeroSubSistema = i.autonumeroSubSistema,
+                                         cancelado = "N",
+                                         capacidade = i.capacidade,
+                                         contadorPmocEquipamento = i.contadorPmocEquipamento,
+                                         dataPrevista = i.dataPrevista,
+                                         endereco = i.endereco,
+                                         fabricante = i.fabricante,
+                                         fechado = "N",
+                                         grupo = i.grupo,
+                                         mesManuAno = i.mesManuAno,
+                                         mesManuSemestre = i.mesManuSemestre,
+                                         modelo = i.modelo,
+                                         nomeCliente = i.nomeCliente,
+                                         nomeLocalFisico = i.nomeLocalFisico,
+                                         nomePredio = i.nomePredio,
+                                         nomeSetor = i.nomeSetor,
+                                         nomeSistema = i.nomeSistema,
+                                         nomeSubSistema = i.nomeSubSistema,
+                                         obsLocal = i.obsLocal,
+                                         patrimonio = i.patrimonio,
+                                         serie = i.serie,
+                                         autonumeroFuncionario = 0,
+                                         nomeFuncionario = "",
+                                         autonumeroProfissao = 0,
+                                         nomeProfissao = "",
+                                         dataInicio = null,
+                                         dataFim = null,
+                                         totalHoras = TimeSpan.Parse("00:00"),
+                                         mensal = i.mes03,
+                                         bimestral = i.bim03,
+                                         trimestral = i.tri03,
+                                         semestral = i.sem03,
+                                         anual = i.ano01,
+                                     }).ToList();
+                            break;
+                        case 4:
+                            lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.dataPrevista != null && i.cancelado != "S").ToList()
+                                     join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                     where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                     select new checklisthistorico
+                                     {
+                                         anoMes = anoMes,
+                                         autonumeroCliente = autonumeroCliente,
+                                         autonumeroEquipamento = i.autonumero,
+                                         autonumeroLocalFisico = i.autonumeroLocalFisico,
+                                         autonumeroPredio = i.autonumeroPredio,
+                                         autonumeroSetor = i.autonumeroSetor,
+                                         autonumeroSistema = i.autonumeroSistema,
+                                         autonumeroSubSistema = i.autonumeroSubSistema,
+                                         cancelado = "N",
+                                         capacidade = i.capacidade,
+                                         contadorPmocEquipamento = i.contadorPmocEquipamento,
+                                         dataPrevista = i.dataPrevista,
+                                         endereco = i.endereco,
+                                         fabricante = i.fabricante,
+                                         fechado = "N",
+                                         grupo = i.grupo,
+                                         mesManuAno = i.mesManuAno,
+                                         mesManuSemestre = i.mesManuSemestre,
+                                         modelo = i.modelo,
+                                         nomeCliente = i.nomeCliente,
+                                         nomeLocalFisico = i.nomeLocalFisico,
+                                         nomePredio = i.nomePredio,
+                                         nomeSetor = i.nomeSetor,
+                                         nomeSistema = i.nomeSistema,
+                                         nomeSubSistema = i.nomeSubSistema,
+                                         obsLocal = i.obsLocal,
+                                         patrimonio = i.patrimonio,
+                                         serie = i.serie,
+                                         autonumeroFuncionario = 0,
+                                         nomeFuncionario = "",
+                                         autonumeroProfissao = 0,
+                                         nomeProfissao = "",
+                                         dataInicio = null,
+                                         dataFim = null,
+                                         totalHoras = TimeSpan.Parse("00:00"),
+                                         mensal = i.mes04,
+                                         bimestral = i.bim04,
+                                         trimestral = i.tri04,
+                                         semestral = i.sem04,
+                                         anual = i.ano04,
+                                     }).ToList();
+                            break;
+                        case 5:
+                            lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.dataPrevista != null && i.cancelado != "S").ToList()
+                                     join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                     where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                     select new checklisthistorico
+                                     {
+                                         anoMes = anoMes,
+                                         autonumeroCliente = autonumeroCliente,
+                                         autonumeroEquipamento = i.autonumero,
+                                         autonumeroLocalFisico = i.autonumeroLocalFisico,
+                                         autonumeroPredio = i.autonumeroPredio,
+                                         autonumeroSetor = i.autonumeroSetor,
+                                         autonumeroSistema = i.autonumeroSistema,
+                                         autonumeroSubSistema = i.autonumeroSubSistema,
+                                         cancelado = "N",
+                                         capacidade = i.capacidade,
+                                         contadorPmocEquipamento = i.contadorPmocEquipamento,
+                                         dataPrevista = i.dataPrevista,
+                                         endereco = i.endereco,
+                                         fabricante = i.fabricante,
+                                         fechado = "N",
+                                         grupo = i.grupo,
+                                         mesManuAno = i.mesManuAno,
+                                         mesManuSemestre = i.mesManuSemestre,
+                                         modelo = i.modelo,
+                                         nomeCliente = i.nomeCliente,
+                                         nomeLocalFisico = i.nomeLocalFisico,
+                                         nomePredio = i.nomePredio,
+                                         nomeSetor = i.nomeSetor,
+                                         nomeSistema = i.nomeSistema,
+                                         nomeSubSistema = i.nomeSubSistema,
+                                         obsLocal = i.obsLocal,
+                                         patrimonio = i.patrimonio,
+                                         serie = i.serie,
+                                         autonumeroFuncionario = 0,
+                                         nomeFuncionario = "",
+                                         autonumeroProfissao = 0,
+                                         nomeProfissao = "",
+                                         dataInicio = null,
+                                         dataFim = null,
+                                         totalHoras = TimeSpan.Parse("00:00"),
+                                         mensal = i.mes05,
+                                         bimestral = i.bim05,
+                                         trimestral = i.tri05,
+                                         semestral = i.sem05,
+                                         anual = i.ano05,
+                                     }).ToList();
+                            break;
+                        case 6:
+                            lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.dataPrevista != null && i.cancelado != "S").ToList()
+                                     join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                     where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                     select new checklisthistorico
+                                     {
+                                         anoMes = anoMes,
+                                         autonumeroCliente = autonumeroCliente,
+                                         autonumeroEquipamento = i.autonumero,
+                                         autonumeroLocalFisico = i.autonumeroLocalFisico,
+                                         autonumeroPredio = i.autonumeroPredio,
+                                         autonumeroSetor = i.autonumeroSetor,
+                                         autonumeroSistema = i.autonumeroSistema,
+                                         autonumeroSubSistema = i.autonumeroSubSistema,
+                                         cancelado = "N",
+                                         capacidade = i.capacidade,
+                                         contadorPmocEquipamento = i.contadorPmocEquipamento,
+                                         dataPrevista = i.dataPrevista,
+                                         endereco = i.endereco,
+                                         fabricante = i.fabricante,
+                                         fechado = "N",
+                                         grupo = i.grupo,
+                                         mesManuAno = i.mesManuAno,
+                                         mesManuSemestre = i.mesManuSemestre,
+                                         modelo = i.modelo,
+                                         nomeCliente = i.nomeCliente,
+                                         nomeLocalFisico = i.nomeLocalFisico,
+                                         nomePredio = i.nomePredio,
+                                         nomeSetor = i.nomeSetor,
+                                         nomeSistema = i.nomeSistema,
+                                         nomeSubSistema = i.nomeSubSistema,
+                                         obsLocal = i.obsLocal,
+                                         patrimonio = i.patrimonio,
+                                         serie = i.serie,
+                                         autonumeroFuncionario = 0,
+                                         nomeFuncionario = "",
+                                         autonumeroProfissao = 0,
+                                         nomeProfissao = "",
+                                         dataInicio = null,
+                                         dataFim = null,
+                                         totalHoras = TimeSpan.Parse("00:00"),
+                                         mensal = i.mes06,
+                                         bimestral = i.bim06,
+                                         trimestral = i.tri06,
+                                         semestral = i.sem06,
+                                         anual = i.ano06,
+                                     }).ToList();
+                            break;
+                        case 7:
+                            lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.dataPrevista != null && i.cancelado != "S").ToList()
+                                     join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                     where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                     select new checklisthistorico
+                                     {
+                                         anoMes = anoMes,
+                                         autonumeroCliente = autonumeroCliente,
+                                         autonumeroEquipamento = i.autonumero,
+                                         autonumeroLocalFisico = i.autonumeroLocalFisico,
+                                         autonumeroPredio = i.autonumeroPredio,
+                                         autonumeroSetor = i.autonumeroSetor,
+                                         autonumeroSistema = i.autonumeroSistema,
+                                         autonumeroSubSistema = i.autonumeroSubSistema,
+                                         cancelado = "N",
+                                         capacidade = i.capacidade,
+                                         contadorPmocEquipamento = i.contadorPmocEquipamento,
+                                         dataPrevista = i.dataPrevista,
+                                         endereco = i.endereco,
+                                         fabricante = i.fabricante,
+                                         fechado = "N",
+                                         grupo = i.grupo,
+                                         mesManuAno = i.mesManuAno,
+                                         mesManuSemestre = i.mesManuSemestre,
+                                         modelo = i.modelo,
+                                         nomeCliente = i.nomeCliente,
+                                         nomeLocalFisico = i.nomeLocalFisico,
+                                         nomePredio = i.nomePredio,
+                                         nomeSetor = i.nomeSetor,
+                                         nomeSistema = i.nomeSistema,
+                                         nomeSubSistema = i.nomeSubSistema,
+                                         obsLocal = i.obsLocal,
+                                         patrimonio = i.patrimonio,
+                                         serie = i.serie,
+                                         autonumeroFuncionario = 0,
+                                         nomeFuncionario = "",
+                                         autonumeroProfissao = 0,
+                                         nomeProfissao = "",
+                                         dataInicio = null,
+                                         dataFim = null,
+                                         totalHoras = TimeSpan.Parse("00:00"),
+                                         mensal = i.mes07,
+                                         bimestral = i.bim07,
+                                         trimestral = i.tri07,
+                                         semestral = i.sem07,
+                                         anual = i.ano07,
+                                     }).ToList();
+                            break;
+                        case 8:
+
+                            lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.dataPrevista != null && i.cancelado != "S").ToList()
+                                     join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                     where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                     select new checklisthistorico
+                                     {
+                                         anoMes = anoMes,
+                                         autonumeroCliente = autonumeroCliente,
+                                         autonumeroEquipamento = i.autonumero,
+                                         autonumeroLocalFisico = i.autonumeroLocalFisico,
+                                         autonumeroPredio = i.autonumeroPredio,
+                                         autonumeroSetor = i.autonumeroSetor,
+                                         autonumeroSistema = i.autonumeroSistema,
+                                         autonumeroSubSistema = i.autonumeroSubSistema,
+                                         cancelado = "N",
+                                         capacidade = i.capacidade,
+                                         contadorPmocEquipamento = i.contadorPmocEquipamento,
+                                         dataPrevista = i.dataPrevista,
+                                         endereco = i.endereco,
+                                         fabricante = i.fabricante,
+                                         fechado = "N",
+                                         grupo = i.grupo,
+                                         mesManuAno = i.mesManuAno,
+                                         mesManuSemestre = i.mesManuSemestre,
+                                         modelo = i.modelo,
+                                         nomeCliente = i.nomeCliente,
+                                         nomeLocalFisico = i.nomeLocalFisico,
+                                         nomePredio = i.nomePredio,
+                                         nomeSetor = i.nomeSetor,
+                                         nomeSistema = i.nomeSistema,
+                                         nomeSubSistema = i.nomeSubSistema,
+                                         obsLocal = i.obsLocal,
+                                         patrimonio = i.patrimonio,
+                                         serie = i.serie,
+                                         autonumeroFuncionario = 0,
+                                         nomeFuncionario = "",
+                                         autonumeroProfissao = 0,
+                                         nomeProfissao = "",
+                                         dataInicio = null,
+                                         dataFim = null,
+                                         totalHoras = TimeSpan.Parse("00:00"),
+                                         mensal = i.mes08,
+                                         bimestral = i.bim08,
+                                         trimestral = i.tri08,
+                                         semestral = i.sem08,
+                                         anual = i.ano08,
+                                     }).ToList();
+                            break;
+                        case 9:
+                            lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.dataPrevista != null && i.cancelado != "S").ToList()
+                                     join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                     where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                     select new checklisthistorico
+                                     {
+                                         anoMes = anoMes,
+                                         autonumeroCliente = autonumeroCliente,
+                                         autonumeroEquipamento = i.autonumero,
+                                         autonumeroLocalFisico = i.autonumeroLocalFisico,
+                                         autonumeroPredio = i.autonumeroPredio,
+                                         autonumeroSetor = i.autonumeroSetor,
+                                         autonumeroSistema = i.autonumeroSistema,
+                                         autonumeroSubSistema = i.autonumeroSubSistema,
+                                         cancelado = "N",
+                                         capacidade = i.capacidade,
+                                         contadorPmocEquipamento = i.contadorPmocEquipamento,
+                                         dataPrevista = i.dataPrevista,
+                                         endereco = i.endereco,
+                                         fabricante = i.fabricante,
+                                         fechado = "N",
+                                         grupo = i.grupo,
+                                         mesManuAno = i.mesManuAno,
+                                         mesManuSemestre = i.mesManuSemestre,
+                                         modelo = i.modelo,
+                                         nomeCliente = i.nomeCliente,
+                                         nomeLocalFisico = i.nomeLocalFisico,
+                                         nomePredio = i.nomePredio,
+                                         nomeSetor = i.nomeSetor,
+                                         nomeSistema = i.nomeSistema,
+                                         nomeSubSistema = i.nomeSubSistema,
+                                         obsLocal = i.obsLocal,
+                                         patrimonio = i.patrimonio,
+                                         serie = i.serie,
+                                         autonumeroFuncionario = 0,
+                                         nomeFuncionario = "",
+                                         autonumeroProfissao = 0,
+                                         nomeProfissao = "",
+                                         dataInicio = null,
+                                         dataFim = null,
+                                         totalHoras = TimeSpan.Parse("00:00"),
+                                         mensal = i.mes09,
+                                         bimestral = i.bim09,
+                                         trimestral = i.tri09,
+                                         semestral = i.sem09,
+                                         anual = i.ano09,
+                                     }).ToList();
+                            break;
+
+                        case 10:
+                            lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.dataPrevista != null && i.cancelado != "S").ToList()
+                                     join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                     where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                     select new checklisthistorico
+                                     {
+                                         anoMes = anoMes,
+                                         autonumeroCliente = autonumeroCliente,
+                                         autonumeroEquipamento = i.autonumero,
+                                         autonumeroLocalFisico = i.autonumeroLocalFisico,
+                                         autonumeroPredio = i.autonumeroPredio,
+                                         autonumeroSetor = i.autonumeroSetor,
+                                         autonumeroSistema = i.autonumeroSistema,
+                                         autonumeroSubSistema = i.autonumeroSubSistema,
+                                         cancelado = "N",
+                                         capacidade = i.capacidade,
+                                         contadorPmocEquipamento = i.contadorPmocEquipamento,
+                                         dataPrevista = i.dataPrevista,
+                                         endereco = i.endereco,
+                                         fabricante = i.fabricante,
+                                         fechado = "N",
+                                         grupo = i.grupo,
+                                         mesManuAno = i.mesManuAno,
+                                         mesManuSemestre = i.mesManuSemestre,
+                                         modelo = i.modelo,
+                                         nomeCliente = i.nomeCliente,
+                                         nomeLocalFisico = i.nomeLocalFisico,
+                                         nomePredio = i.nomePredio,
+                                         nomeSetor = i.nomeSetor,
+                                         nomeSistema = i.nomeSistema,
+                                         nomeSubSistema = i.nomeSubSistema,
+                                         obsLocal = i.obsLocal,
+                                         patrimonio = i.patrimonio,
+                                         serie = i.serie,
+                                         autonumeroFuncionario = 0,
+                                         nomeFuncionario = "",
+                                         autonumeroProfissao = 0,
+                                         nomeProfissao = "",
+                                         dataInicio = null,
+                                         dataFim = null,
+                                         totalHoras = TimeSpan.Parse("00:00"),
+                                         mensal = i.mes10,
+                                         bimestral = i.bim10,
+                                         trimestral = i.tri10,
+                                         semestral = i.sem10,
+                                         anual = i.ano10,
+                                     }).ToList();
+                            break;
+
+                        case 11:
+                            lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.dataPrevista != null && i.cancelado != "S").ToList()
+                                     join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                     where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                     select new checklisthistorico
+                                     {
+                                         anoMes = anoMes,
+                                         autonumeroCliente = autonumeroCliente,
+                                         autonumeroEquipamento = i.autonumero,
+                                         autonumeroLocalFisico = i.autonumeroLocalFisico,
+                                         autonumeroPredio = i.autonumeroPredio,
+                                         autonumeroSetor = i.autonumeroSetor,
+                                         autonumeroSistema = i.autonumeroSistema,
+                                         autonumeroSubSistema = i.autonumeroSubSistema,
+                                         cancelado = "N",
+                                         capacidade = i.capacidade,
+                                         contadorPmocEquipamento = i.contadorPmocEquipamento,
+                                         dataPrevista = i.dataPrevista,
+                                         endereco = i.endereco,
+                                         fabricante = i.fabricante,
+                                         fechado = "N",
+                                         grupo = i.grupo,
+                                         mesManuAno = i.mesManuAno,
+                                         mesManuSemestre = i.mesManuSemestre,
+                                         modelo = i.modelo,
+                                         nomeCliente = i.nomeCliente,
+                                         nomeLocalFisico = i.nomeLocalFisico,
+                                         nomePredio = i.nomePredio,
+                                         nomeSetor = i.nomeSetor,
+                                         nomeSistema = i.nomeSistema,
+                                         nomeSubSistema = i.nomeSubSistema,
+                                         obsLocal = i.obsLocal,
+                                         patrimonio = i.patrimonio,
+                                         serie = i.serie,
+                                         autonumeroFuncionario = 0,
+                                         nomeFuncionario = "",
+                                         autonumeroProfissao = 0,
+                                         nomeProfissao = "",
+                                         dataInicio = null,
+                                         dataFim = null,
+                                         totalHoras = TimeSpan.Parse("00:00"),
+                                         mensal = i.mes11,
+                                         bimestral = i.bim11,
+                                         trimestral = i.tri11,
+                                         semestral = i.sem11,
+                                         anual = i.ano11,
+                                     }).ToList();
+                            break;
+
+                        case 12:
+                            lista = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.dataPrevista != null && i.cancelado != "S").ToList()
+                                     join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                     where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                     select new checklisthistorico
+                                     {
+                                         anoMes = anoMes,
+                                         autonumeroCliente = autonumeroCliente,
+                                         autonumeroEquipamento = i.autonumero,
+                                         autonumeroLocalFisico = i.autonumeroLocalFisico,
+                                         autonumeroPredio = i.autonumeroPredio,
+                                         autonumeroSetor = i.autonumeroSetor,
+                                         autonumeroSistema = i.autonumeroSistema,
+                                         autonumeroSubSistema = i.autonumeroSubSistema,
+                                         cancelado = "N",
+                                         capacidade = i.capacidade,
+                                         contadorPmocEquipamento = i.contadorPmocEquipamento,
+                                         dataPrevista = i.dataPrevista,
+                                         endereco = i.endereco,
+                                         fabricante = i.fabricante,
+                                         fechado = "N",
+                                         grupo = i.grupo,
+                                         mesManuAno = i.mesManuAno,
+                                         mesManuSemestre = i.mesManuSemestre,
+                                         modelo = i.modelo,
+                                         nomeCliente = i.nomeCliente,
+                                         nomeLocalFisico = i.nomeLocalFisico,
+                                         nomePredio = i.nomePredio,
+                                         nomeSetor = i.nomeSetor,
+                                         nomeSistema = i.nomeSistema,
+                                         nomeSubSistema = i.nomeSubSistema,
+                                         obsLocal = i.obsLocal,
+                                         patrimonio = i.patrimonio,
+                                         serie = i.serie,
+                                         autonumeroFuncionario = 0,
+                                         nomeFuncionario = "",
+                                         autonumeroProfissao = 0,
+                                         nomeProfissao = "",
+                                         dataInicio = null,
+                                         dataFim = null,
+                                         totalHoras = TimeSpan.Parse("00:00"),
+                                         mensal = i.mes12,
+                                         bimestral = i.bim12,
+                                         trimestral = i.tri12,
+                                         semestral = i.sem12,
+                                         anual = i.ano12,
+                                     }).ToList();
+                            break;
+                        default:
+                            break;
+                    }
+
+
+                    dc.checklisthistorico.AddRange(lista);
+                    dc.SaveChanges();
+
+                    c = 1;
+
+                    var lista3 = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.dataPrevista != null && i.cancelado != "S").ToList()
+                                  join s in dc.tb_subsistemacliente on i.autonumeroSubSistema equals s.autonumeroSubsistema
+                                  where s.chkTodoMes == 1 && s.autonumeroCliente == i.autonumeroCliente
+                                  select i).ToList();
+
+                    //var lista3 = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.cancelado != "S") select i).ToList();
+                    var lista4 = (from i in dc.checklist.Where(i => i.autonumeroContrato == autonumeroCliente && i.cancelado != "S") select i).ToList();
+
+                    var lista5 = (from k in lista3
+                                  join i in lista4 on k.autonumeroSubSistema equals i.autonumeroSubsistema
+
+                                  select new checklisthistitem
+                                  {
+                                      anoMes = anoMes,
+                                      autonumeroContrato = autonumeroCliente,
+                                      autonumeroEquipamento = k.autonumero,
+                                      autonumeroSubSistema = k.autonumeroSubSistema,
+                                      nomeSubSistema = k.nomeSubSistema,
+                                      autonumeroCheckList = i.autonumero,
+                                      executou = "N",
+                                      a = i.a,
+                                      e = i.e,
+                                      b = i.b,
+                                      d = i.d,
+                                      m = i.m,
+                                      q = i.q,
+                                      s = i.s,
+                                      t = i.t,
+                                      nome = i.nome,
+                                      item = i.item
+
+                                  }).ToList();
+
+
+                    lista3.Clear();
+                    lista4.Clear();
+
+                    //manutEntities context = new manutEntities();
+                    //foreach (var e in lista5)
+                    //{
+                    //    context.checklisthistitem.Add(e);
+                    //}
+
+                    //context.SaveChanges();
+
+                    dc.checklisthistitem.AddRange(lista5);
+                    dc.SaveChanges();
+
+                    SalvarPmocEquipamento2Novo(autonumeroCliente, ano, mes);
+                    return "";
+                }
+                catch (Exception ex)
+                {
+                    var message = ex.Message;
+                    if (ex.InnerException != null)
+                    {
+                        message = ex.InnerException.ToString();
+                    }
+                    return message;
+                }
+
+            }
+
+        }
+
+
+        [HttpGet]
+        public string SalvarPmocEquipamento2Novo(int autonumeroCliente, int ano, int mes)
+        {
+            var c = 1;
+            //var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
+            //var ano = Convert.ToInt32(HttpContext.Current.Request.Form["ano"].ToString());
+            //var mes = Convert.ToInt32(HttpContext.Current.Request.Form["mes"].ToString());
+
+            var anoMes = string.Concat(ano.ToString(), mes.ToString().PadLeft(2, '0'));
+
+            using (var dc = new manutEntities())
+            {
+                try
+                {
+
+                    //Apagar PMOC anterior -----------------------------------------------------------------------------
+                    var lista = dc.checklisthistoriconrofolha.Where(p => p.autonumeroCliente == autonumeroCliente && p.anoMes == anoMes).ToList();
+
+                    dc.checklisthistoriconrofolha.RemoveRange(lista);
+                    dc.SaveChanges();
+
+                    lista.Clear();
+
+                    var lista2 = dc.checklisthistitemnrofolha.Where(p => p.autonumeroCliente == autonumeroCliente && p.anoMes == anoMes).ToList();
+                    dc.checklisthistitemnrofolha.RemoveRange(lista2);
+                    dc.SaveChanges();
+
+                    lista2.Clear();
+
+                    //var lista33 = dc.checklisthistorico.Where(p => p.autonumeroCliente == autonumeroCliente && p.anoMes == anoMes).ToList();
+                    //dc.checklisthistorico.RemoveRange(lista33);
+                    //dc.SaveChanges();
+
+                    //lista33.Clear();
+
+                    //FIM Apagar PMOC anterior-----------------------------------------------------------------------------------
+
+                    long nroFolha = 0;
+                    var lista3 = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.cancelado != "S") select i).OrderBy(p => p.contadorPmocEquipamento).ToList();
+                    foreach (var item in lista3)
+                    {
+
+                        if (nroFolha == item.contadorPmocEquipamento)
+                        {
+                            continue;
+                        }
+
+                        nroFolha = (long)item.contadorPmocEquipamento;
+
+                        long equip1 = 0;
+                        long equip2 = 0;
+                        long equip3 = 0;
+                        long equip4 = 0;
+                        long equip5 = 0;
+                        long equip6 = 0;
+                        long equip7 = 0;
+                        long equip8 = 0;
+
+
+                        var x = lista3.Where(p => p.contadorPmocEquipamento == nroFolha).OrderBy(p => p.autonumero).ToList();
+                        var i = 1;
+                        sbyte m = 0;
+                        sbyte b = 0;
+                        sbyte t = 0;
+                        sbyte s = 0;
+                        sbyte a = 0;
+                        foreach (var item2 in x)
+                        {
+
+
+                            switch (mes)
+                            {
+                                case 1:
+                                    if (item2.mes01 == 1)
+                                    {
+                                        m = 1;
+                                    }
+                                    if (item2.bim01 == 1)
+                                    {
+                                        b = 1;
+                                    }
+                                    if (item2.tri01 == 1)
+                                    {
+                                        t = 1;
+                                    }
+                                    if (item2.sem01 == 1)
+                                    {
+                                        s = 1;
+                                    }
+                                    if (item2.ano01 == 1)
+                                    {
+                                        a = 1;
+                                    }
+                                    break;
+                                case 2:
+                                    if (item2.mes02 == 1)
+                                    {
+                                        m = 1;
+                                    }
+                                    if (item2.bim02 == 1)
+                                    {
+                                        b = 1;
+                                    }
+                                    if (item2.tri02 == 1)
+                                    {
+                                        t = 1;
+                                    }
+                                    if (item2.sem02 == 1)
+                                    {
+                                        s = 1;
+                                    }
+                                    if (item2.ano02 == 1)
+                                    {
+                                        a = 1;
+                                    }
+
+                                    break;
+
+                                case 3:
+                                    if (item2.mes03 == 1)
+                                    {
+                                        m = 1;
+                                    }
+                                    if (item2.bim03 == 1)
+                                    {
+                                        b = 1;
+                                    }
+                                    if (item2.tri03 == 1)
+                                    {
+                                        t = 1;
+                                    }
+                                    if (item2.sem03 == 1)
+                                    {
+                                        s = 1;
+                                    }
+                                    if (item2.ano03 == 1)
+                                    {
+                                        a = 1;
+                                    }
+
+                                    break;
+
+                                case 4:
+
+                                    if (item2.mes04 == 1)
+                                    {
+                                        m = 1;
+                                    }
+                                    if (item2.bim04 == 1)
+                                    {
+                                        b = 1;
+                                    }
+                                    if (item2.tri04 == 1)
+                                    {
+                                        t = 1;
+                                    }
+                                    if (item2.sem04 == 1)
+                                    {
+                                        s = 1;
+                                    }
+                                    if (item2.ano04 == 1)
+                                    {
+                                        a = 1;
+                                    }
+
+                                    break;
+
+                                case 5:
+                                    if (item2.mes05 == 1)
+                                    {
+                                        m = 1;
+                                    }
+                                    if (item2.bim05 == 1)
+                                    {
+                                        b = 1;
+                                    }
+                                    if (item2.tri05 == 1)
+                                    {
+                                        t = 1;
+                                    }
+                                    if (item2.sem05 == 1)
+                                    {
+                                        s = 1;
+                                    }
+                                    if (item2.ano05 == 1)
+                                    {
+                                        a = 1;
+                                    }
+
+
+                                    break;
+
+                                case 6:
+
+                                    if (item2.mes06 == 1)
+                                    {
+                                        m = 1;
+                                    }
+                                    if (item2.bim06 == 1)
+                                    {
+                                        b = 1;
+                                    }
+                                    if (item2.tri06 == 1)
+                                    {
+                                        t = 1;
+                                    }
+                                    if (item2.sem06 == 1)
+                                    {
+                                        s = 1;
+                                    }
+                                    if (item2.ano06 == 1)
+                                    {
+                                        a = 1;
+                                    }
+
+                                    break;
+
+                                case 7:
+
+                                    if (item2.mes07 == 1)
+                                    {
+                                        m = 1;
+                                    }
+                                    if (item2.bim07 == 1)
+                                    {
+                                        b = 1;
+                                    }
+                                    if (item2.tri07 == 1)
+                                    {
+                                        t = 1;
+                                    }
+                                    if (item2.sem07 == 1)
+                                    {
+                                        s = 1;
+                                    }
+                                    if (item2.ano07 == 1)
+                                    {
+                                        a = 1;
+                                    }
+
+                                    break;
+
+                                case 8:
+                                    if (item2.mes08 == 1)
+                                    {
+                                        m = 1;
+                                    }
+                                    if (item2.bim08 == 1)
+                                    {
+                                        b = 1;
+                                    }
+                                    if (item2.tri08 == 1)
+                                    {
+                                        t = 1;
+                                    }
+                                    if (item2.sem08 == 1)
+                                    {
+                                        s = 1;
+                                    }
+                                    if (item2.ano08 == 1)
+                                    {
+                                        a = 1;
+                                    }
+
+
+                                    break;
+
+                                case 9:
+
+                                    if (item2.mes09 == 1)
+                                    {
+                                        m = 1;
+                                    }
+                                    if (item2.bim09 == 1)
+                                    {
+                                        b = 1;
+                                    }
+                                    if (item2.tri09 == 1)
+                                    {
+                                        t = 1;
+                                    }
+                                    if (item2.sem09 == 1)
+                                    {
+                                        s = 1;
+                                    }
+                                    if (item2.ano09 == 1)
+                                    {
+                                        a = 1;
+                                    }
+
+                                    break;
+
+                                case 10:
+
+                                    if (item2.mes10 == 1)
+                                    {
+                                        m = 1;
+                                    }
+                                    if (item2.bim10 == 1)
+                                    {
+                                        b = 1;
+                                    }
+                                    if (item2.tri10 == 1)
+                                    {
+                                        t = 1;
+                                    }
+                                    if (item2.sem10 == 1)
+                                    {
+                                        s = 1;
+                                    }
+                                    if (item2.ano10 == 1)
+                                    {
+                                        a = 1;
+                                    }
+
+
+
+                                    break;
+
+                                case 11:
+
+                                    if (item2.mes11 == 1)
+                                    {
+                                        m = 1;
+                                    }
+                                    if (item2.bim11 == 1)
+                                    {
+                                        b = 1;
+                                    }
+                                    if (item2.tri11 == 1)
+                                    {
+                                        t = 1;
+                                    }
+                                    if (item2.sem11 == 1)
+                                    {
+                                        s = 1;
+                                    }
+                                    if (item2.ano11 == 1)
+                                    {
+                                        a = 1;
+                                    }
+
+
+                                    break;
+
+                                case 12:
+
+                                    if (item2.mes12 == 1)
+                                    {
+                                        m = 1;
+                                    }
+                                    if (item2.bim12 == 1)
+                                    {
+                                        b = 1;
+                                    }
+                                    if (item2.tri12 == 1)
+                                    {
+                                        t = 1;
+                                    }
+                                    if (item2.sem12 == 1)
+                                    {
+                                        s = 1;
+                                    }
+                                    if (item2.ano12 == 1)
+                                    {
+                                        a = 1;
+                                    }
+
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            switch (i)
+                            {
+                                case 1:
+                                    equip1 = item2.autonumero;
+                                    break;
+                                case 2:
+                                    equip2 = item2.autonumero;
+                                    break;
+                                case 3:
+                                    equip3 = item2.autonumero;
+                                    break;
+                                case 4:
+                                    equip4 = item2.autonumero;
+                                    break;
+                                case 5:
+                                    equip5 = item2.autonumero;
+                                    break;
+                                case 6:
+                                    equip6 = item2.autonumero;
+                                    break;
+                                case 7:
+                                    equip7 = item2.autonumero;
+                                    break;
+                                case 8:
+                                    equip8 = item2.autonumero;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            i++;
+                        }
+
+                        var z = new checklisthistoriconrofolha
+                        {
+                            anoMes = anoMes,
+                            autonumeroCliente = autonumeroCliente,
+                            contadorPmocEquipamento = nroFolha,
+                            equip1 = (int)equip1,
+                            equip2 = (int)equip2,
+                            equip3 = (int)equip3,
+                            equip4 = (int)equip4,
+                            equip5 = (int)equip5,
+                            equip6 = (int)equip6,
+                            equip7 = (int)equip7,
+                            equip8 = (int)equip8,
+                            mensal = m,
+                            bimestral = b,
+                            trimestral = t,
+                            semestral = s,
+                            anual = a
+
+                        };
+
+                        dc.checklisthistoriconrofolha.AddOrUpdate(z);
+                        dc.SaveChanges();
+
+
+                    }
+
+
+
+                    //dc.checklisthistorico.AddRange(lista);
+                    //dc.SaveChanges();
+
+                    var lista6 = (from i in dc.tb_cadastro.Where(i => i.autonumeroCliente == autonumeroCliente && i.cancelado != "S")
+                                  select new
+                                  {
+                                      i.autonumeroSubSistema,
+                                      i.contadorPmocEquipamento
+                                  }).ToList().Distinct();
+
+                    var lista4 = (from i in dc.checklist.Where(i => i.autonumeroContrato == autonumeroCliente && i.cancelado != "S") select i).ToList();
+
+                    var lista5 = (from k in lista6
+                                  join i in lista4 on k.autonumeroSubSistema equals i.autonumeroSubsistema
+
+                                  select new checklisthistitemnrofolha
+                                  {
+                                      anoMes = anoMes,
+                                      autonumeroCliente = autonumeroCliente,
+                                      autonumeroCheckList = i.autonumero,
+                                      autonumeroSubSistema = i.autonumeroSubsistema,
+                                      a = i.a,
+                                      e = i.e,
+                                      b = i.b,
+                                      d = i.d,
+                                      m = i.m,
+                                      q = i.q,
+                                      s = i.s,
+                                      t = i.t,
+                                      nome = i.nome,
+                                      item = i.item,
+                                      contadorPmocEquipamento = k.contadorPmocEquipamento,
+                                      equip1 = "",
+                                      equip2 = "",
+                                      equip3 = "",
+                                      equip4 = "",
+                                      equip5 = "",
+                                      equip6 = "",
+                                      equip7 = "",
+                                      equip8 = "",
+
+
+
+                                  }).ToList();
+
+
+
+                    lista4.Clear();
+
+
+                    dc.checklisthistitemnrofolha.AddRange(lista5);
+                    dc.SaveChanges();
+
+
+                }
+                catch (Exception ex)
+                {
+                    var message = ex.Message;
+                    if (ex.InnerException != null)
+                    {
+                        message = ex.InnerException.ToString();
+                    }
+                    return message;
+                }
+
+            }
+
+            CalcularQtdeSubSistema(autonumeroCliente, anoMes);
+            return "";
+        }
+
+
+
+        [HttpGet]
+        public void CalcularQtdeSubSistema(int autonumeroCliente, string anoMes)
+        {
+            var message = "";
+            try
+            {
+                var c = 1;
+                using (var dc = new manutEntities())
+                {
+
+                    var cli = dc.tb_cliente.Find(autonumeroCliente); // sempre irá procurar pela chave primaria
+                    if (cli == null)
+                    {
+                        throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, "Erro: Tabela Contrato Não Encontrada"));
+                    }
+
+                    var nomeCliente = cli.nome;
+
+
+                    var lista2 = dc.subsistemaqtdepmoc.Where(p => p.autonumeroCliente == autonumeroCliente && p.anoMes == anoMes).ToList();
+                    dc.subsistemaqtdepmoc.RemoveRange(lista2);
+                    dc.SaveChanges();
+
+                    var csql = new StringBuilder();
+
+
+                    csql.Append("SELECT autonumeroCliente, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as nomeCliente, autonumeroSistema, nomeSistema,  autonumeroSubSistema, nome as  nomeSubSistema,  ");
+                    csql.Append("0 as mensal,0 as bimestral, 0 as trimestral,0 as semestral, 0 as anual FROM manut.tb_subsistemacliente where  autonumeroCliente = " + autonumeroCliente);
+                    var todos = dc.Database.SqlQuery<avaliacao>(csql.ToString()).ToList();
+
+                    csql.Clear();
+
+                    //var mensal = dc.checklisthistorico.Where(p => p.autonumeroCliente == autonumeroCliente && p.cancelado != "S" && p.mensal == 1 && p.anoMes == anoMes).ToList().Count();
+
+                    csql.Append("SELECT  autonumeroSubSistema, ");
+                    csql.Append("count(mensal) as mensal  FROM manut.checklisthistorico where  autonumeroCliente = " + autonumeroCliente + " and  mensal = 1 and anomes = '" + anoMes + "' group by  autonumeroSubSistema ");
+
+
+                    var mensal = dc.Database.SqlQuery<avaliacao>(csql.ToString()).ToList();
+
+                    var m = (from k in todos
+                             join x in mensal on k.autonumeroSubSistema equals x.autonumeroSubSistema
+                             select new { x.autonumeroSubSistema, x.mensal }).ToList();
+
+                    foreach (var j in m)
+                    {
+                        var k = todos.Find(l => l.autonumeroSubSistema == j.autonumeroSubSistema);
+                        if (k != null)
+                        {
+                            k.mensal = j.mensal;
+                        }
+                    }
+
+                    csql.Clear();
+                    //csql.Append("SELECT autonumeroCliente,  nomeCliente, autonumeroSistema, nomeSistema,  autonumeroSubSistema, nomeSubSistema, ");
+                    //csql.Append("count(bimestral) as bimestral FROM manut.checklisthistorico where  autonumeroCliente = " + autonumeroCliente + " and bimestral = 1 and anomes = '" + anoMes + "'  ");
+
+                    csql.Append("SELECT  autonumeroSubSistema, ");
+                    csql.Append("count(bimestral) as bimestral  FROM manut.checklisthistorico where  autonumeroCliente = " + autonumeroCliente + " and  bimestral = 1 and anomes = '" + anoMes + "' group by  autonumeroSubSistema ");
+
+
+                    var bimestral = dc.Database.SqlQuery<avaliacao>(csql.ToString()).ToList();
+
+                    var b = (from k in todos
+                             join x in bimestral on k.autonumeroSubSistema equals x.autonumeroSubSistema
+                             select new { x.autonumeroSubSistema, x.bimestral }).ToList();
+
+                    foreach (var j in b)
+                    {
+                        var k = todos.Find(l => l.autonumeroSubSistema == j.autonumeroSubSistema);
+                        if (k != null)
+                        {
+
+                            k.bimestral = j.bimestral;
+                        }
+                    }
+
+                    csql.Clear();
+                    //csql.Append("SELECT autonumeroCliente, nomeCliente, autonumeroSistema, nomeSistema,  autonumeroSubSistema, nomeSubSistema, ");
+                    //csql.Append("count(trimestral) as trimestral FROM manut.checklisthistorico where  autonumeroCliente = " + autonumeroCliente + " and  trimestral = 1 and anomes = '" + anoMes + "'  ");
+
+                    csql.Append("SELECT  autonumeroSubSistema, ");
+                    csql.Append("count(trimestral) as trimestral  FROM manut.checklisthistorico where  autonumeroCliente = " + autonumeroCliente + " and  trimestral = 1 and anomes = '" + anoMes + "' group by  autonumeroSubSistema ");
+
+
+                    var trimestral = dc.Database.SqlQuery<avaliacao>(csql.ToString()).ToList();
+
+
+                    var t = (from k in todos
+                             join x in trimestral on k.autonumeroSubSistema equals x.autonumeroSubSistema
+                             select new { x.autonumeroSubSistema, x.trimestral }).ToList();
+
+                    foreach (var j in t)
+                    {
+                        var k = todos.Find(l => l.autonumeroSubSistema == j.autonumeroSubSistema);
+                        if (k != null)
+                        {
+
+                            k.trimestral = j.trimestral;
+                        }
+                    }
+
+                    csql.Clear();
+                    //csql.Append("SELECT autonumeroCliente, nomeCliente, autonumeroSistema, nomeSistema,  autonumeroSubSistema, nomeSubSistema, ");
+                    //csql.Append("count(semestral) as semestral FROM manut.checklisthistorico where  autonumeroCliente = " + autonumeroCliente + " and semestral = 1 and anomes = '" + anoMes + "'  ");
+                    csql.Append("SELECT  autonumeroSubSistema, ");
+                    csql.Append("count(semestral) as semestral  FROM manut.checklisthistorico where  autonumeroCliente = " + autonumeroCliente + " and  semestral = 1 and anomes = '" + anoMes + "' group by  autonumeroSubSistema ");
+
+
+                    var semestral = dc.Database.SqlQuery<avaliacao>(csql.ToString()).ToList();
+
+
+                    var s = (from k in todos
+                             join x in semestral on k.autonumeroSubSistema equals x.autonumeroSubSistema
+                             select new { x.autonumeroSubSistema, x.semestral }).ToList();
+
+                    foreach (var j in s)
+                    {
+                        var k = todos.Find(l => l.autonumeroSubSistema == j.autonumeroSubSistema);
+
+                        if (k != null)
+                        {
+
+                            k.semestral = j.semestral;
+                        }
+                    }
+
+                    csql.Clear();
+                    //csql.Append("SELECT autonumeroCliente, nomeCliente, autonumeroSistema, nomeSistema,  autonumeroSubSistema, nomeSubSistema, ");
+                    //csql.Append("count(anual) as anual FROM manut.checklisthistorico where  autonumeroCliente = " + autonumeroCliente + " and  anual = 1 and anomes = '" + anoMes + "'  ");
+
+                    csql.Append("SELECT  autonumeroSubSistema, ");
+                    csql.Append("count(anual) as anual  FROM manut.checklisthistorico where  autonumeroCliente = " + autonumeroCliente + " and  anual = 1 and anomes = '" + anoMes + "' group by  autonumeroSubSistema ");
+
+
+                    var anual = dc.Database.SqlQuery<avaliacao>(csql.ToString()).ToList();
+
+
+                    var a = (from k in todos
+                             join x in anual on k.autonumeroSubSistema equals x.autonumeroSubSistema
+                             select new { x.autonumeroSubSistema, x.anual }).ToList();
+
+                    foreach (var j in a)
+                    {
+                        var k = todos.Find(l => l.autonumeroSubSistema == j.autonumeroSubSistema);
+                        if (k != null)
+                        {
+
+                            k.anual = j.anual;
+                        }
+                    }
+
+                    List<subsistemaqtdepmoc> lpmoc = new List<subsistemaqtdepmoc>();
+
+                    foreach (var j in todos)
+                    {
+                        var k = new subsistemaqtdepmoc();
+                        k.anoMes = anoMes;
+                        k.autonumeroCliente = autonumeroCliente;
+                        k.autonumeroSistema = j.autonumeroSistema;
+                        k.autonumeroSubSistema = j.autonumeroSubSistema;
+                        k.mensal = j.mensal;
+                        k.bimestral = j.bimestral;
+                        k.trimestral = j.trimestral;
+                        k.semestral = j.semestral;
+                        k.anual = j.anual;
+                        k.nomeCliente = nomeCliente;
+                        k.nomeSistema = j.nomeSistema;
+                        k.nomeSubSistema = j.nomeSubSistema;
+
+
+                        if (k.mensal == null) k.mensal = 0;
+                        if (k.bimestral == null) k.bimestral = 0;
+                        if (k.trimestral == null) k.trimestral = 0;
+                        if (k.semestral == null) k.semestral = 0;
+                        if (k.anual == null) k.anual = 0;
+
+
+                        lpmoc.Add(k);
+
+                    }
+
+
+                    dc.subsistemaqtdepmoc.AddRange(lpmoc);
+                    dc.SaveChanges();
+
+
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                if (ex.InnerException != null)
+                {
+                    message = ex.InnerException.ToString();
+                }
+                Debug.WriteLine(" Exception ex: " + message);
+            }
+        }
+
+        public class avaliacao
+        {
+
+            public int? autonumeroCliente { get; set; }
+            public int? autonumeroSistema { get; set; }
+            public int? autonumeroSubSistema { get; set; }
+            //public int? qtde { get; set; }
+            public int? mensal { get; set; }
+            public int? bimestral { get; set; }
+            public int? trimestral { get; set; }
+            public int? semestral { get; set; }
+            public int? anual { get; set; }
+            public string nomeCliente { get; set; }
+            public string nomeSistema { get; set; }
+            public string nomeSubSistema { get; set; }
+
+        };
+
+
+        [HttpGet]
+        public IEnumerable<tb_cadastro> EquipamentoCalendario(long autonumeroCliente, int autonumeroPredio, int autonumeroSubSistema,
+        int autonumeroLocalFisico, int autonumeroSetor)
+
+        {
+            var c = 1;
+            using (var dc = new manutEntities())
+
+            {
+                if (autonumeroPredio == 0 && autonumeroSetor == 0 && autonumeroLocalFisico == 0)
+                {
+                    if (autonumeroSubSistema > 0)
+                    {
+
+                        var user1 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema).OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico).ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema) select p;
+
+                        return user1.ToList();
+
+                    }
+                }
+
+                if (autonumeroLocalFisico > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+
+                        var user1 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroLocalFisico == autonumeroLocalFisico).OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico).ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema) select p;
+
+                        return user1.ToList();
+
+                    }
+                    else
+                    {
+                        var user1 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroLocalFisico == autonumeroLocalFisico).OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico).ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema) select p;
+
+                        return user1.ToList();
+                    }
+
+                }
+
+                if (autonumeroSetor > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+
+                        var user1 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroSetor == autonumeroSetor).OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico).ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema) select p;
+
+                        return user1.ToList();
+
+                    }
+                    else
+                    {
+                        var user1 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSetor == autonumeroSetor).OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico).ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema) select p;
+
+                        return user1.ToList();
+                    }
+                }
+
+                if (autonumeroPredio > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+
+                        var user1 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroPredio == autonumeroPredio).OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico).ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema) select p;
+
+                        return user1.ToList();
+
+                    }
+                    else
+                    {
+                        var user1 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroPredio == autonumeroPredio).OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico).ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema) select p;
+
+                        return user1.ToList();
+                    }
+
+                }
+
+                if (autonumeroSubSistema > 0)
+                {
+
+                    var user1 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema).OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico).ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema) select p;
+
+                    return user1.ToList();
+
+                }
+                else
+                {
+                    var user1 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S").OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico).ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema) select p;
+
+                    return user1.ToList();
+                }
+
+            }
+
+        }
+
+
+        [HttpGet]
+        public IEnumerable<tb_cadastro> GetEquipamentoEmOrdemVisita(long autonumeroCliente, int? autonumeroSubSistema, int mes)
+        {
+
+            var csql = new StringBuilder();
+
+            var mesManut = " AND ( mes" + mes.ToString().PadLeft(2, '0') + " = 1 ";
+            var bimManut = " OR bim" + mes.ToString().PadLeft(2, '0') + " = 1 ";
+            var triManut = " OR tri" + mes.ToString().PadLeft(2, '0') + " = 1 ";
+            var semManut = " OR sem" + mes.ToString().PadLeft(2, '0') + " = 1 ";
+            var anoManut = " OR ano" + mes.ToString().PadLeft(2, '0') + " = 1 )";
+
+            var filtro = mesManut + bimManut + triManut + semManut + anoManut;
+
+            csql.Append("SELECT * ");
+            csql.Append("FROM manut.tb_cadastro  ");
+            csql.Append("WHERE cancelado != 'S' and autonumeroCliente =  " + autonumeroCliente + "  " + filtro + " ");
+            csql.Append("AND autonumeroSubSistema =  " + autonumeroSubSistema + " ");
+            csql.Append("ORDER BY nomeSubSistema,nomePredio,nomeSetor,nomeLocalFisico,grupo; ");
+
+            using (var dc = new manutEntities())
+            {
+                var c1 = csql.ToString();
+                Debug.WriteLine(c1);
+                var user = dc.Database.SqlQuery<tb_cadastro>(csql.ToString()).ToList();
+                return user.ToList(); ;
+            }
+        }
+
+        [HttpPost]
+        public string AlterarMesPmoc()
+        {
+
+            var c = 1;
+            using (var dc = new manutEntities())
+            {
+
+
+                var auto2 = HttpContext.Current.Request.Form["autonumero"].ToString();
+                if (string.IsNullOrEmpty(auto2))
+                {
+                    auto2 = "0";
+                }
+                var autonumero = Convert.ToInt32(auto2);
+
+
+
+                var linha = dc.tb_cadastro.Find(autonumero); // sempre irá procurar pela chave primaria
+                if (linha == null || linha.cancelado == "S")
+                {
+                    throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, "Alterar Mês Equipamento"));
+                }
+
+                linha.mes01 = Convert.ToSByte(HttpContext.Current.Request.Form["mes01"].ToString());
+                linha.mes02 = Convert.ToSByte(HttpContext.Current.Request.Form["mes02"].ToString());
+                linha.mes03 = Convert.ToSByte(HttpContext.Current.Request.Form["mes03"].ToString());
+                linha.mes04 = Convert.ToSByte(HttpContext.Current.Request.Form["mes04"].ToString());
+                linha.mes05 = Convert.ToSByte(HttpContext.Current.Request.Form["mes05"].ToString());
+                linha.mes06 = Convert.ToSByte(HttpContext.Current.Request.Form["mes06"].ToString());
+                linha.mes07 = Convert.ToSByte(HttpContext.Current.Request.Form["mes07"].ToString());
+                linha.mes08 = Convert.ToSByte(HttpContext.Current.Request.Form["mes08"].ToString());
+                linha.mes09 = Convert.ToSByte(HttpContext.Current.Request.Form["mes09"].ToString());
+                linha.mes10 = Convert.ToSByte(HttpContext.Current.Request.Form["mes10"].ToString());
+                linha.mes11 = Convert.ToSByte(HttpContext.Current.Request.Form["mes11"].ToString());
+                linha.mes12 = Convert.ToSByte(HttpContext.Current.Request.Form["mes12"].ToString());
+
+
+                linha.bim01 = Convert.ToSByte(HttpContext.Current.Request.Form["bim01"].ToString());
+                linha.bim02 = Convert.ToSByte(HttpContext.Current.Request.Form["bim02"].ToString());
+                linha.bim03 = Convert.ToSByte(HttpContext.Current.Request.Form["bim03"].ToString());
+                linha.bim04 = Convert.ToSByte(HttpContext.Current.Request.Form["bim04"].ToString());
+                linha.bim05 = Convert.ToSByte(HttpContext.Current.Request.Form["bim05"].ToString());
+                linha.bim06 = Convert.ToSByte(HttpContext.Current.Request.Form["bim06"].ToString());
+                linha.bim07 = Convert.ToSByte(HttpContext.Current.Request.Form["bim07"].ToString());
+                linha.bim08 = Convert.ToSByte(HttpContext.Current.Request.Form["bim08"].ToString());
+                linha.bim09 = Convert.ToSByte(HttpContext.Current.Request.Form["bim09"].ToString());
+                linha.bim10 = Convert.ToSByte(HttpContext.Current.Request.Form["bim10"].ToString());
+                linha.bim11 = Convert.ToSByte(HttpContext.Current.Request.Form["bim11"].ToString());
+                linha.bim12 = Convert.ToSByte(HttpContext.Current.Request.Form["bim12"].ToString());
+
+
+                linha.tri01 = Convert.ToSByte(HttpContext.Current.Request.Form["tri01"].ToString());
+                linha.tri02 = Convert.ToSByte(HttpContext.Current.Request.Form["tri02"].ToString());
+                linha.tri03 = Convert.ToSByte(HttpContext.Current.Request.Form["tri03"].ToString());
+                linha.tri04 = Convert.ToSByte(HttpContext.Current.Request.Form["tri04"].ToString());
+                linha.tri05 = Convert.ToSByte(HttpContext.Current.Request.Form["tri05"].ToString());
+                linha.tri06 = Convert.ToSByte(HttpContext.Current.Request.Form["tri06"].ToString());
+                linha.tri07 = Convert.ToSByte(HttpContext.Current.Request.Form["tri07"].ToString());
+                linha.tri08 = Convert.ToSByte(HttpContext.Current.Request.Form["tri08"].ToString());
+                linha.tri09 = Convert.ToSByte(HttpContext.Current.Request.Form["tri09"].ToString());
+                linha.tri10 = Convert.ToSByte(HttpContext.Current.Request.Form["tri10"].ToString());
+                linha.tri11 = Convert.ToSByte(HttpContext.Current.Request.Form["tri11"].ToString());
+                linha.tri12 = Convert.ToSByte(HttpContext.Current.Request.Form["tri12"].ToString());
+
+
+                linha.sem01 = Convert.ToSByte(HttpContext.Current.Request.Form["sem01"].ToString());
+                linha.sem02 = Convert.ToSByte(HttpContext.Current.Request.Form["sem02"].ToString());
+                linha.sem03 = Convert.ToSByte(HttpContext.Current.Request.Form["sem03"].ToString());
+                linha.sem04 = Convert.ToSByte(HttpContext.Current.Request.Form["sem04"].ToString());
+                linha.sem05 = Convert.ToSByte(HttpContext.Current.Request.Form["sem05"].ToString());
+                linha.sem06 = Convert.ToSByte(HttpContext.Current.Request.Form["sem06"].ToString());
+                linha.sem07 = Convert.ToSByte(HttpContext.Current.Request.Form["sem07"].ToString());
+                linha.sem08 = Convert.ToSByte(HttpContext.Current.Request.Form["sem08"].ToString());
+                linha.sem09 = Convert.ToSByte(HttpContext.Current.Request.Form["sem09"].ToString());
+                linha.sem10 = Convert.ToSByte(HttpContext.Current.Request.Form["sem10"].ToString());
+                linha.sem11 = Convert.ToSByte(HttpContext.Current.Request.Form["sem11"].ToString());
+                linha.sem12 = Convert.ToSByte(HttpContext.Current.Request.Form["sem12"].ToString());
+
+
+                linha.ano01 = Convert.ToSByte(HttpContext.Current.Request.Form["ano01"].ToString());
+                linha.ano02 = Convert.ToSByte(HttpContext.Current.Request.Form["ano02"].ToString());
+                linha.ano03 = Convert.ToSByte(HttpContext.Current.Request.Form["ano03"].ToString());
+                linha.ano04 = Convert.ToSByte(HttpContext.Current.Request.Form["ano04"].ToString());
+                linha.ano05 = Convert.ToSByte(HttpContext.Current.Request.Form["ano05"].ToString());
+                linha.ano06 = Convert.ToSByte(HttpContext.Current.Request.Form["ano06"].ToString());
+                linha.ano07 = Convert.ToSByte(HttpContext.Current.Request.Form["ano07"].ToString());
+                linha.ano08 = Convert.ToSByte(HttpContext.Current.Request.Form["ano08"].ToString());
+                linha.ano09 = Convert.ToSByte(HttpContext.Current.Request.Form["ano09"].ToString());
+                linha.ano10 = Convert.ToSByte(HttpContext.Current.Request.Form["ano10"].ToString());
+                linha.ano11 = Convert.ToSByte(HttpContext.Current.Request.Form["ano11"].ToString());
+                linha.ano12 = Convert.ToSByte(HttpContext.Current.Request.Form["ano12"].ToString());
+
+
+                dc.tb_cadastro.AddOrUpdate(linha);
+                dc.SaveChanges();
+
+                return "";
+
+            }
+
+
+        }
+
+
+        [HttpGet]
+        public string AlterarMesPmocTodosEquipamentos(long autonumeroCliente, int autonumeroPredio, int autonumeroSubSistema,
+                      int autonumeroLocalFisico, int autonumeroSetor, int mesParaAlterar, int condicaoAlterar)
+
+        {
+            var c = 1;
+
+            var cond = Convert.ToSByte(condicaoAlterar);
+            using (var dc = new manutEntities())
+            {
+
+                if (autonumeroPredio == 0 && autonumeroSetor == 0 && autonumeroLocalFisico == 0)
+                {
+                    if (autonumeroSubSistema > 0)
+                    {
+
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.mes01 = cond;
+                                    break;
+                                case 2:
+                                    x.mes02 = cond;
+                                    break;
+                                case 3:
+                                    x.mes03 = cond;
+                                    break;
+                                case 4:
+                                    x.mes04 = cond;
+                                    break;
+                                case 5:
+                                    x.mes05 = cond;
+                                    break;
+                                case 6:
+                                    x.mes06 = cond;
+                                    break;
+                                case 7:
+                                    x.mes07 = cond;
+                                    break;
+                                case 8:
+                                    x.mes08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.mes09 = cond;
+                                    break;
+                                case 10:
+                                    x.mes10 = cond;
+                                    break;
+                                case 11:
+                                    x.mes11 = cond;
+                                    break;
+                                case 12:
+                                    x.mes12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+
+
+                        });
+                        dc.SaveChanges();
+
+                        return "";
+
+                    }
+                }
+
+                if (autonumeroLocalFisico > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroLocalFisico == autonumeroLocalFisico && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.mes01 = cond;
+                                    break;
+                                case 2:
+                                    x.mes02 = cond;
+                                    break;
+                                case 3:
+                                    x.mes03 = cond;
+                                    break;
+                                case 4:
+                                    x.mes04 = cond;
+                                    break;
+                                case 5:
+                                    x.mes05 = cond;
+                                    break;
+                                case 6:
+                                    x.mes06 = cond;
+                                    break;
+                                case 7:
+                                    x.mes07 = cond;
+                                    break;
+                                case 8:
+                                    x.mes08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.mes09 = cond;
+                                    break;
+                                case 10:
+                                    x.mes10 = cond;
+                                    break;
+                                case 11:
+                                    x.mes11 = cond;
+                                    break;
+                                case 12:
+                                    x.mes12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+
+                    }
+                    else
+                    {
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroLocalFisico == autonumeroLocalFisico && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.mes01 = cond;
+                                    break;
+                                case 2:
+                                    x.mes02 = cond;
+                                    break;
+                                case 3:
+                                    x.mes03 = cond;
+                                    break;
+                                case 4:
+                                    x.mes04 = cond;
+                                    break;
+                                case 5:
+                                    x.mes05 = cond;
+                                    break;
+                                case 6:
+                                    x.mes06 = cond;
+                                    break;
+                                case 7:
+                                    x.mes07 = cond;
+                                    break;
+                                case 8:
+                                    x.mes08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.mes09 = cond;
+                                    break;
+                                case 10:
+                                    x.mes10 = cond;
+                                    break;
+                                case 11:
+                                    x.mes11 = cond;
+                                    break;
+                                case 12:
+                                    x.mes12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+
+                }
+
+                if (autonumeroSetor > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroSetor == autonumeroSetor && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.mes01 = cond;
+                                    break;
+                                case 2:
+                                    x.mes02 = cond;
+                                    break;
+                                case 3:
+                                    x.mes03 = cond;
+                                    break;
+                                case 4:
+                                    x.mes04 = cond;
+                                    break;
+                                case 5:
+                                    x.mes05 = cond;
+                                    break;
+                                case 6:
+                                    x.mes06 = cond;
+                                    break;
+                                case 7:
+                                    x.mes07 = cond;
+                                    break;
+                                case 8:
+                                    x.mes08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.mes09 = cond;
+                                    break;
+                                case 10:
+                                    x.mes10 = cond;
+                                    break;
+                                case 11:
+                                    x.mes11 = cond;
+                                    break;
+                                case 12:
+                                    x.mes12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+                    else
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSetor == autonumeroSetor && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.mes01 = cond;
+                                    break;
+                                case 2:
+                                    x.mes02 = cond;
+                                    break;
+                                case 3:
+                                    x.mes03 = cond;
+                                    break;
+                                case 4:
+                                    x.mes04 = cond;
+                                    break;
+                                case 5:
+                                    x.mes05 = cond;
+                                    break;
+                                case 6:
+                                    x.mes06 = cond;
+                                    break;
+                                case 7:
+                                    x.mes07 = cond;
+                                    break;
+                                case 8:
+                                    x.mes08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.mes09 = cond;
+                                    break;
+                                case 10:
+                                    x.mes10 = cond;
+                                    break;
+                                case 11:
+                                    x.mes11 = cond;
+                                    break;
+                                case 12:
+                                    x.mes12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+                    }
+                }
+
+                if (autonumeroPredio > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroPredio == autonumeroPredio && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.mes01 = cond;
+                                    break;
+                                case 2:
+                                    x.mes02 = cond;
+                                    break;
+                                case 3:
+                                    x.mes03 = cond;
+                                    break;
+                                case 4:
+                                    x.mes04 = cond;
+                                    break;
+                                case 5:
+                                    x.mes05 = cond;
+                                    break;
+                                case 6:
+                                    x.mes06 = cond;
+                                    break;
+                                case 7:
+                                    x.mes07 = cond;
+                                    break;
+                                case 8:
+                                    x.mes08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.mes09 = cond;
+                                    break;
+                                case 10:
+                                    x.mes10 = cond;
+                                    break;
+                                case 11:
+                                    x.mes11 = cond;
+                                    break;
+                                case 12:
+                                    x.mes12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+
+                    }
+                    else
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroPredio == autonumeroPredio && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.mes01 = cond;
+                                    break;
+                                case 2:
+                                    x.mes02 = cond;
+                                    break;
+                                case 3:
+                                    x.mes03 = cond;
+                                    break;
+                                case 4:
+                                    x.mes04 = cond;
+                                    break;
+                                case 5:
+                                    x.mes05 = cond;
+                                    break;
+                                case 6:
+                                    x.mes06 = cond;
+                                    break;
+                                case 7:
+                                    x.mes07 = cond;
+                                    break;
+                                case 8:
+                                    x.mes08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.mes09 = cond;
+                                    break;
+                                case 10:
+                                    x.mes10 = cond;
+                                    break;
+                                case 11:
+                                    x.mes11 = cond;
+                                    break;
+                                case 12:
+                                    x.mes12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+
+                }
+
+                if (autonumeroSubSistema > 0)
+                {
+
+                    dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.cancelado != "S").ToList().ForEach(x =>
+                    {
+                        switch (mesParaAlterar)
+                        {
+                            case 1:
+                                x.mes01 = cond;
+                                break;
+                            case 2:
+                                x.mes02 = cond;
+                                break;
+                            case 3:
+                                x.mes03 = cond;
+                                break;
+                            case 4:
+                                x.mes04 = cond;
+                                break;
+                            case 5:
+                                x.mes05 = cond;
+                                break;
+                            case 6:
+                                x.mes06 = cond;
+                                break;
+                            case 7:
+                                x.mes07 = cond;
+                                break;
+                            case 8:
+                                x.mes08 = cond;
+                                break;
+
+                            case 9:
+                                x.mes09 = cond;
+                                break;
+                            case 10:
+                                x.mes10 = cond;
+                                break;
+                            case 11:
+                                x.mes11 = cond;
+                                break;
+                            case 12:
+                                x.mes12 = cond;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    });
+                    dc.SaveChanges();
+
+
+                    return "";
+
+
+                }
+                else
+                {
+                    dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S").ToList().ForEach(x =>
+                    {
+                        switch (mesParaAlterar)
+                        {
+                            case 1:
+                                x.mes01 = cond;
+                                break;
+                            case 2:
+                                x.mes02 = cond;
+                                break;
+                            case 3:
+                                x.mes03 = cond;
+                                break;
+                            case 4:
+                                x.mes04 = cond;
+                                break;
+                            case 5:
+                                x.mes05 = cond;
+                                break;
+                            case 6:
+                                x.mes06 = cond;
+                                break;
+                            case 7:
+                                x.mes07 = cond;
+                                break;
+                            case 8:
+                                x.mes08 = cond;
+                                break;
+
+                            case 9:
+                                x.mes09 = cond;
+                                break;
+                            case 10:
+                                x.mes10 = cond;
+                                break;
+                            case 11:
+                                x.mes11 = cond;
+                                break;
+                            case 12:
+                                x.mes12 = cond;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    });
+                    dc.SaveChanges();
+
+
+                    return "";
+                }
+
+
+
+            }
+
+
+        }
+
+
+        [HttpGet]
+        public string AlterarBimPmocTodosEquipamentos(long autonumeroCliente, int autonumeroPredio, int autonumeroSubSistema,
+              int autonumeroLocalFisico, int autonumeroSetor, int mesParaAlterar, int condicaoAlterar)
+
+        {
+            var c = 1;
+
+            var cond = Convert.ToSByte(condicaoAlterar);
+            using (var dc = new manutEntities())
+            {
+
+                if (autonumeroPredio == 0 && autonumeroSetor == 0 && autonumeroLocalFisico == 0)
+                {
+                    if (autonumeroSubSistema > 0)
+                    {
+
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.bim01 = cond;
+                                    break;
+                                case 2:
+                                    x.bim02 = cond;
+                                    break;
+                                case 3:
+                                    x.bim03 = cond;
+                                    break;
+                                case 4:
+                                    x.bim04 = cond;
+                                    break;
+                                case 5:
+                                    x.bim05 = cond;
+                                    break;
+                                case 6:
+                                    x.bim06 = cond;
+                                    break;
+                                case 7:
+                                    x.bim07 = cond;
+                                    break;
+                                case 8:
+                                    x.bim08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.bim09 = cond;
+                                    break;
+                                case 10:
+                                    x.bim10 = cond;
+                                    break;
+                                case 11:
+                                    x.bim11 = cond;
+                                    break;
+                                case 12:
+                                    x.bim12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+
+
+                        });
+                        dc.SaveChanges();
+
+                        return "";
+
+                    }
+                }
+
+                if (autonumeroLocalFisico > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroLocalFisico == autonumeroLocalFisico && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.bim01 = cond;
+                                    break;
+                                case 2:
+                                    x.bim02 = cond;
+                                    break;
+                                case 3:
+                                    x.bim03 = cond;
+                                    break;
+                                case 4:
+                                    x.bim04 = cond;
+                                    break;
+                                case 5:
+                                    x.bim05 = cond;
+                                    break;
+                                case 6:
+                                    x.bim06 = cond;
+                                    break;
+                                case 7:
+                                    x.bim07 = cond;
+                                    break;
+                                case 8:
+                                    x.bim08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.bim09 = cond;
+                                    break;
+                                case 10:
+                                    x.bim10 = cond;
+                                    break;
+                                case 11:
+                                    x.bim11 = cond;
+                                    break;
+                                case 12:
+                                    x.bim12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+
+                    }
+                    else
+                    {
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroLocalFisico == autonumeroLocalFisico && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.bim01 = cond;
+                                    break;
+                                case 2:
+                                    x.bim02 = cond;
+                                    break;
+                                case 3:
+                                    x.bim03 = cond;
+                                    break;
+                                case 4:
+                                    x.bim04 = cond;
+                                    break;
+                                case 5:
+                                    x.bim05 = cond;
+                                    break;
+                                case 6:
+                                    x.bim06 = cond;
+                                    break;
+                                case 7:
+                                    x.bim07 = cond;
+                                    break;
+                                case 8:
+                                    x.bim08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.bim09 = cond;
+                                    break;
+                                case 10:
+                                    x.bim10 = cond;
+                                    break;
+                                case 11:
+                                    x.bim11 = cond;
+                                    break;
+                                case 12:
+                                    x.bim12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+
+                }
+
+                if (autonumeroSetor > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroSetor == autonumeroSetor && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.bim01 = cond;
+                                    break;
+                                case 2:
+                                    x.bim02 = cond;
+                                    break;
+                                case 3:
+                                    x.bim03 = cond;
+                                    break;
+                                case 4:
+                                    x.bim04 = cond;
+                                    break;
+                                case 5:
+                                    x.bim05 = cond;
+                                    break;
+                                case 6:
+                                    x.bim06 = cond;
+                                    break;
+                                case 7:
+                                    x.bim07 = cond;
+                                    break;
+                                case 8:
+                                    x.bim08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.bim09 = cond;
+                                    break;
+                                case 10:
+                                    x.bim10 = cond;
+                                    break;
+                                case 11:
+                                    x.bim11 = cond;
+                                    break;
+                                case 12:
+                                    x.bim12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+                    else
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSetor == autonumeroSetor && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.bim01 = cond;
+                                    break;
+                                case 2:
+                                    x.bim02 = cond;
+                                    break;
+                                case 3:
+                                    x.bim03 = cond;
+                                    break;
+                                case 4:
+                                    x.bim04 = cond;
+                                    break;
+                                case 5:
+                                    x.bim05 = cond;
+                                    break;
+                                case 6:
+                                    x.bim06 = cond;
+                                    break;
+                                case 7:
+                                    x.bim07 = cond;
+                                    break;
+                                case 8:
+                                    x.bim08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.bim09 = cond;
+                                    break;
+                                case 10:
+                                    x.bim10 = cond;
+                                    break;
+                                case 11:
+                                    x.bim11 = cond;
+                                    break;
+                                case 12:
+                                    x.bim12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+                    }
+                }
+
+                if (autonumeroPredio > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroPredio == autonumeroPredio && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.bim01 = cond;
+                                    break;
+                                case 2:
+                                    x.bim02 = cond;
+                                    break;
+                                case 3:
+                                    x.bim03 = cond;
+                                    break;
+                                case 4:
+                                    x.bim04 = cond;
+                                    break;
+                                case 5:
+                                    x.bim05 = cond;
+                                    break;
+                                case 6:
+                                    x.bim06 = cond;
+                                    break;
+                                case 7:
+                                    x.bim07 = cond;
+                                    break;
+                                case 8:
+                                    x.bim08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.bim09 = cond;
+                                    break;
+                                case 10:
+                                    x.bim10 = cond;
+                                    break;
+                                case 11:
+                                    x.bim11 = cond;
+                                    break;
+                                case 12:
+                                    x.bim12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+
+                    }
+                    else
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroPredio == autonumeroPredio && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.bim01 = cond;
+                                    break;
+                                case 2:
+                                    x.bim02 = cond;
+                                    break;
+                                case 3:
+                                    x.bim03 = cond;
+                                    break;
+                                case 4:
+                                    x.bim04 = cond;
+                                    break;
+                                case 5:
+                                    x.bim05 = cond;
+                                    break;
+                                case 6:
+                                    x.bim06 = cond;
+                                    break;
+                                case 7:
+                                    x.bim07 = cond;
+                                    break;
+                                case 8:
+                                    x.bim08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.bim09 = cond;
+                                    break;
+                                case 10:
+                                    x.bim10 = cond;
+                                    break;
+                                case 11:
+                                    x.bim11 = cond;
+                                    break;
+                                case 12:
+                                    x.bim12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+
+                }
+
+                if (autonumeroSubSistema > 0)
+                {
+
+                    dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.cancelado != "S").ToList().ForEach(x =>
+                    {
+                        switch (mesParaAlterar)
+                        {
+                            case 1:
+                                x.bim01 = cond;
+                                break;
+                            case 2:
+                                x.bim02 = cond;
+                                break;
+                            case 3:
+                                x.bim03 = cond;
+                                break;
+                            case 4:
+                                x.bim04 = cond;
+                                break;
+                            case 5:
+                                x.bim05 = cond;
+                                break;
+                            case 6:
+                                x.bim06 = cond;
+                                break;
+                            case 7:
+                                x.bim07 = cond;
+                                break;
+                            case 8:
+                                x.bim08 = cond;
+                                break;
+
+                            case 9:
+                                x.bim09 = cond;
+                                break;
+                            case 10:
+                                x.bim10 = cond;
+                                break;
+                            case 11:
+                                x.bim11 = cond;
+                                break;
+                            case 12:
+                                x.bim12 = cond;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    });
+                    dc.SaveChanges();
+
+
+                    return "";
+
+
+                }
+                else
+                {
+                    dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S").ToList().ForEach(x =>
+                    {
+                        switch (mesParaAlterar)
+                        {
+                            case 1:
+                                x.bim01 = cond;
+                                break;
+                            case 2:
+                                x.bim02 = cond;
+                                break;
+                            case 3:
+                                x.bim03 = cond;
+                                break;
+                            case 4:
+                                x.bim04 = cond;
+                                break;
+                            case 5:
+                                x.bim05 = cond;
+                                break;
+                            case 6:
+                                x.bim06 = cond;
+                                break;
+                            case 7:
+                                x.bim07 = cond;
+                                break;
+                            case 8:
+                                x.bim08 = cond;
+                                break;
+
+                            case 9:
+                                x.bim09 = cond;
+                                break;
+                            case 10:
+                                x.bim10 = cond;
+                                break;
+                            case 11:
+                                x.bim11 = cond;
+                                break;
+                            case 12:
+                                x.bim12 = cond;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    });
+                    dc.SaveChanges();
+
+
+                    return "";
+                }
+
+
+
+            }
+
+
+        }
+
+        [HttpGet]
+        public string AlterarSemPmocTodosEquipamentos(long autonumeroCliente, int autonumeroPredio, int autonumeroSubSistema,
+      int autonumeroLocalFisico, int autonumeroSetor, int mesParaAlterar, int condicaoAlterar)
+
+        {
+            var c = 1;
+
+            var cond = Convert.ToSByte(condicaoAlterar);
+            using (var dc = new manutEntities())
+            {
+
+                if (autonumeroPredio == 0 && autonumeroSetor == 0 && autonumeroLocalFisico == 0)
+                {
+                    if (autonumeroSubSistema > 0)
+                    {
+
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.sem01 = cond;
+                                    break;
+                                case 2:
+                                    x.sem02 = cond;
+                                    break;
+                                case 3:
+                                    x.sem03 = cond;
+                                    break;
+                                case 4:
+                                    x.sem04 = cond;
+                                    break;
+                                case 5:
+                                    x.sem05 = cond;
+                                    break;
+                                case 6:
+                                    x.sem06 = cond;
+                                    break;
+                                case 7:
+                                    x.sem07 = cond;
+                                    break;
+                                case 8:
+                                    x.sem08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.sem09 = cond;
+                                    break;
+                                case 10:
+                                    x.sem10 = cond;
+                                    break;
+                                case 11:
+                                    x.sem11 = cond;
+                                    break;
+                                case 12:
+                                    x.sem12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+
+
+                        });
+                        dc.SaveChanges();
+
+                        return "";
+
+                    }
+                }
+
+                if (autonumeroLocalFisico > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroLocalFisico == autonumeroLocalFisico && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.sem01 = cond;
+                                    break;
+                                case 2:
+                                    x.sem02 = cond;
+                                    break;
+                                case 3:
+                                    x.sem03 = cond;
+                                    break;
+                                case 4:
+                                    x.sem04 = cond;
+                                    break;
+                                case 5:
+                                    x.sem05 = cond;
+                                    break;
+                                case 6:
+                                    x.sem06 = cond;
+                                    break;
+                                case 7:
+                                    x.sem07 = cond;
+                                    break;
+                                case 8:
+                                    x.sem08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.sem09 = cond;
+                                    break;
+                                case 10:
+                                    x.sem10 = cond;
+                                    break;
+                                case 11:
+                                    x.sem11 = cond;
+                                    break;
+                                case 12:
+                                    x.sem12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+
+                    }
+                    else
+                    {
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroLocalFisico == autonumeroLocalFisico && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.sem01 = cond;
+                                    break;
+                                case 2:
+                                    x.sem02 = cond;
+                                    break;
+                                case 3:
+                                    x.sem03 = cond;
+                                    break;
+                                case 4:
+                                    x.sem04 = cond;
+                                    break;
+                                case 5:
+                                    x.sem05 = cond;
+                                    break;
+                                case 6:
+                                    x.sem06 = cond;
+                                    break;
+                                case 7:
+                                    x.sem07 = cond;
+                                    break;
+                                case 8:
+                                    x.sem08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.sem09 = cond;
+                                    break;
+                                case 10:
+                                    x.sem10 = cond;
+                                    break;
+                                case 11:
+                                    x.sem11 = cond;
+                                    break;
+                                case 12:
+                                    x.sem12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+
+                }
+
+                if (autonumeroSetor > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroSetor == autonumeroSetor && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.sem01 = cond;
+                                    break;
+                                case 2:
+                                    x.sem02 = cond;
+                                    break;
+                                case 3:
+                                    x.sem03 = cond;
+                                    break;
+                                case 4:
+                                    x.sem04 = cond;
+                                    break;
+                                case 5:
+                                    x.sem05 = cond;
+                                    break;
+                                case 6:
+                                    x.sem06 = cond;
+                                    break;
+                                case 7:
+                                    x.sem07 = cond;
+                                    break;
+                                case 8:
+                                    x.sem08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.sem09 = cond;
+                                    break;
+                                case 10:
+                                    x.sem10 = cond;
+                                    break;
+                                case 11:
+                                    x.sem11 = cond;
+                                    break;
+                                case 12:
+                                    x.sem12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+                    else
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSetor == autonumeroSetor && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.sem01 = cond;
+                                    break;
+                                case 2:
+                                    x.sem02 = cond;
+                                    break;
+                                case 3:
+                                    x.sem03 = cond;
+                                    break;
+                                case 4:
+                                    x.sem04 = cond;
+                                    break;
+                                case 5:
+                                    x.sem05 = cond;
+                                    break;
+                                case 6:
+                                    x.sem06 = cond;
+                                    break;
+                                case 7:
+                                    x.sem07 = cond;
+                                    break;
+                                case 8:
+                                    x.sem08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.sem09 = cond;
+                                    break;
+                                case 10:
+                                    x.sem10 = cond;
+                                    break;
+                                case 11:
+                                    x.sem11 = cond;
+                                    break;
+                                case 12:
+                                    x.sem12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+                    }
+                }
+
+                if (autonumeroPredio > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroPredio == autonumeroPredio && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.sem01 = cond;
+                                    break;
+                                case 2:
+                                    x.sem02 = cond;
+                                    break;
+                                case 3:
+                                    x.sem03 = cond;
+                                    break;
+                                case 4:
+                                    x.sem04 = cond;
+                                    break;
+                                case 5:
+                                    x.sem05 = cond;
+                                    break;
+                                case 6:
+                                    x.sem06 = cond;
+                                    break;
+                                case 7:
+                                    x.sem07 = cond;
+                                    break;
+                                case 8:
+                                    x.sem08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.sem09 = cond;
+                                    break;
+                                case 10:
+                                    x.sem10 = cond;
+                                    break;
+                                case 11:
+                                    x.sem11 = cond;
+                                    break;
+                                case 12:
+                                    x.sem12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+
+                    }
+                    else
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroPredio == autonumeroPredio && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.sem01 = cond;
+                                    break;
+                                case 2:
+                                    x.sem02 = cond;
+                                    break;
+                                case 3:
+                                    x.sem03 = cond;
+                                    break;
+                                case 4:
+                                    x.sem04 = cond;
+                                    break;
+                                case 5:
+                                    x.sem05 = cond;
+                                    break;
+                                case 6:
+                                    x.sem06 = cond;
+                                    break;
+                                case 7:
+                                    x.sem07 = cond;
+                                    break;
+                                case 8:
+                                    x.sem08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.sem09 = cond;
+                                    break;
+                                case 10:
+                                    x.sem10 = cond;
+                                    break;
+                                case 11:
+                                    x.sem11 = cond;
+                                    break;
+                                case 12:
+                                    x.sem12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+
+                }
+
+                if (autonumeroSubSistema > 0)
+                {
+
+                    dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.cancelado != "S").ToList().ForEach(x =>
+                    {
+                        switch (mesParaAlterar)
+                        {
+                            case 1:
+                                x.sem01 = cond;
+                                break;
+                            case 2:
+                                x.sem02 = cond;
+                                break;
+                            case 3:
+                                x.sem03 = cond;
+                                break;
+                            case 4:
+                                x.sem04 = cond;
+                                break;
+                            case 5:
+                                x.sem05 = cond;
+                                break;
+                            case 6:
+                                x.sem06 = cond;
+                                break;
+                            case 7:
+                                x.sem07 = cond;
+                                break;
+                            case 8:
+                                x.sem08 = cond;
+                                break;
+
+                            case 9:
+                                x.sem09 = cond;
+                                break;
+                            case 10:
+                                x.sem10 = cond;
+                                break;
+                            case 11:
+                                x.sem11 = cond;
+                                break;
+                            case 12:
+                                x.sem12 = cond;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    });
+                    dc.SaveChanges();
+
+
+                    return "";
+
+
+                }
+                else
+                {
+                    dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S").ToList().ForEach(x =>
+                    {
+                        switch (mesParaAlterar)
+                        {
+                            case 1:
+                                x.sem01 = cond;
+                                break;
+                            case 2:
+                                x.sem02 = cond;
+                                break;
+                            case 3:
+                                x.sem03 = cond;
+                                break;
+                            case 4:
+                                x.sem04 = cond;
+                                break;
+                            case 5:
+                                x.sem05 = cond;
+                                break;
+                            case 6:
+                                x.sem06 = cond;
+                                break;
+                            case 7:
+                                x.sem07 = cond;
+                                break;
+                            case 8:
+                                x.sem08 = cond;
+                                break;
+
+                            case 9:
+                                x.sem09 = cond;
+                                break;
+                            case 10:
+                                x.sem10 = cond;
+                                break;
+                            case 11:
+                                x.sem11 = cond;
+                                break;
+                            case 12:
+                                x.sem12 = cond;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    });
+                    dc.SaveChanges();
+
+
+                    return "";
+                }
+
+
+
+            }
+
+
+        }
+
+
+        [HttpGet]
+        public string AlterarTriPmocTodosEquipamentos(long autonumeroCliente, int autonumeroPredio, int autonumeroSubSistema,
+              int autonumeroLocalFisico, int autonumeroSetor, int mesParaAlterar, int condicaoAlterar)
+
+        {
+            var c = 1;
+
+            var cond = Convert.ToSByte(condicaoAlterar);
+            using (var dc = new manutEntities())
+            {
+
+                if (autonumeroPredio == 0 && autonumeroSetor == 0 && autonumeroLocalFisico == 0)
+                {
+                    if (autonumeroSubSistema > 0)
+                    {
+
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.tri01 = cond;
+                                    break;
+                                case 2:
+                                    x.tri02 = cond;
+                                    break;
+                                case 3:
+                                    x.tri03 = cond;
+                                    break;
+                                case 4:
+                                    x.tri04 = cond;
+                                    break;
+                                case 5:
+                                    x.tri05 = cond;
+                                    break;
+                                case 6:
+                                    x.tri06 = cond;
+                                    break;
+                                case 7:
+                                    x.tri07 = cond;
+                                    break;
+                                case 8:
+                                    x.tri08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.tri09 = cond;
+                                    break;
+                                case 10:
+                                    x.tri10 = cond;
+                                    break;
+                                case 11:
+                                    x.tri11 = cond;
+                                    break;
+                                case 12:
+                                    x.tri12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+
+
+                        });
+                        dc.SaveChanges();
+
+                        return "";
+
+                    }
+                }
+
+                if (autonumeroLocalFisico > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroLocalFisico == autonumeroLocalFisico && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.tri01 = cond;
+                                    break;
+                                case 2:
+                                    x.tri02 = cond;
+                                    break;
+                                case 3:
+                                    x.tri03 = cond;
+                                    break;
+                                case 4:
+                                    x.tri04 = cond;
+                                    break;
+                                case 5:
+                                    x.tri05 = cond;
+                                    break;
+                                case 6:
+                                    x.tri06 = cond;
+                                    break;
+                                case 7:
+                                    x.tri07 = cond;
+                                    break;
+                                case 8:
+                                    x.tri08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.tri09 = cond;
+                                    break;
+                                case 10:
+                                    x.tri10 = cond;
+                                    break;
+                                case 11:
+                                    x.tri11 = cond;
+                                    break;
+                                case 12:
+                                    x.tri12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+
+                    }
+                    else
+                    {
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroLocalFisico == autonumeroLocalFisico && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.tri01 = cond;
+                                    break;
+                                case 2:
+                                    x.tri02 = cond;
+                                    break;
+                                case 3:
+                                    x.tri03 = cond;
+                                    break;
+                                case 4:
+                                    x.tri04 = cond;
+                                    break;
+                                case 5:
+                                    x.tri05 = cond;
+                                    break;
+                                case 6:
+                                    x.tri06 = cond;
+                                    break;
+                                case 7:
+                                    x.tri07 = cond;
+                                    break;
+                                case 8:
+                                    x.tri08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.tri09 = cond;
+                                    break;
+                                case 10:
+                                    x.tri10 = cond;
+                                    break;
+                                case 11:
+                                    x.tri11 = cond;
+                                    break;
+                                case 12:
+                                    x.tri12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+
+                }
+
+                if (autonumeroSetor > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroSetor == autonumeroSetor && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.tri01 = cond;
+                                    break;
+                                case 2:
+                                    x.tri02 = cond;
+                                    break;
+                                case 3:
+                                    x.tri03 = cond;
+                                    break;
+                                case 4:
+                                    x.tri04 = cond;
+                                    break;
+                                case 5:
+                                    x.tri05 = cond;
+                                    break;
+                                case 6:
+                                    x.tri06 = cond;
+                                    break;
+                                case 7:
+                                    x.tri07 = cond;
+                                    break;
+                                case 8:
+                                    x.tri08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.tri09 = cond;
+                                    break;
+                                case 10:
+                                    x.tri10 = cond;
+                                    break;
+                                case 11:
+                                    x.tri11 = cond;
+                                    break;
+                                case 12:
+                                    x.tri12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+                    else
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSetor == autonumeroSetor && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.tri01 = cond;
+                                    break;
+                                case 2:
+                                    x.tri02 = cond;
+                                    break;
+                                case 3:
+                                    x.tri03 = cond;
+                                    break;
+                                case 4:
+                                    x.tri04 = cond;
+                                    break;
+                                case 5:
+                                    x.tri05 = cond;
+                                    break;
+                                case 6:
+                                    x.tri06 = cond;
+                                    break;
+                                case 7:
+                                    x.tri07 = cond;
+                                    break;
+                                case 8:
+                                    x.tri08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.tri09 = cond;
+                                    break;
+                                case 10:
+                                    x.tri10 = cond;
+                                    break;
+                                case 11:
+                                    x.tri11 = cond;
+                                    break;
+                                case 12:
+                                    x.tri12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+                    }
+                }
+
+                if (autonumeroPredio > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroPredio == autonumeroPredio && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.tri01 = cond;
+                                    break;
+                                case 2:
+                                    x.tri02 = cond;
+                                    break;
+                                case 3:
+                                    x.tri03 = cond;
+                                    break;
+                                case 4:
+                                    x.tri04 = cond;
+                                    break;
+                                case 5:
+                                    x.tri05 = cond;
+                                    break;
+                                case 6:
+                                    x.tri06 = cond;
+                                    break;
+                                case 7:
+                                    x.tri07 = cond;
+                                    break;
+                                case 8:
+                                    x.tri08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.tri09 = cond;
+                                    break;
+                                case 10:
+                                    x.tri10 = cond;
+                                    break;
+                                case 11:
+                                    x.tri11 = cond;
+                                    break;
+                                case 12:
+                                    x.tri12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+
+                    }
+                    else
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroPredio == autonumeroPredio && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.tri01 = cond;
+                                    break;
+                                case 2:
+                                    x.tri02 = cond;
+                                    break;
+                                case 3:
+                                    x.tri03 = cond;
+                                    break;
+                                case 4:
+                                    x.tri04 = cond;
+                                    break;
+                                case 5:
+                                    x.tri05 = cond;
+                                    break;
+                                case 6:
+                                    x.tri06 = cond;
+                                    break;
+                                case 7:
+                                    x.tri07 = cond;
+                                    break;
+                                case 8:
+                                    x.tri08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.tri09 = cond;
+                                    break;
+                                case 10:
+                                    x.tri10 = cond;
+                                    break;
+                                case 11:
+                                    x.tri11 = cond;
+                                    break;
+                                case 12:
+                                    x.tri12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+
+                }
+
+                if (autonumeroSubSistema > 0)
+                {
+
+                    dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.cancelado != "S").ToList().ForEach(x =>
+                    {
+                        switch (mesParaAlterar)
+                        {
+                            case 1:
+                                x.tri01 = cond;
+                                break;
+                            case 2:
+                                x.tri02 = cond;
+                                break;
+                            case 3:
+                                x.tri03 = cond;
+                                break;
+                            case 4:
+                                x.tri04 = cond;
+                                break;
+                            case 5:
+                                x.tri05 = cond;
+                                break;
+                            case 6:
+                                x.tri06 = cond;
+                                break;
+                            case 7:
+                                x.tri07 = cond;
+                                break;
+                            case 8:
+                                x.tri08 = cond;
+                                break;
+
+                            case 9:
+                                x.tri09 = cond;
+                                break;
+                            case 10:
+                                x.tri10 = cond;
+                                break;
+                            case 11:
+                                x.tri11 = cond;
+                                break;
+                            case 12:
+                                x.tri12 = cond;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    });
+                    dc.SaveChanges();
+
+
+                    return "";
+
+
+                }
+                else
+                {
+                    dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S").ToList().ForEach(x =>
+                    {
+                        switch (mesParaAlterar)
+                        {
+                            case 1:
+                                x.tri01 = cond;
+                                break;
+                            case 2:
+                                x.tri02 = cond;
+                                break;
+                            case 3:
+                                x.tri03 = cond;
+                                break;
+                            case 4:
+                                x.tri04 = cond;
+                                break;
+                            case 5:
+                                x.tri05 = cond;
+                                break;
+                            case 6:
+                                x.tri06 = cond;
+                                break;
+                            case 7:
+                                x.tri07 = cond;
+                                break;
+                            case 8:
+                                x.tri08 = cond;
+                                break;
+
+                            case 9:
+                                x.tri09 = cond;
+                                break;
+                            case 10:
+                                x.tri10 = cond;
+                                break;
+                            case 11:
+                                x.tri11 = cond;
+                                break;
+                            case 12:
+                                x.tri12 = cond;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    });
+                    dc.SaveChanges();
+
+
+                    return "";
+                }
+
+
+
+            }
+
+
+        }
+
+
+        [HttpGet]
+        public string AlterarAnoPmocTodosEquipamentos(long autonumeroCliente, int autonumeroPredio, int autonumeroSubSistema,
+              int autonumeroLocalFisico, int autonumeroSetor, int mesParaAlterar, int condicaoAlterar)
+
+        {
+            var c = 1;
+
+            var cond = Convert.ToSByte(condicaoAlterar);
+            using (var dc = new manutEntities())
+            {
+
+                if (autonumeroPredio == 0 && autonumeroSetor == 0 && autonumeroLocalFisico == 0)
+                {
+                    if (autonumeroSubSistema > 0)
+                    {
+
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.ano01 = cond;
+                                    break;
+                                case 2:
+                                    x.ano02 = cond;
+                                    break;
+                                case 3:
+                                    x.ano03 = cond;
+                                    break;
+                                case 4:
+                                    x.ano04 = cond;
+                                    break;
+                                case 5:
+                                    x.ano05 = cond;
+                                    break;
+                                case 6:
+                                    x.ano06 = cond;
+                                    break;
+                                case 7:
+                                    x.ano07 = cond;
+                                    break;
+                                case 8:
+                                    x.ano08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.ano09 = cond;
+                                    break;
+                                case 10:
+                                    x.ano10 = cond;
+                                    break;
+                                case 11:
+                                    x.ano11 = cond;
+                                    break;
+                                case 12:
+                                    x.ano12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+
+
+                        });
+                        dc.SaveChanges();
+
+                        return "";
+
+                    }
+                }
+
+                if (autonumeroLocalFisico > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroLocalFisico == autonumeroLocalFisico && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.ano01 = cond;
+                                    break;
+                                case 2:
+                                    x.ano02 = cond;
+                                    break;
+                                case 3:
+                                    x.ano03 = cond;
+                                    break;
+                                case 4:
+                                    x.ano04 = cond;
+                                    break;
+                                case 5:
+                                    x.ano05 = cond;
+                                    break;
+                                case 6:
+                                    x.ano06 = cond;
+                                    break;
+                                case 7:
+                                    x.ano07 = cond;
+                                    break;
+                                case 8:
+                                    x.ano08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.ano09 = cond;
+                                    break;
+                                case 10:
+                                    x.ano10 = cond;
+                                    break;
+                                case 11:
+                                    x.ano11 = cond;
+                                    break;
+                                case 12:
+                                    x.ano12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+
+                    }
+                    else
+                    {
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroLocalFisico == autonumeroLocalFisico && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.ano01 = cond;
+                                    break;
+                                case 2:
+                                    x.ano02 = cond;
+                                    break;
+                                case 3:
+                                    x.ano03 = cond;
+                                    break;
+                                case 4:
+                                    x.ano04 = cond;
+                                    break;
+                                case 5:
+                                    x.ano05 = cond;
+                                    break;
+                                case 6:
+                                    x.ano06 = cond;
+                                    break;
+                                case 7:
+                                    x.ano07 = cond;
+                                    break;
+                                case 8:
+                                    x.ano08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.ano09 = cond;
+                                    break;
+                                case 10:
+                                    x.ano10 = cond;
+                                    break;
+                                case 11:
+                                    x.ano11 = cond;
+                                    break;
+                                case 12:
+                                    x.ano12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+
+                }
+
+                if (autonumeroSetor > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroSetor == autonumeroSetor && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.ano01 = cond;
+                                    break;
+                                case 2:
+                                    x.ano02 = cond;
+                                    break;
+                                case 3:
+                                    x.ano03 = cond;
+                                    break;
+                                case 4:
+                                    x.ano04 = cond;
+                                    break;
+                                case 5:
+                                    x.ano05 = cond;
+                                    break;
+                                case 6:
+                                    x.ano06 = cond;
+                                    break;
+                                case 7:
+                                    x.ano07 = cond;
+                                    break;
+                                case 8:
+                                    x.ano08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.ano09 = cond;
+                                    break;
+                                case 10:
+                                    x.ano10 = cond;
+                                    break;
+                                case 11:
+                                    x.ano11 = cond;
+                                    break;
+                                case 12:
+                                    x.ano12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+                    else
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSetor == autonumeroSetor && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.ano01 = cond;
+                                    break;
+                                case 2:
+                                    x.ano02 = cond;
+                                    break;
+                                case 3:
+                                    x.ano03 = cond;
+                                    break;
+                                case 4:
+                                    x.ano04 = cond;
+                                    break;
+                                case 5:
+                                    x.ano05 = cond;
+                                    break;
+                                case 6:
+                                    x.ano06 = cond;
+                                    break;
+                                case 7:
+                                    x.ano07 = cond;
+                                    break;
+                                case 8:
+                                    x.ano08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.ano09 = cond;
+                                    break;
+                                case 10:
+                                    x.ano10 = cond;
+                                    break;
+                                case 11:
+                                    x.ano11 = cond;
+                                    break;
+                                case 12:
+                                    x.ano12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+                    }
+                }
+
+                if (autonumeroPredio > 0)
+                {
+
+                    if (autonumeroSubSistema > 0)
+                    {
+
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.autonumeroPredio == autonumeroPredio && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.ano01 = cond;
+                                    break;
+                                case 2:
+                                    x.ano02 = cond;
+                                    break;
+                                case 3:
+                                    x.ano03 = cond;
+                                    break;
+                                case 4:
+                                    x.ano04 = cond;
+                                    break;
+                                case 5:
+                                    x.ano05 = cond;
+                                    break;
+                                case 6:
+                                    x.ano06 = cond;
+                                    break;
+                                case 7:
+                                    x.ano07 = cond;
+                                    break;
+                                case 8:
+                                    x.ano08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.ano09 = cond;
+                                    break;
+                                case 10:
+                                    x.ano10 = cond;
+                                    break;
+                                case 11:
+                                    x.ano11 = cond;
+                                    break;
+                                case 12:
+                                    x.ano12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+
+                    }
+                    else
+                    {
+                        dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroPredio == autonumeroPredio && a.cancelado != "S").ToList().ForEach(x =>
+                        {
+                            switch (mesParaAlterar)
+                            {
+                                case 1:
+                                    x.ano01 = cond;
+                                    break;
+                                case 2:
+                                    x.ano02 = cond;
+                                    break;
+                                case 3:
+                                    x.ano03 = cond;
+                                    break;
+                                case 4:
+                                    x.ano04 = cond;
+                                    break;
+                                case 5:
+                                    x.ano05 = cond;
+                                    break;
+                                case 6:
+                                    x.ano06 = cond;
+                                    break;
+                                case 7:
+                                    x.ano07 = cond;
+                                    break;
+                                case 8:
+                                    x.ano08 = cond;
+                                    break;
+
+                                case 9:
+                                    x.ano09 = cond;
+                                    break;
+                                case 10:
+                                    x.ano10 = cond;
+                                    break;
+                                case 11:
+                                    x.ano11 = cond;
+                                    break;
+                                case 12:
+                                    x.ano12 = cond;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                        });
+                        dc.SaveChanges();
+
+
+                        return "";
+                    }
+
+                }
+
+                if (autonumeroSubSistema > 0)
+                {
+
+                    dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema && a.cancelado != "S").ToList().ForEach(x =>
+                    {
+                        switch (mesParaAlterar)
+                        {
+                            case 1:
+                                x.ano01 = cond;
+                                break;
+                            case 2:
+                                x.ano02 = cond;
+                                break;
+                            case 3:
+                                x.ano03 = cond;
+                                break;
+                            case 4:
+                                x.ano04 = cond;
+                                break;
+                            case 5:
+                                x.ano05 = cond;
+                                break;
+                            case 6:
+                                x.ano06 = cond;
+                                break;
+                            case 7:
+                                x.ano07 = cond;
+                                break;
+                            case 8:
+                                x.ano08 = cond;
+                                break;
+
+                            case 9:
+                                x.ano09 = cond;
+                                break;
+                            case 10:
+                                x.ano10 = cond;
+                                break;
+                            case 11:
+                                x.ano11 = cond;
+                                break;
+                            case 12:
+                                x.ano12 = cond;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    });
+                    dc.SaveChanges();
+
+
+                    return "";
+
+
+                }
+                else
+                {
+                    dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S").ToList().ForEach(x =>
+                    {
+                        switch (mesParaAlterar)
+                        {
+                            case 1:
+                                x.ano01 = cond;
+                                break;
+                            case 2:
+                                x.ano02 = cond;
+                                break;
+                            case 3:
+                                x.ano03 = cond;
+                                break;
+                            case 4:
+                                x.ano04 = cond;
+                                break;
+                            case 5:
+                                x.ano05 = cond;
+                                break;
+                            case 6:
+                                x.ano06 = cond;
+                                break;
+                            case 7:
+                                x.ano07 = cond;
+                                break;
+                            case 8:
+                                x.ano08 = cond;
+                                break;
+
+                            case 9:
+                                x.ano09 = cond;
+                                break;
+                            case 10:
+                                x.ano10 = cond;
+                                break;
+                            case 11:
+                                x.ano11 = cond;
+                                break;
+                            case 12:
+                                x.ano12 = cond;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    });
+                    dc.SaveChanges();
+
+
+                    return "";
+                }
+
+
+
+            }
+
 
         }
 

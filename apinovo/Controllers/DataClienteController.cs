@@ -122,7 +122,8 @@ namespace apinovo.Controllers
                     contadorPmocCivil = 0,
                     contadorPmocEquipamento = 0,
                     prazoInicialDias = "",
-                    
+                    informacoesPMOC = "",
+
                 };
 
                 dc.tb_cliente.Add(k);

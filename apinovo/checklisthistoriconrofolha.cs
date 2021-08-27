@@ -26,5 +26,10 @@ namespace apinovo
         public Nullable<int> equip6 { get; set; }
         public Nullable<int> equip7 { get; set; }
         public Nullable<int> equip8 { get; set; }
+        public Nullable<sbyte> mensal { get; set; }
+        public Nullable<sbyte> bimestral { get; set; }
+        public Nullable<sbyte> trimestral { get; set; }
+        public Nullable<sbyte> semestral { get; set; }
+        public Nullable<sbyte> anual { get; set; }
     }
 }

@@ -51,5 +51,10 @@ namespace apinovo
         public Nullable<System.DateTime> dataFim { get; set; }
         public string fechado { get; set; }
         public string imprimir { get; set; }
+        public Nullable<sbyte> mensal { get; set; }
+        public Nullable<sbyte> bimestral { get; set; }
+        public Nullable<sbyte> trimestral { get; set; }
+        public Nullable<sbyte> semestral { get; set; }
+        public Nullable<sbyte> anual { get; set; }
     }
 }

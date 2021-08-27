@@ -160,25 +160,25 @@
             //xhr.send();
 
 
-            //$.ajax({
-            //    type: "GET",
-            //    headers: { 'content-type': 'application/json' },
-            //    contentType: "application/json",
-            //    url: "api/dataos/GetAllItensParaOS",
-            //    data: {
-            //        autonumeroCliente: 45, data1: '23/06/2019', data2: '22/07/2019', autonumeroSistema: 3, autonumeroServico: 2, codigoOs: ""},
+            $.ajax({
+                type: "GET",
+                headers: { 'content-type': 'application/json' },
+                contentType: "application/json",
+                url: "api/dataequipamento/CalcularQtdeSubSistema",
+                data: {
+                    autonumeroCliente: 5,  anoMes: '202108'
+                },
 
-            //    success: function (result) {
-            //        alert(result)
-            //        if (result)
-            //        {
+                success: function (result) {
+                    alert(result)
+                    if (result) {
 
-            //        }
-            //    },
-            //    error: function (request, message, error) {
-            //        alert(request);
-            //    }
-            //});
+                    }
+                },
+                error: function (request, message, error) {
+                    alert(request);
+                }
+            });
 
 
             var arquivo = new FormData();
@@ -189,8 +189,9 @@
             //arquivo.append("autonumeroCliente", 20);
             //arquivo.append("tipoVencto", "E");
 
-            //arquivo.append("autonumero", "148");
-            //arquivo.append("autonumeroCliente", 29);
+            //arquivo.append("id", "8870987x");
+            //arquivo.append("latitude", 43.00);
+            //arquivo.append("longitude", 23);
             //arquivo.append("nomeCliente", "Hospital Maternidade Carmela Dutra");
             //arquivo.append("autonumeroSistema", "2");
             //arquivo.append("nomeSistema", "ELÉTRICA");
@@ -242,8 +243,8 @@
 
 
 
-            //arquivo.append("endFrom", "m3programa01@gmail.com");
-            //arquivo.append("endNomeFrom", "M3 Manutenção e Montagens");
+            //arquivo.append("endFrom", "EXTprograma01@gmail.com");
+            //arquivo.append("endNomeFrom", "EXT Manutenção e Montagens");
             //arquivo.append("endTo", "antoniomaxcarvalho@gmail.com");
             //arquivo.append("endNomeTo", "Nome do Usuario");
             //arquivo.append("Subject", "O.S Imediata");
@@ -355,7 +356,7 @@
             //quantidadeSS: 19
             //situacao: Cancelado
             //local: Serviços de recuperação, operação e conservação predial e de equipamentos eletromecânicos, para o Instituto Municipal de Assistência à Saúde Nise da Silveira e nos CAPS a eles associados.
-            //    codigoOs: 
+            //    codigoOs:
 
 
             //arquivo.append("sigla", "NISE");
@@ -381,34 +382,34 @@
             //arquivo.append("situacao", "Cancelado");
             //arquivo.append("local", "erviços de recuperação, operação e conservação predial e de equipamentos eletromecânicos, para o Instituto Municipal de Assistência à Saúde Nise da Silveira e nos CAPS a eles associados.");
             //arquivo.append("codigoOs", "");
-            //arquivo.append("nroOsInformado", "");
+            ////arquivo.append("nroOsInformado", "");
 
 
 
-            arquivo.append("ano", 2020);
-            arquivo.append("mes", 01);
-            arquivo.append("autonumeroCliente", 29);
-            arquivo.append("nroMaxDiasUteis", 18);
+            //arquivo.append("ano", 2020);
+            //arquivo.append("mes", 01);
+            //arquivo.append("autonumeroCliente", 29);
+            //arquivo.append("nroMaxDiasUteis", 18);
 
 
-            $.ajax({
-                type: "POST",
-                url: "/api/dataequipamento/CalcularPMOC",
-                contentType: false,
-                processData: false,
-                data: arquivo,
-                success: function (result) {
-                    if (result) {
-                        alert(result);
-                    } else {
-                        alert(0);
-                    }
-                },
-                error: function (request) {
-                    alert(request);
+            //$.ajax({
+            //    type: "POST",
+            //    url: "/apinovo/api/DataLocalizacao/IncluirLocalizacao",
+            //    contentType: false,
+            //    processData: false,
+            //    data: arquivo,
+            //    success: function (result) {
+            //        if (result) {
+            //            alert(result);
+            //        } else {
+            //            alert(0);
+            //        }
+            //    },
+            //    error: function (request) {
+            //        alert(request);
 
-                }
-            });
+            //    }
+            //});
 
 
 

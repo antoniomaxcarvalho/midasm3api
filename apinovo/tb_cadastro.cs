@@ -54,5 +54,65 @@ namespace apinovo
         public string obsLocal { get; set; }
         public string mesManuSemestre { get; set; }
         public Nullable<long> contadorPmocEquipamento { get; set; }
+        public Nullable<sbyte> mes01 { get; set; }
+        public Nullable<sbyte> mes02 { get; set; }
+        public Nullable<sbyte> mes03 { get; set; }
+        public Nullable<sbyte> mes04 { get; set; }
+        public Nullable<sbyte> mes05 { get; set; }
+        public Nullable<sbyte> mes06 { get; set; }
+        public Nullable<sbyte> mes07 { get; set; }
+        public Nullable<sbyte> mes08 { get; set; }
+        public Nullable<sbyte> mes09 { get; set; }
+        public Nullable<sbyte> mes10 { get; set; }
+        public Nullable<sbyte> mes11 { get; set; }
+        public Nullable<sbyte> mes12 { get; set; }
+        public Nullable<sbyte> bim01 { get; set; }
+        public Nullable<sbyte> bim02 { get; set; }
+        public Nullable<sbyte> bim03 { get; set; }
+        public Nullable<sbyte> bim04 { get; set; }
+        public Nullable<sbyte> bim05 { get; set; }
+        public Nullable<sbyte> bim06 { get; set; }
+        public Nullable<sbyte> bim07 { get; set; }
+        public Nullable<sbyte> bim08 { get; set; }
+        public Nullable<sbyte> bim09 { get; set; }
+        public Nullable<sbyte> bim10 { get; set; }
+        public Nullable<sbyte> bim11 { get; set; }
+        public Nullable<sbyte> bim12 { get; set; }
+        public Nullable<sbyte> tri01 { get; set; }
+        public Nullable<sbyte> tri02 { get; set; }
+        public Nullable<sbyte> tri03 { get; set; }
+        public Nullable<sbyte> tri04 { get; set; }
+        public Nullable<sbyte> tri05 { get; set; }
+        public Nullable<sbyte> tri06 { get; set; }
+        public Nullable<sbyte> tri07 { get; set; }
+        public Nullable<sbyte> tri08 { get; set; }
+        public Nullable<sbyte> tri09 { get; set; }
+        public Nullable<sbyte> tri10 { get; set; }
+        public Nullable<sbyte> tri11 { get; set; }
+        public Nullable<sbyte> tri12 { get; set; }
+        public Nullable<sbyte> sem01 { get; set; }
+        public Nullable<sbyte> sem02 { get; set; }
+        public Nullable<sbyte> sem03 { get; set; }
+        public Nullable<sbyte> sem04 { get; set; }
+        public Nullable<sbyte> sem05 { get; set; }
+        public Nullable<sbyte> sem06 { get; set; }
+        public Nullable<sbyte> sem07 { get; set; }
+        public Nullable<sbyte> sem08 { get; set; }
+        public Nullable<sbyte> sem09 { get; set; }
+        public Nullable<sbyte> sem10 { get; set; }
+        public Nullable<sbyte> sem11 { get; set; }
+        public Nullable<sbyte> sem12 { get; set; }
+        public Nullable<sbyte> ano01 { get; set; }
+        public Nullable<sbyte> ano02 { get; set; }
+        public Nullable<sbyte> ano03 { get; set; }
+        public Nullable<sbyte> ano04 { get; set; }
+        public Nullable<sbyte> ano05 { get; set; }
+        public Nullable<sbyte> ano06 { get; set; }
+        public Nullable<sbyte> ano07 { get; set; }
+        public Nullable<sbyte> ano08 { get; set; }
+        public Nullable<sbyte> ano09 { get; set; }
+        public Nullable<sbyte> ano10 { get; set; }
+        public Nullable<sbyte> ano11 { get; set; }
+        public Nullable<sbyte> ano12 { get; set; }
     }
 }

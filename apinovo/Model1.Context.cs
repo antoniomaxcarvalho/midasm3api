@@ -69,7 +69,6 @@ namespace apinovo
         public DbSet<pmocequipamentofuncionario> pmocequipamentofuncionario { get; set; }
         public DbSet<contratofuncionario> contratofuncionario { get; set; }
         public DbSet<local> local { get; set; }
-        public DbSet<tb_cadastro> tb_cadastro { get; set; }
         public DbSet<tb_orcamento> tb_orcamento { get; set; }
         public DbSet<tb_orcamento_itens> tb_orcamento_itens { get; set; }
         public DbSet<documentocontrato> documentocontrato { get; set; }
@@ -86,9 +85,12 @@ namespace apinovo
         public DbSet<checklisthistitemnrofolha> checklisthistitemnrofolha { get; set; }
         public DbSet<checklisthistoricocivil> checklisthistoricocivil { get; set; }
         public DbSet<checklisthistoricocivilitem> checklisthistoricocivilitem { get; set; }
-        public DbSet<checklisthistoriconrofolha> checklisthistoriconrofolha { get; set; }
         public DbSet<checklistveiculo> checklistveiculo { get; set; }
         public DbSet<funcionariocurso> funcionariocurso { get; set; }
         public DbSet<checklisthistorico> checklisthistorico { get; set; }
+        public DbSet<checklisthistoriconrofolha> checklisthistoriconrofolha { get; set; }
+        public DbSet<tb_cadastro> tb_cadastro { get; set; }
+        public DbSet<subsistemaqtdepmoc> subsistemaqtdepmoc { get; set; }
+        public DbSet<tb_empresa> tb_empresa { get; set; }
     }
 }

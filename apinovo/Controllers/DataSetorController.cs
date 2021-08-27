@@ -32,6 +32,17 @@ namespace apinovo.Controllers
             }
         }
 
+        [HttpGet]
+        public IEnumerable<tb_setor> getAllSetorCompartilhado()
+        {
+            using (var dc = new manutEntities())
+            {
+                var user = from p in dc.tb_setor.Where(a => a.cancelado != "S") select p;
+                return user.ToList(); ;
+            }
+        }
+
+        [HttpGet]
         public IEnumerable<tb_setor> GetAllSetor(Int64 autonumeroCliente)
         {
             using (var dc = new manutEntities())
