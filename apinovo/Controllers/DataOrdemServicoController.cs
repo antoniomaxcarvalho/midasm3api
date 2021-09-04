@@ -405,6 +405,7 @@ namespace apinovo.Controllers
         [HttpPost]
         public IEnumerable<tb_ordemservico> GetAllOrdemServicoEmissao()
         {
+            var c = 1;
             var dataInicioMedicao = Convert.ToDateTime(HttpContext.Current.Request.Form["dataInicioMedicao"]);
             var dataFimMedicao = Convert.ToDateTime(HttpContext.Current.Request.Form["dataFimMedicao"]);
             var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());

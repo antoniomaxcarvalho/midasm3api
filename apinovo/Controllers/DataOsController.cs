@@ -1527,6 +1527,116 @@ namespace apinovo.Controllers
 
         }
 
+        [HttpPost]
+        public string UploadFileOsFoto()
+        {
+
+            var message = HttpContext.Current.Request.Files.AllKeys.Any().ToString();
+
+            try
+            {
+
+                if (HttpContext.Current.Request.Files.AllKeys.Any())
+                {
+                    // Get the uploaded image from the Files collection
+                    var httpPostedFile = HttpContext.Current.Request.Files["UploadedImage"];
+                    var autonumero = Convert.ToInt64(HttpContext.Current.Request.Form["autonumero"]);
+                    var antesDepois = HttpContext.Current.Request.Form["antesDepois"].ToString().Trim();
+
+                    var caminho = "~/UploadedFiles/";
+
+                    if (httpPostedFile == null)
+                    {
+                        message = "Erro Upload 1";
+                        return message;
+                    }
+
+                    //// Criar a pasta se não existir ou devolver informação sobre a pasta
+                    //var inf = Directory.CreateDirectory(HttpContext.Current.Server.MapPath(caminho));
+
+
+                    var extension = Path.GetExtension(httpPostedFile.FileName);
+                    var fileName = Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + extension;
+
+                    var fileSavePath = Path.Combine(HttpContext.Current.Server.MapPath(caminho), fileName);
+                    if (File.Exists(fileSavePath))
+                    {
+                        File.Delete(fileSavePath);
+                    }
+
+                    // Save the uploaded file to "UploadedFiles" folder
+                    httpPostedFile.SaveAs(fileSavePath);
+
+
+
+                    // Atualizar no BD ( tabela produtos )
+                    using (var dc = new manutEntities())
+                    {
+                        var os = dc.tb_os.FirstOrDefault(a => a.autonumero == autonumero);
+
+
+                        if (os != null)
+                        {
+                            if (os.url == null) os.url = "";
+                            if (os.url1 == null) os.url1 = "";
+
+                            if (antesDepois == "A")
+                            {
+                                os.url = fileName.Trim();
+                            }
+                            else
+                            {
+                                os.url1 = fileName.Trim();
+                            }
+
+                            dc.tb_os.AddOrUpdate(os);
+
+                            dc.SaveChanges();
+                            message = fileName;
+
+                            return message;
+                        }
+
+                        message = "Erro Upload 2";
+                        return message;
+                    }
+
+                }
+
+                return message;
+
+
+            }
+            catch (DbEntityValidationException e)
+            {
+                var sb = new StringBuilder();
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    sb.AppendLine(string.Format("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name,
+                        eve.Entry.State));
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        sb.AppendLine(string.Format("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName,
+                            ve.ErrorMessage));
+                    }
+                }
+                message = sb.ToString();
+                //throw new DbEntityValidationException(sb.ToString(), e);
+            }
+            catch (Exception ex)
+            {
+                message = ex.InnerException != null
+                    ? ex.InnerException.ToString().Substring(0, 130) + " - DataprodutoController SaveFilesFoto"
+                    : ex.Message + " - DataprodutoController SaveFilesFoto";
+
+            }
+
+            return message;
+        }
+
+
 
     }
 

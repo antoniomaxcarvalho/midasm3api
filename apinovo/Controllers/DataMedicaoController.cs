@@ -660,7 +660,7 @@ namespace apinovo.Controllers
                     var totalPF = dc.tb_os_itens.Where(k => k.codigoOrdemServico == x.codigoOs && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S")
                     .Sum(j => (Math.Truncate( (decimal)j.quantidadePF * (decimal)j.precoUnitarioPF * 100)) / 100);
 
-                    //Debug.WriteLine(totalPF);
+                    Debug.WriteLine(totalPF);
                     x.valor = totalPF;
                     dc.tb_ordemservico.AddOrUpdate(x);
                     dc.SaveChanges();

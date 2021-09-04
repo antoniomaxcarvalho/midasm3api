@@ -56,7 +56,6 @@ namespace apinovo
         public DbSet<videoaula> videoaula { get; set; }
         public DbSet<predio> predio { get; set; }
         public DbSet<setor> setor { get; set; }
-        public DbSet<tb_os_itens> tb_os_itens { get; set; }
         public DbSet<tb_subsistema> tb_subsistema { get; set; }
         public DbSet<tb_subsistemacliente> tb_subsistemacliente { get; set; }
         public DbSet<profissao> profissao { get; set; }
@@ -78,7 +77,6 @@ namespace apinovo
         public DbSet<usuariopredio> usuariopredio { get; set; }
         public DbSet<tb_funcionario> tb_funcionario { get; set; }
         public DbSet<osfuncionario> osfuncionario { get; set; }
-        public DbSet<tb_os> tb_os { get; set; }
         public DbSet<funcionario> funcionario { get; set; }
         public DbSet<checklist> checklist { get; set; }
         public DbSet<checklisthistitem> checklisthistitem { get; set; }
@@ -92,5 +90,8 @@ namespace apinovo
         public DbSet<tb_cadastro> tb_cadastro { get; set; }
         public DbSet<subsistemaqtdepmoc> subsistemaqtdepmoc { get; set; }
         public DbSet<tb_empresa> tb_empresa { get; set; }
+        public DbSet<osfotos> osfotos { get; set; }
+        public DbSet<tb_os> tb_os { get; set; }
+        public DbSet<tb_os_itens> tb_os_itens { get; set; }
     }
 }

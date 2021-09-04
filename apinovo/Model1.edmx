@@ -329,6 +329,17 @@
           <Property Name="umidade" Type="decimal" Precision="5" Scale="2" />
           <Property Name="cancelado" Type="char" MaxLength="1" />
         </EntityType>
+        <EntityType Name="osfotos">
+          <Key>
+            <PropertyRef Name="autonumero" />
+          </Key>
+          <Property Name="autonumero" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="autonumeroOs" Type="bigint" />
+          <Property Name="codigoOs" Type="varchar" MaxLength="45" />
+          <Property Name="descricao" Type="varchar" MaxLength="100" />
+          <Property Name="url" Type="varchar" MaxLength="45" />
+          <Property Name="siglaCliente" Type="varchar" MaxLength="4" />
+        </EntityType>
         <EntityType Name="osfuncionario">
           <Key>
             <PropertyRef Name="autonumero" />
@@ -1215,6 +1226,7 @@
           <EntitySet Name="grupotramitacao" EntityType="Self.grupotramitacao" Schema="manut" store:Type="Tables" />
           <EntitySet Name="local" EntityType="Self.local" Schema="manut" store:Type="Tables" />
           <EntitySet Name="medicao" EntityType="Self.medicao" Schema="manut" store:Type="Tables" />
+          <EntitySet Name="osfotos" EntityType="Self.osfotos" Schema="manut" store:Type="Tables" />
           <EntitySet Name="osfuncionario" EntityType="Self.osfuncionario" Schema="manut" store:Type="Tables" />
           <EntitySet Name="pmoccivilcontingencia" EntityType="Self.pmoccivilcontingencia" Schema="manut" store:Type="Tables" />
           <EntitySet Name="pmoccivilfuncionario" EntityType="Self.pmoccivilfuncionario" Schema="manut" store:Type="Tables" />
@@ -1325,7 +1337,6 @@
           <EntitySet Name="videoaula" EntityType="manutModel.videoaula" />
           <EntitySet Name="predio" EntityType="manutModel.predio" />
           <EntitySet Name="setor" EntityType="manutModel.setor" />
-          <EntitySet Name="tb_os_itens" EntityType="manutModel.tb_os_itens" />
           <EntitySet Name="tb_subsistema" EntityType="manutModel.tb_subsistema" />
           <EntitySet Name="tb_subsistemacliente" EntityType="manutModel.tb_subsistemacliente" />
           <EntitySet Name="profissao" EntityType="manutModel.profissao" />
@@ -1347,7 +1358,6 @@
           <EntitySet Name="usuariopredio" EntityType="manutModel.usuariopredio" />
           <EntitySet Name="tb_funcionario" EntityType="manutModel.tb_funcionario" />
           <EntitySet Name="osfuncionario" EntityType="manutModel.osfuncionario" />
-          <EntitySet Name="tb_os" EntityType="manutModel.tb_os" />
           <EntitySet Name="funcionario" EntityType="manutModel.funcionario" />
           <EntitySet Name="checklist" EntityType="manutModel.checklist" />
           <EntitySet Name="checklisthistitem" EntityType="manutModel.checklisthistitem" />
@@ -1361,6 +1371,9 @@
           <EntitySet Name="tb_cadastro" EntityType="manutModel.tb_cadastro" />
           <EntitySet Name="subsistemaqtdepmoc" EntityType="manutModel.subsistemaqtdepmoc" />
           <EntitySet Name="tb_empresa" EntityType="manutModel.tb_empresa" />
+          <EntitySet Name="osfotos" EntityType="manutModel.osfotos" />
+          <EntitySet Name="tb_os" EntityType="manutModel.tb_os" />
+          <EntitySet Name="tb_os_itens" EntityType="manutModel.tb_os_itens" />
         </EntityContainer>
         <EntityType Name="tb_tipo_usuario">
           <Key>
@@ -1717,43 +1730,6 @@
           <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="contadorPmocCivil" Type="Int64" />
         </EntityType>
-        <EntityType Name="tb_os_itens">
-          <Key>
-            <PropertyRef Name="autonumero" />
-          </Key>
-          <Property Name="autonumero" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="nome" Type="String" MaxLength="1050" FixedLength="false" Unicode="false" />
-          <Property Name="nomeFonte" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="unidade" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="quantidade" Type="Decimal" />
-          <Property Name="precoUnitario" Type="Decimal" />
-          <Property Name="total" Type="Decimal" />
-          <Property Name="bdiServico" Type="Double" />
-          <Property Name="bdiMaterial" Type="Double" />
-          <Property Name="autonumeroOs" Type="Int64" />
-          <Property Name="codigoOs" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroUsuario" Type="Int64" />
-          <Property Name="nomeUsuario" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="data" Type="DateTime" />
-          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="servico" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroCliente" Type="Int64" />
-          <Property Name="nomeCliente" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
-          <Property Name="codigoInsumoServico" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
-          <Property Name="memoriaCalculo" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="nomePF" Type="String" MaxLength="1050" FixedLength="false" Unicode="false" />
-          <Property Name="quantidadePF" Type="Decimal" />
-          <Property Name="precoUnitarioPF" Type="Decimal" />
-          <Property Name="totalPF" Type="Decimal" />
-          <Property Name="nomeFontePF" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="itemPF" Type="Int64" />
-          <Property Name="unidadePF" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="codigoPF" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
-          <Property Name="codigoOrdemServico" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
-          <Property Name="etapa" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Name="medicao" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Name="qtdeMaoObra" Type="Int16" />
-        </EntityType>
         <EntityType Name="tb_subsistema">
           <Key>
             <PropertyRef Name="autonumero" />
@@ -2098,60 +2074,6 @@
           <Property Name="totalHoras" Type="Time" />
           <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="totalSegundos" Type="Int64" />
-        </EntityType>
-        <EntityType Name="tb_os">
-          <Key>
-            <PropertyRef Name="autonumero" />
-          </Key>
-          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="codigoOs" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroCliente" Type="Int32" />
-          <Property Name="siglaCliente" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="nomeCliente" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroSistema" Type="Int32" />
-          <Property Name="nomeSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroSubSistema" Type="Int32" />
-          <Property Name="nomeSubSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroPredio" Type="Int32" />
-          <Property Name="nomePredio" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroSetor" Type="Int32" />
-          <Property Name="nomeSetor" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroLocalFisico" Type="Int32" />
-          <Property Name="nomeLocalFisico" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroPrioridade" Type="Int32" />
-          <Property Name="nomePrioridade" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroUsuario" Type="Int32" />
-          <Property Name="nomeUsuario" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="matricula" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroServico" Type="Int32" />
-          <Property Name="nomeServico" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="complemento" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="ramal" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="dataSolicitacao" Type="DateTime" />
-          <Property Name="dataInicio" Type="DateTime" />
-          <Property Name="dataTermino" Type="DateTime" />
-          <Property Name="prazoPrioridade" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="descricao" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="nomeStatus" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="valor" Type="Decimal" />
-          <Property Name="bdiServico" Type="Double" />
-          <Property Name="bdiMaterial" Type="Double" />
-          <Property Name="codigoTabela" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="nomeEquipe" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="valorServico" Type="Decimal" />
-          <Property Name="valorMaterial" Type="Decimal" />
-          <Property Name="url" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="url1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="codigoEquipamento" Type="Int64" />
-          <Property Name="totalHoras" Type="Time" />
-          <Property Name="importadaCustoFixo" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="codigoOrdemServico" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
-          <Property Name="etapa" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Name="medicao" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Name="localAtendido" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroAutorizado" Type="Int32" />
-          <Property Name="nomeAutorizado" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="funcionario">
           <Key>
@@ -2532,6 +2454,108 @@
           <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="nome" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
           <Property Name="endereco" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="osfotos">
+          <Key>
+            <PropertyRef Name="autonumero" />
+          </Key>
+          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="autonumeroOs" Type="Int64" />
+          <Property Name="codigoOs" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="descricao" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="url" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="siglaCliente" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tb_os">
+          <Key>
+            <PropertyRef Name="autonumero" />
+          </Key>
+          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="codigoOs" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroCliente" Type="Int32" />
+          <Property Name="siglaCliente" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="nomeCliente" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroSistema" Type="Int32" />
+          <Property Name="nomeSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroSubSistema" Type="Int32" />
+          <Property Name="nomeSubSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroPredio" Type="Int32" />
+          <Property Name="nomePredio" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroSetor" Type="Int32" />
+          <Property Name="nomeSetor" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroLocalFisico" Type="Int32" />
+          <Property Name="nomeLocalFisico" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroPrioridade" Type="Int32" />
+          <Property Name="nomePrioridade" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroUsuario" Type="Int32" />
+          <Property Name="nomeUsuario" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="matricula" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroServico" Type="Int32" />
+          <Property Name="nomeServico" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="complemento" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="ramal" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="dataSolicitacao" Type="DateTime" />
+          <Property Name="dataInicio" Type="DateTime" />
+          <Property Name="dataTermino" Type="DateTime" />
+          <Property Name="prazoPrioridade" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="descricao" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="nomeStatus" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="valor" Type="Decimal" />
+          <Property Name="bdiServico" Type="Double" />
+          <Property Name="bdiMaterial" Type="Double" />
+          <Property Name="codigoTabela" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="nomeEquipe" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="valorServico" Type="Decimal" />
+          <Property Name="valorMaterial" Type="Decimal" />
+          <Property Name="url" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="url1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="codigoEquipamento" Type="Int64" />
+          <Property Name="totalHoras" Type="Time" />
+          <Property Name="importadaCustoFixo" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="codigoOrdemServico" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
+          <Property Name="etapa" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="medicao" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="localAtendido" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroAutorizado" Type="Int32" />
+          <Property Name="nomeAutorizado" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tb_os_itens">
+          <Key>
+            <PropertyRef Name="autonumero" />
+          </Key>
+          <Property Name="autonumero" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nome" Type="String" MaxLength="1050" FixedLength="false" Unicode="false" />
+          <Property Name="nomeFonte" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="unidade" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="quantidade" Type="Decimal" />
+          <Property Name="precoUnitario" Type="Decimal" />
+          <Property Name="total" Type="Decimal" />
+          <Property Name="bdiServico" Type="Double" />
+          <Property Name="bdiMaterial" Type="Double" />
+          <Property Name="autonumeroOs" Type="Int64" />
+          <Property Name="codigoOs" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroUsuario" Type="Int64" />
+          <Property Name="nomeUsuario" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="data" Type="DateTime" />
+          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="servico" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroCliente" Type="Int64" />
+          <Property Name="nomeCliente" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="codigoInsumoServico" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
+          <Property Name="memoriaCalculo" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="nomePF" Type="String" MaxLength="1050" FixedLength="false" Unicode="false" />
+          <Property Name="quantidadePF" Type="Decimal" />
+          <Property Name="precoUnitarioPF" Type="Decimal" />
+          <Property Name="totalPF" Type="Decimal" />
+          <Property Name="nomeFontePF" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="itemPF" Type="Int64" />
+          <Property Name="unidadePF" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="codigoPF" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
+          <Property Name="codigoOrdemServico" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
+          <Property Name="etapa" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="medicao" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="qtdeMaoObra" Type="Int16" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2946,44 +2970,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tb_os_itens">
-            <EntityTypeMapping TypeName="manutModel.tb_os_itens">
-              <MappingFragment StoreEntitySet="tb_os_itens">
-                <ScalarProperty Name="qtdeMaoObra" ColumnName="qtdeMaoObra" />
-                <ScalarProperty Name="medicao" ColumnName="medicao" />
-                <ScalarProperty Name="etapa" ColumnName="etapa" />
-                <ScalarProperty Name="codigoOrdemServico" ColumnName="codigoOrdemServico" />
-                <ScalarProperty Name="codigoPF" ColumnName="codigoPF" />
-                <ScalarProperty Name="unidadePF" ColumnName="unidadePF" />
-                <ScalarProperty Name="itemPF" ColumnName="itemPF" />
-                <ScalarProperty Name="nomeFontePF" ColumnName="nomeFontePF" />
-                <ScalarProperty Name="totalPF" ColumnName="totalPF" />
-                <ScalarProperty Name="precoUnitarioPF" ColumnName="precoUnitarioPF" />
-                <ScalarProperty Name="quantidadePF" ColumnName="quantidadePF" />
-                <ScalarProperty Name="nomePF" ColumnName="nomePF" />
-                <ScalarProperty Name="memoriaCalculo" ColumnName="memoriaCalculo" />
-                <ScalarProperty Name="codigoInsumoServico" ColumnName="codigoInsumoServico" />
-                <ScalarProperty Name="nomeCliente" ColumnName="nomeCliente" />
-                <ScalarProperty Name="autonumeroCliente" ColumnName="autonumeroCliente" />
-                <ScalarProperty Name="servico" ColumnName="servico" />
-                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
-                <ScalarProperty Name="data" ColumnName="data" />
-                <ScalarProperty Name="nomeUsuario" ColumnName="nomeUsuario" />
-                <ScalarProperty Name="autonumeroUsuario" ColumnName="autonumeroUsuario" />
-                <ScalarProperty Name="codigoOs" ColumnName="codigoOs" />
-                <ScalarProperty Name="autonumeroOs" ColumnName="autonumeroOs" />
-                <ScalarProperty Name="bdiMaterial" ColumnName="bdiMaterial" />
-                <ScalarProperty Name="bdiServico" ColumnName="bdiServico" />
-                <ScalarProperty Name="total" ColumnName="total" />
-                <ScalarProperty Name="precoUnitario" ColumnName="precoUnitario" />
-                <ScalarProperty Name="quantidade" ColumnName="quantidade" />
-                <ScalarProperty Name="unidade" ColumnName="unidade" />
-                <ScalarProperty Name="nomeFonte" ColumnName="nomeFonte" />
-                <ScalarProperty Name="nome" ColumnName="nome" />
-                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tb_subsistema">
             <EntityTypeMapping TypeName="manutModel.tb_subsistema">
               <MappingFragment StoreEntitySet="tb_subsistema">
@@ -3345,61 +3331,6 @@
                 <ScalarProperty Name="autonumeroContrato" ColumnName="autonumeroContrato" />
                 <ScalarProperty Name="codigoOs" ColumnName="codigoOs" />
                 <ScalarProperty Name="autonumeroOs" ColumnName="autonumeroOs" />
-                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tb_os">
-            <EntityTypeMapping TypeName="manutModel.tb_os">
-              <MappingFragment StoreEntitySet="tb_os">
-                <ScalarProperty Name="nomeAutorizado" ColumnName="nomeAutorizado" />
-                <ScalarProperty Name="autonumeroAutorizado" ColumnName="autonumeroAutorizado" />
-                <ScalarProperty Name="localAtendido" ColumnName="localAtendido" />
-                <ScalarProperty Name="medicao" ColumnName="medicao" />
-                <ScalarProperty Name="etapa" ColumnName="etapa" />
-                <ScalarProperty Name="codigoOrdemServico" ColumnName="codigoOrdemServico" />
-                <ScalarProperty Name="importadaCustoFixo" ColumnName="importadaCustoFixo" />
-                <ScalarProperty Name="totalHoras" ColumnName="totalHoras" />
-                <ScalarProperty Name="codigoEquipamento" ColumnName="codigoEquipamento" />
-                <ScalarProperty Name="url1" ColumnName="url1" />
-                <ScalarProperty Name="url" ColumnName="url" />
-                <ScalarProperty Name="valorMaterial" ColumnName="valorMaterial" />
-                <ScalarProperty Name="valorServico" ColumnName="valorServico" />
-                <ScalarProperty Name="nomeEquipe" ColumnName="nomeEquipe" />
-                <ScalarProperty Name="codigoTabela" ColumnName="codigoTabela" />
-                <ScalarProperty Name="bdiMaterial" ColumnName="bdiMaterial" />
-                <ScalarProperty Name="bdiServico" ColumnName="bdiServico" />
-                <ScalarProperty Name="valor" ColumnName="valor" />
-                <ScalarProperty Name="nomeStatus" ColumnName="nomeStatus" />
-                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
-                <ScalarProperty Name="descricao" ColumnName="descricao" />
-                <ScalarProperty Name="prazoPrioridade" ColumnName="prazoPrioridade" />
-                <ScalarProperty Name="dataTermino" ColumnName="dataTermino" />
-                <ScalarProperty Name="dataInicio" ColumnName="dataInicio" />
-                <ScalarProperty Name="dataSolicitacao" ColumnName="dataSolicitacao" />
-                <ScalarProperty Name="ramal" ColumnName="ramal" />
-                <ScalarProperty Name="complemento" ColumnName="complemento" />
-                <ScalarProperty Name="nomeServico" ColumnName="nomeServico" />
-                <ScalarProperty Name="autonumeroServico" ColumnName="autonumeroServico" />
-                <ScalarProperty Name="matricula" ColumnName="matricula" />
-                <ScalarProperty Name="nomeUsuario" ColumnName="nomeUsuario" />
-                <ScalarProperty Name="autonumeroUsuario" ColumnName="autonumeroUsuario" />
-                <ScalarProperty Name="nomePrioridade" ColumnName="nomePrioridade" />
-                <ScalarProperty Name="autonumeroPrioridade" ColumnName="autonumeroPrioridade" />
-                <ScalarProperty Name="nomeLocalFisico" ColumnName="nomeLocalFisico" />
-                <ScalarProperty Name="autonumeroLocalFisico" ColumnName="autonumeroLocalFisico" />
-                <ScalarProperty Name="nomeSetor" ColumnName="nomeSetor" />
-                <ScalarProperty Name="autonumeroSetor" ColumnName="autonumeroSetor" />
-                <ScalarProperty Name="nomePredio" ColumnName="nomePredio" />
-                <ScalarProperty Name="autonumeroPredio" ColumnName="autonumeroPredio" />
-                <ScalarProperty Name="nomeSubSistema" ColumnName="nomeSubSistema" />
-                <ScalarProperty Name="autonumeroSubSistema" ColumnName="autonumeroSubSistema" />
-                <ScalarProperty Name="nomeSistema" ColumnName="nomeSistema" />
-                <ScalarProperty Name="autonumeroSistema" ColumnName="autonumeroSistema" />
-                <ScalarProperty Name="nomeCliente" ColumnName="nomeCliente" />
-                <ScalarProperty Name="siglaCliente" ColumnName="siglaCliente" />
-                <ScalarProperty Name="autonumeroCliente" ColumnName="autonumeroCliente" />
-                <ScalarProperty Name="codigoOs" ColumnName="codigoOs" />
                 <ScalarProperty Name="autonumero" ColumnName="autonumero" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -3792,6 +3723,111 @@
             <EntityTypeMapping TypeName="manutModel.tb_empresa">
               <MappingFragment StoreEntitySet="tb_empresa">
                 <ScalarProperty Name="endereco" ColumnName="endereco" />
+                <ScalarProperty Name="nome" ColumnName="nome" />
+                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="osfotos">
+            <EntityTypeMapping TypeName="manutModel.osfotos">
+              <MappingFragment StoreEntitySet="osfotos">
+                <ScalarProperty Name="siglaCliente" ColumnName="siglaCliente" />
+                <ScalarProperty Name="url" ColumnName="url" />
+                <ScalarProperty Name="descricao" ColumnName="descricao" />
+                <ScalarProperty Name="codigoOs" ColumnName="codigoOs" />
+                <ScalarProperty Name="autonumeroOs" ColumnName="autonumeroOs" />
+                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_os">
+            <EntityTypeMapping TypeName="manutModel.tb_os">
+              <MappingFragment StoreEntitySet="tb_os">
+                <ScalarProperty Name="nomeAutorizado" ColumnName="nomeAutorizado" />
+                <ScalarProperty Name="autonumeroAutorizado" ColumnName="autonumeroAutorizado" />
+                <ScalarProperty Name="localAtendido" ColumnName="localAtendido" />
+                <ScalarProperty Name="medicao" ColumnName="medicao" />
+                <ScalarProperty Name="etapa" ColumnName="etapa" />
+                <ScalarProperty Name="codigoOrdemServico" ColumnName="codigoOrdemServico" />
+                <ScalarProperty Name="importadaCustoFixo" ColumnName="importadaCustoFixo" />
+                <ScalarProperty Name="totalHoras" ColumnName="totalHoras" />
+                <ScalarProperty Name="codigoEquipamento" ColumnName="codigoEquipamento" />
+                <ScalarProperty Name="url1" ColumnName="url1" />
+                <ScalarProperty Name="url" ColumnName="url" />
+                <ScalarProperty Name="valorMaterial" ColumnName="valorMaterial" />
+                <ScalarProperty Name="valorServico" ColumnName="valorServico" />
+                <ScalarProperty Name="nomeEquipe" ColumnName="nomeEquipe" />
+                <ScalarProperty Name="codigoTabela" ColumnName="codigoTabela" />
+                <ScalarProperty Name="bdiMaterial" ColumnName="bdiMaterial" />
+                <ScalarProperty Name="bdiServico" ColumnName="bdiServico" />
+                <ScalarProperty Name="valor" ColumnName="valor" />
+                <ScalarProperty Name="nomeStatus" ColumnName="nomeStatus" />
+                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
+                <ScalarProperty Name="descricao" ColumnName="descricao" />
+                <ScalarProperty Name="prazoPrioridade" ColumnName="prazoPrioridade" />
+                <ScalarProperty Name="dataTermino" ColumnName="dataTermino" />
+                <ScalarProperty Name="dataInicio" ColumnName="dataInicio" />
+                <ScalarProperty Name="dataSolicitacao" ColumnName="dataSolicitacao" />
+                <ScalarProperty Name="ramal" ColumnName="ramal" />
+                <ScalarProperty Name="complemento" ColumnName="complemento" />
+                <ScalarProperty Name="nomeServico" ColumnName="nomeServico" />
+                <ScalarProperty Name="autonumeroServico" ColumnName="autonumeroServico" />
+                <ScalarProperty Name="matricula" ColumnName="matricula" />
+                <ScalarProperty Name="nomeUsuario" ColumnName="nomeUsuario" />
+                <ScalarProperty Name="autonumeroUsuario" ColumnName="autonumeroUsuario" />
+                <ScalarProperty Name="nomePrioridade" ColumnName="nomePrioridade" />
+                <ScalarProperty Name="autonumeroPrioridade" ColumnName="autonumeroPrioridade" />
+                <ScalarProperty Name="nomeLocalFisico" ColumnName="nomeLocalFisico" />
+                <ScalarProperty Name="autonumeroLocalFisico" ColumnName="autonumeroLocalFisico" />
+                <ScalarProperty Name="nomeSetor" ColumnName="nomeSetor" />
+                <ScalarProperty Name="autonumeroSetor" ColumnName="autonumeroSetor" />
+                <ScalarProperty Name="nomePredio" ColumnName="nomePredio" />
+                <ScalarProperty Name="autonumeroPredio" ColumnName="autonumeroPredio" />
+                <ScalarProperty Name="nomeSubSistema" ColumnName="nomeSubSistema" />
+                <ScalarProperty Name="autonumeroSubSistema" ColumnName="autonumeroSubSistema" />
+                <ScalarProperty Name="nomeSistema" ColumnName="nomeSistema" />
+                <ScalarProperty Name="autonumeroSistema" ColumnName="autonumeroSistema" />
+                <ScalarProperty Name="nomeCliente" ColumnName="nomeCliente" />
+                <ScalarProperty Name="siglaCliente" ColumnName="siglaCliente" />
+                <ScalarProperty Name="autonumeroCliente" ColumnName="autonumeroCliente" />
+                <ScalarProperty Name="codigoOs" ColumnName="codigoOs" />
+                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_os_itens">
+            <EntityTypeMapping TypeName="manutModel.tb_os_itens">
+              <MappingFragment StoreEntitySet="tb_os_itens">
+                <ScalarProperty Name="qtdeMaoObra" ColumnName="qtdeMaoObra" />
+                <ScalarProperty Name="medicao" ColumnName="medicao" />
+                <ScalarProperty Name="etapa" ColumnName="etapa" />
+                <ScalarProperty Name="codigoOrdemServico" ColumnName="codigoOrdemServico" />
+                <ScalarProperty Name="codigoPF" ColumnName="codigoPF" />
+                <ScalarProperty Name="unidadePF" ColumnName="unidadePF" />
+                <ScalarProperty Name="itemPF" ColumnName="itemPF" />
+                <ScalarProperty Name="nomeFontePF" ColumnName="nomeFontePF" />
+                <ScalarProperty Name="totalPF" ColumnName="totalPF" />
+                <ScalarProperty Name="precoUnitarioPF" ColumnName="precoUnitarioPF" />
+                <ScalarProperty Name="quantidadePF" ColumnName="quantidadePF" />
+                <ScalarProperty Name="nomePF" ColumnName="nomePF" />
+                <ScalarProperty Name="memoriaCalculo" ColumnName="memoriaCalculo" />
+                <ScalarProperty Name="codigoInsumoServico" ColumnName="codigoInsumoServico" />
+                <ScalarProperty Name="nomeCliente" ColumnName="nomeCliente" />
+                <ScalarProperty Name="autonumeroCliente" ColumnName="autonumeroCliente" />
+                <ScalarProperty Name="servico" ColumnName="servico" />
+                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
+                <ScalarProperty Name="data" ColumnName="data" />
+                <ScalarProperty Name="nomeUsuario" ColumnName="nomeUsuario" />
+                <ScalarProperty Name="autonumeroUsuario" ColumnName="autonumeroUsuario" />
+                <ScalarProperty Name="codigoOs" ColumnName="codigoOs" />
+                <ScalarProperty Name="autonumeroOs" ColumnName="autonumeroOs" />
+                <ScalarProperty Name="bdiMaterial" ColumnName="bdiMaterial" />
+                <ScalarProperty Name="bdiServico" ColumnName="bdiServico" />
+                <ScalarProperty Name="total" ColumnName="total" />
+                <ScalarProperty Name="precoUnitario" ColumnName="precoUnitario" />
+                <ScalarProperty Name="quantidade" ColumnName="quantidade" />
+                <ScalarProperty Name="unidade" ColumnName="unidade" />
+                <ScalarProperty Name="nomeFonte" ColumnName="nomeFonte" />
                 <ScalarProperty Name="nome" ColumnName="nome" />
                 <ScalarProperty Name="autonumero" ColumnName="autonumero" />
               </MappingFragment>
