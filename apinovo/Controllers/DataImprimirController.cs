@@ -4026,7 +4026,14 @@ namespace apinovo.Controllers
 
                 var filtro = "{checklisthistorico1.cancelado} <> 'S'  and {checklisthistorico1.anoMes} = '" + anoMes + "' ";
 
-                var filtroDoSubReport = "{checklisthistoriconrofolha1.autonumeroCliente} = " + autonumeroCliente.ToString() + " and {checklisthistoriconrofolha1.autonumeroCliente} =  {subsistemacliente1.autonumeroCliente} and {checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and {checklisthistitemnrofolha1.d} = 'N'  and {checklisthistitemnrofolha1.e} = 'N' and {checklisthistitemnrofolha1.q} = 'N' ";
+                var filtroDoSubReport = "({ checklisthistoriconrofolha1.mensal} = 1 and  { checklisthistitemnrofolha1.m} ='S' or " +
+                                        "{ checklisthistoriconrofolha1.bimestral} = 1 and  { checklisthistitemnrofolha1.b} ='S' or " +
+                                        "{ checklisthistoriconrofolha1.trimestral} = 1 and  { checklisthistitemnrofolha1.t} ='S' or " +
+                                        "{ checklisthistoriconrofolha1.semestral} = 1 and  { checklisthistitemnrofolha1.s} ='S' or " +
+                                        "{ checklisthistoriconrofolha1.anual} = 1 and  { checklisthistitemnrofolha1.a} ='S' ) ";
+
+
+                filtroDoSubReport = filtroDoSubReport + " and {checklisthistoriconrofolha1.autonumeroCliente} = " + autonumeroCliente.ToString() + " and {checklisthistoriconrofolha1.autonumeroCliente} =  {subsistemacliente1.autonumeroCliente} and {checklisthistoriconrofolha1.contadorPmocEquipamento} = {?Pm-checklisthistorico1.contadorPmocEquipamento} and {checklisthistitemnrofolha1.d} = 'N'  and {checklisthistitemnrofolha1.e} = 'N' and {checklisthistitemnrofolha1.q} = 'N' ";
 
                 var local = HttpContext.Current.Server.MapPath("~/rpt/PmocEquipamento.rpt");
                 var csql = new StringBuilder();
@@ -4143,9 +4150,6 @@ namespace apinovo.Controllers
                 }
 
                 if (autonumeroCliente > 0) { filtro = filtro + filtroLocal + " and {checklisthistorico1.autonumeroCliente} = " + autonumeroCliente; }
-
-
-
 
 
                 using (var rd = new ReportDocument())

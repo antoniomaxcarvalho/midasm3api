@@ -608,7 +608,8 @@ namespace apinovo.Controllers
                     linha.autonumeroEquipe2 = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroEquipe2"].ToString().Trim());
                     linha.nomeEquipe2 = HttpContext.Current.Request.Form["nomeEquipe2"].ToString().Trim();
                     linha.qtdeAtendidaEquipePorDia = Convert.ToInt32(HttpContext.Current.Request.Form["qtdeAtendidaEquipePorDia"].ToString().Trim());
-                    linha.qtdePorGrupoRelatorio = Convert.ToInt32(HttpContext.Current.Request.Form["qtdePorGrupoRelatorio"].ToString().Trim());
+                    linha.qtdePorGrupoRelatorio = 8;
+                    //linha.qtdePorGrupoRelatorio = Convert.ToInt32(HttpContext.Current.Request.Form["qtdePorGrupoRelatorio"].ToString().Trim());
                     linha.anual = HttpContext.Current.Request.Form["anual"].ToString().Trim();
                     linha.semestre = HttpContext.Current.Request.Form["semestre"].ToString().Trim();
                     linha.trimestre = HttpContext.Current.Request.Form["trimestre"].ToString().Trim();
@@ -1078,7 +1079,7 @@ namespace apinovo.Controllers
 
         }
 
-                [HttpPost]
+        [HttpPost]
         public string CalcularPMOCEquipamento()
 
         {
@@ -1275,7 +1276,7 @@ namespace apinovo.Controllers
 
 
                             Debug.WriteLine(" autonumeroSubSistema: " + autonumeroSubSistema);
-                            var k = GetEquipamentoEmOrdemVisita(autonumeroCliente, autonumeroSubSistema, mes);
+                            var k = GetEquipamentoEmOrdemVisitaMes(autonumeroCliente, autonumeroSubSistema, mes);
 
                             //DateTime? ultimaData = DateTime.Now.AddYears(10);
                             qtdPorGrupoRelatorioDia = 0;
@@ -1286,7 +1287,7 @@ namespace apinovo.Controllers
                                 equipamento.autonumeroEquipe = autonumeroEquipe;
                                 equipamento.nomeEquipe = nomeEquipe;
 
-                                //Debug.WriteLine("listaDiaUtil " + contDiaUtil + " nomeEquipe" + nomeEquipe.Trim() + " autonumeroSubSistema: " + autonumeroSubSistema + " " + condicoes.nomeSubSistema);
+                                Debug.WriteLine("listaDiaUtil " + contDiaUtil + " nomeEquipe" + nomeEquipe.Trim() + " autonumeroSubSistema: " + autonumeroSubSistema + " " + condicoes.nomeSubSistema);
                                 equipamento.diaUtil = listaDiaUtil[contDiaUtil].diaUtil;
                                 equipamento.dataPrevista = listaDiaUtil[contDiaUtil].data;
                                 equipamento.grupo = contGrupo;
@@ -1295,7 +1296,8 @@ namespace apinovo.Controllers
                                 ultimoDiaUtilEquipe.diaUtil = equipamento.diaUtil;
 
                                 qtdPorGrupoRelatorioDia++;
-                                if (qtdPorGrupoRelatorioDia >= qtdePorGrupoRelatorio)
+                                Debug.WriteLine("qtdPorGrupoRelatorioDia " + qtdPorGrupoRelatorioDia.ToString() + " qtdePorGrupoRelatorio" + qtdePorGrupoRelatorio.ToString());
+                                    if (qtdPorGrupoRelatorioDia >= qtdePorGrupoRelatorio)
                                 {
                                     contGrupo++;
                                     contadorPmocEquipamento++;
@@ -1464,6 +1466,10 @@ namespace apinovo.Controllers
                 var user = dc.Database.SqlQuery<tb_cadastro>(csql.ToString()).ToList();
                 return user.ToList(); ;
             }
+
+
+
+
         }
 
         [HttpGet]
@@ -3484,7 +3490,7 @@ namespace apinovo.Controllers
 
 
         [HttpGet]
-        public IEnumerable<tb_cadastro> GetEquipamentoEmOrdemVisita(long autonumeroCliente, int? autonumeroSubSistema, int mes)
+        public IEnumerable<tb_cadastro> GetEquipamentoEmOrdemVisitaMes(long autonumeroCliente, int? autonumeroSubSistema, int mes)
         {
 
             var csql = new StringBuilder();

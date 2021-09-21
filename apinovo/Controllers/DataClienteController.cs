@@ -123,6 +123,8 @@ namespace apinovo.Controllers
                     contadorPmocEquipamento = 0,
                     prazoInicialDias = "",
                     informacoesPMOC = "",
+                    
+                    
 
                 };
 
