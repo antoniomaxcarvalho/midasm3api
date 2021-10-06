@@ -40,14 +40,14 @@ namespace apinovo.Controllers
     public class DataOsController : ApiController
     {
         [HttpGet]
-        public IEnumerable<tb_os> GetOs(string codigoOs)
+        public IEnumerable<tb_os> GetOs(string codigoOs, string clientesDoUsuario)
         {
             AcertarValoresNaOs(codigoOs, 0);
 
             using (var dc = new manutEntities())
             {
                 var cod = codigoOs.Trim();
-                var user = from p in dc.tb_os.Where((a => a.codigoOs.Contains(cod))) select p;
+                var user = from p in dc.tb_os.Where((a => a.codigoOs.Contains(cod) && clientesDoUsuario.Contains(a.siglaCliente))) select p;
                 return user.ToList(); ;
             }
 

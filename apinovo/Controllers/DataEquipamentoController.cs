@@ -1156,7 +1156,7 @@ namespace apinovo.Controllers
                     {
 
                         // Apenas os marcados ----------------
-                        condi = condi.Where(p => p.chkTodoMes == 1).ToList();
+                        //condi = condi.Where(p => p.chkTodoMes == 1).ToList();
 
                         int contRegistroDia = 0;
                         int? autonumeroSubSistema = 0;

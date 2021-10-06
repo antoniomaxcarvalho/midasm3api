@@ -52,7 +52,6 @@ namespace apinovo
         public DbSet<tb_planilhafechada> tb_planilhafechada { get; set; }
         public DbSet<grupotramitacao> grupotramitacao { get; set; }
         public DbSet<tramitacao> tramitacao { get; set; }
-        public DbSet<tb_cliente> tb_cliente { get; set; }
         public DbSet<videoaula> videoaula { get; set; }
         public DbSet<predio> predio { get; set; }
         public DbSet<setor> setor { get; set; }
@@ -78,20 +77,21 @@ namespace apinovo
         public DbSet<tb_funcionario> tb_funcionario { get; set; }
         public DbSet<osfuncionario> osfuncionario { get; set; }
         public DbSet<funcionario> funcionario { get; set; }
-        public DbSet<checklist> checklist { get; set; }
-        public DbSet<checklisthistitem> checklisthistitem { get; set; }
-        public DbSet<checklisthistitemnrofolha> checklisthistitemnrofolha { get; set; }
-        public DbSet<checklisthistoricocivil> checklisthistoricocivil { get; set; }
-        public DbSet<checklisthistoricocivilitem> checklisthistoricocivilitem { get; set; }
-        public DbSet<checklistveiculo> checklistveiculo { get; set; }
         public DbSet<funcionariocurso> funcionariocurso { get; set; }
-        public DbSet<checklisthistorico> checklisthistorico { get; set; }
-        public DbSet<checklisthistoriconrofolha> checklisthistoriconrofolha { get; set; }
-        public DbSet<tb_cadastro> tb_cadastro { get; set; }
         public DbSet<subsistemaqtdepmoc> subsistemaqtdepmoc { get; set; }
         public DbSet<tb_empresa> tb_empresa { get; set; }
         public DbSet<osfotos> osfotos { get; set; }
         public DbSet<tb_os> tb_os { get; set; }
         public DbSet<tb_os_itens> tb_os_itens { get; set; }
+        public DbSet<tb_cliente> tb_cliente { get; set; }
+        public DbSet<checklist> checklist { get; set; }
+        public DbSet<checklisthistitem> checklisthistitem { get; set; }
+        public DbSet<checklisthistitemnrofolha> checklisthistitemnrofolha { get; set; }
+        public DbSet<checklisthistorico> checklisthistorico { get; set; }
+        public DbSet<checklisthistoricocivil> checklisthistoricocivil { get; set; }
+        public DbSet<checklisthistoricocivilitem> checklisthistoricocivilitem { get; set; }
+        public DbSet<checklisthistoriconrofolha> checklisthistoriconrofolha { get; set; }
+        public DbSet<checklistveiculo> checklistveiculo { get; set; }
+        public DbSet<tb_cadastro> tb_cadastro { get; set; }
     }
 }
