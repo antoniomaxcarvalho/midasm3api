@@ -388,6 +388,38 @@ namespace apinovo.Controllers
             }
 
         }
+        [HttpPost]
+        public string somarQtdeContratadaPlanilha()
+        {
+            var c = 1;
+            var autonumero = Convert.ToInt64(HttpContext.Current.Request.Form["autonumero"]);
+            var qtdeSoma = Convert.ToDecimal(HttpContext.Current.Request.Form["qtdeSoma"]);
+
+            using (var dc = new manutEntities())
+            {
+                var linha = dc.tb_planilhafechada.Find(autonumero); // sempre irá procurar pela chave primaria
+                if (linha != null)
+                {
+                    //var estoque = linha.qtdeContratada - qtdeCustoFixo;
+                    //if (estoque < 0)
+                    //{
+                    //    throw new ArgumentException("Erro - Estoque Negativo");
+                    //}
+                    linha.qtdeContratada = linha.qtdeContratada +  qtdeSoma;
+                    //linha.estoque = estoque;
+                    dc.tb_planilhafechada.AddOrUpdate(linha);
+                    dc.SaveChanges();
+                    //return estoque.ToString("########0");
+                    return "";
+                }
+                else
+                {
+                    throw new ArgumentException("Erro - Produto não encontrado");
+                }
+
+            }
+        }
+
 
         [HttpPost]
         public string AlterarQtdeCustoFixo()
