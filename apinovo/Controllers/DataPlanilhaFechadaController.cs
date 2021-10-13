@@ -391,9 +391,10 @@ namespace apinovo.Controllers
         [HttpPost]
         public string somarQtdeContratadaPlanilha()
         {
-            var c = 1;
+   
             var autonumero = Convert.ToInt64(HttpContext.Current.Request.Form["autonumero"]);
             var qtdeSoma = Convert.ToDecimal(HttpContext.Current.Request.Form["qtdeSoma"]);
+
 
             using (var dc = new manutEntities())
             {

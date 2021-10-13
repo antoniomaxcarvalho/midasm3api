@@ -478,6 +478,8 @@ namespace apinovo.Controllers
             {
                 var autonumero = Convert.ToInt64(HttpContext.Current.Request.Form["autonumero"]);
 
+
+
                 var linha = dc.tb_os.Find(autonumero); // sempre irá procurar pela chave primaria
                 if (linha != null && linha.cancelado != "S")
                 {

@@ -281,7 +281,6 @@ namespace apinovo.Controllers
             var local = HttpContext.Current.Request.Form["local"].ToString().Trim();
             var codigoOs = HttpContext.Current.Request.Form["codigoOs"].ToString().Trim();
 
-
             if (DataClienteController.IsDate(HttpContext.Current.Request.Form["dataEmissao"].ToString()))
             {
                 using (var dc = new manutEntities())
@@ -303,7 +302,7 @@ namespace apinovo.Controllers
                         linha.resumoServico = resumoServico;
                         linha.situacao = situacao;
                         linha.local = local;
-                
+
 
                         dc.tb_ordemservico.AddOrUpdate(linha);
                         dc.SaveChanges();
