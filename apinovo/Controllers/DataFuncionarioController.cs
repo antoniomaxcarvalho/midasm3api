@@ -74,13 +74,6 @@ namespace apinovo.Controllers
                     dc.funcionario.AddOrUpdate(linha);
                     dc.SaveChanges();
 
-
-                    dc.funcionariocurso.Where(x => x.autonumeroFuncionario == autonumero && x.cancelado != "S").ToList().ForEach(x =>
-                    {
-                        x.cancelado = "S";
-                    });
-                    dc.SaveChanges();
-
                     return string.Empty;
 
                 }
