@@ -653,7 +653,7 @@ namespace apinovo.Controllers
                 ordem.ToList().ForEach(x =>
                 {
 
-                    //Debug.WriteLine(x.codigoOs);
+                    Debug.WriteLine(x.codigoOs);
                     //var totalPF = dc.tb_os_itens.Where(k => k.codigoOrdemServico == x.codigoOs && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S").Sum(k => (k.totalPF));
 
 
