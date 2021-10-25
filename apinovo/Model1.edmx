@@ -1370,10 +1370,10 @@
           <EntitySet Name="checklisthistoricocivilitem" EntityType="manutModel.checklisthistoricocivilitem" />
           <EntitySet Name="checklistveiculo" EntityType="manutModel.checklistveiculo" />
           <EntitySet Name="tb_planilhafechada" EntityType="manutModel.tb_planilhafechada" />
-          <EntitySet Name="tb_cadastro" EntityType="manutModel.tb_cadastro" />
           <EntitySet Name="tb_cliente" EntityType="manutModel.tb_cliente" />
           <EntitySet Name="checklisthistorico" EntityType="manutModel.checklisthistorico" />
           <EntitySet Name="checklisthistoriconrofolha" EntityType="manutModel.checklisthistoriconrofolha" />
+          <EntitySet Name="tb_cadastro" EntityType="manutModel.tb_cadastro" />
         </EntityContainer>
         <EntityType Name="tb_tipo_usuario">
           <Key>
@@ -2342,111 +2342,6 @@
           <Property Name="qtdeCustoFixo" Type="Decimal" Nullable="false" />
           <Property Name="qtdeUsada" Type="Decimal" Nullable="false" />
         </EntityType>
-        <EntityType Name="tb_cadastro">
-          <Key>
-            <PropertyRef Name="autonumero" />
-          </Key>
-          <Property Name="autonumero" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="autonumeroCliente" Type="Int32" />
-          <Property Name="nomeCliente" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
-          <Property Name="endereco" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroSistema" Type="Int32" />
-          <Property Name="nomeSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroSubSistema" Type="Int32" />
-          <Property Name="nomeSubSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroLocalAtendido" Type="Int32" />
-          <Property Name="nomeLocalAtendido" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroLocalFisico" Type="Int32" />
-          <Property Name="nomeLocalFisico" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroEquipe" Type="Int32" />
-          <Property Name="nomeEquipe" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroSetor" Type="Int32" />
-          <Property Name="nomeSetor" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroPredio" Type="Int32" />
-          <Property Name="nomePredio" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="serie" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="modelo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="capacidade" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="patrimonio" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="diaUtil" Type="Int32" />
-          <Property Name="grupo" Type="Int32" />
-          <Property Name="fabricante" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="dataPrevista" Type="DateTime" />
-          <Property Name="dataCompra" Type="DateTime" />
-          <Property Name="dataGarantia" Type="DateTime" />
-          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="periodicidade" Type="Int32" />
-          <Property Name="mesManuAno" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="mesManuSem01" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
-          <Property Name="mesManuSem02" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
-          <Property Name="mesManuTri01" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
-          <Property Name="mesManuTri02" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
-          <Property Name="mesManuTri03" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
-          <Property Name="mesManuTri04" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
-          <Property Name="obsLocal" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="mesManuSemestre" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="contadorPmocEquipamento" Type="Int64" />
-          <Property Name="mes01" Type="SByte" />
-          <Property Name="mes02" Type="SByte" />
-          <Property Name="mes03" Type="SByte" />
-          <Property Name="mes04" Type="SByte" />
-          <Property Name="mes05" Type="SByte" />
-          <Property Name="mes06" Type="SByte" />
-          <Property Name="mes07" Type="SByte" />
-          <Property Name="mes08" Type="SByte" />
-          <Property Name="mes09" Type="SByte" />
-          <Property Name="mes10" Type="SByte" />
-          <Property Name="mes11" Type="SByte" />
-          <Property Name="mes12" Type="SByte" />
-          <Property Name="bim01" Type="SByte" />
-          <Property Name="bim02" Type="SByte" />
-          <Property Name="bim03" Type="SByte" />
-          <Property Name="bim04" Type="SByte" />
-          <Property Name="bim05" Type="SByte" />
-          <Property Name="bim06" Type="SByte" />
-          <Property Name="bim07" Type="SByte" />
-          <Property Name="bim08" Type="SByte" />
-          <Property Name="bim09" Type="SByte" />
-          <Property Name="bim10" Type="SByte" />
-          <Property Name="bim11" Type="SByte" />
-          <Property Name="bim12" Type="SByte" />
-          <Property Name="tri01" Type="SByte" />
-          <Property Name="tri02" Type="SByte" />
-          <Property Name="tri03" Type="SByte" />
-          <Property Name="tri04" Type="SByte" />
-          <Property Name="tri05" Type="SByte" />
-          <Property Name="tri06" Type="SByte" />
-          <Property Name="tri07" Type="SByte" />
-          <Property Name="tri08" Type="SByte" />
-          <Property Name="tri09" Type="SByte" />
-          <Property Name="tri10" Type="SByte" />
-          <Property Name="tri11" Type="SByte" />
-          <Property Name="tri12" Type="SByte" />
-          <Property Name="sem01" Type="SByte" />
-          <Property Name="sem02" Type="SByte" />
-          <Property Name="sem03" Type="SByte" />
-          <Property Name="sem04" Type="SByte" />
-          <Property Name="sem05" Type="SByte" />
-          <Property Name="sem06" Type="SByte" />
-          <Property Name="sem07" Type="SByte" />
-          <Property Name="sem08" Type="SByte" />
-          <Property Name="sem09" Type="SByte" />
-          <Property Name="sem10" Type="SByte" />
-          <Property Name="sem11" Type="SByte" />
-          <Property Name="sem12" Type="SByte" />
-          <Property Name="ano01" Type="SByte" />
-          <Property Name="ano02" Type="SByte" />
-          <Property Name="ano03" Type="SByte" />
-          <Property Name="ano04" Type="SByte" />
-          <Property Name="ano05" Type="SByte" />
-          <Property Name="ano06" Type="SByte" />
-          <Property Name="ano07" Type="SByte" />
-          <Property Name="ano08" Type="SByte" />
-          <Property Name="ano09" Type="SByte" />
-          <Property Name="ano10" Type="SByte" />
-          <Property Name="ano11" Type="SByte" />
-          <Property Name="ano12" Type="SByte" />
-        </EntityType>
         <EntityType Name="tb_cliente">
           <Key>
             <PropertyRef Name="autonumero" />
@@ -2556,6 +2451,111 @@
           <Property Name="trimestral" Type="SByte" />
           <Property Name="semestral" Type="SByte" />
           <Property Name="anual" Type="SByte" />
+        </EntityType>
+        <EntityType Name="tb_cadastro">
+          <Key>
+            <PropertyRef Name="autonumero" />
+          </Key>
+          <Property Name="autonumero" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="autonumeroCliente" Type="Int32" />
+          <Property Name="nomeCliente" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="endereco" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroSistema" Type="Int32" />
+          <Property Name="nomeSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroSubSistema" Type="Int32" />
+          <Property Name="nomeSubSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroLocalAtendido" Type="Int32" />
+          <Property Name="nomeLocalAtendido" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroLocalFisico" Type="Int32" />
+          <Property Name="nomeLocalFisico" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroEquipe" Type="Int32" />
+          <Property Name="nomeEquipe" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroSetor" Type="Int32" />
+          <Property Name="nomeSetor" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroPredio" Type="Int32" />
+          <Property Name="nomePredio" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="serie" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="modelo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="capacidade" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="patrimonio" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="diaUtil" Type="Int32" />
+          <Property Name="grupo" Type="Int32" />
+          <Property Name="fabricante" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="dataPrevista" Type="DateTime" />
+          <Property Name="dataCompra" Type="DateTime" />
+          <Property Name="dataGarantia" Type="DateTime" />
+          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="periodicidade" Type="Int32" />
+          <Property Name="mesManuAno" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="mesManuSem01" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="mesManuSem02" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="mesManuTri01" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="mesManuTri02" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="mesManuTri03" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="mesManuTri04" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="obsLocal" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="mesManuSemestre" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="contadorPmocEquipamento" Type="Int64" />
+          <Property Name="mes01" Type="SByte" />
+          <Property Name="mes02" Type="SByte" />
+          <Property Name="mes03" Type="SByte" />
+          <Property Name="mes04" Type="SByte" />
+          <Property Name="mes05" Type="SByte" />
+          <Property Name="mes06" Type="SByte" />
+          <Property Name="mes07" Type="SByte" />
+          <Property Name="mes08" Type="SByte" />
+          <Property Name="mes09" Type="SByte" />
+          <Property Name="mes10" Type="SByte" />
+          <Property Name="mes11" Type="SByte" />
+          <Property Name="mes12" Type="SByte" />
+          <Property Name="bim01" Type="SByte" />
+          <Property Name="bim02" Type="SByte" />
+          <Property Name="bim03" Type="SByte" />
+          <Property Name="bim04" Type="SByte" />
+          <Property Name="bim05" Type="SByte" />
+          <Property Name="bim06" Type="SByte" />
+          <Property Name="bim07" Type="SByte" />
+          <Property Name="bim08" Type="SByte" />
+          <Property Name="bim09" Type="SByte" />
+          <Property Name="bim10" Type="SByte" />
+          <Property Name="bim11" Type="SByte" />
+          <Property Name="bim12" Type="SByte" />
+          <Property Name="tri01" Type="SByte" />
+          <Property Name="tri02" Type="SByte" />
+          <Property Name="tri03" Type="SByte" />
+          <Property Name="tri04" Type="SByte" />
+          <Property Name="tri05" Type="SByte" />
+          <Property Name="tri06" Type="SByte" />
+          <Property Name="tri07" Type="SByte" />
+          <Property Name="tri08" Type="SByte" />
+          <Property Name="tri09" Type="SByte" />
+          <Property Name="tri10" Type="SByte" />
+          <Property Name="tri11" Type="SByte" />
+          <Property Name="tri12" Type="SByte" />
+          <Property Name="sem01" Type="SByte" />
+          <Property Name="sem02" Type="SByte" />
+          <Property Name="sem03" Type="SByte" />
+          <Property Name="sem04" Type="SByte" />
+          <Property Name="sem05" Type="SByte" />
+          <Property Name="sem06" Type="SByte" />
+          <Property Name="sem07" Type="SByte" />
+          <Property Name="sem08" Type="SByte" />
+          <Property Name="sem09" Type="SByte" />
+          <Property Name="sem10" Type="SByte" />
+          <Property Name="sem11" Type="SByte" />
+          <Property Name="sem12" Type="SByte" />
+          <Property Name="ano01" Type="SByte" />
+          <Property Name="ano02" Type="SByte" />
+          <Property Name="ano03" Type="SByte" />
+          <Property Name="ano04" Type="SByte" />
+          <Property Name="ano05" Type="SByte" />
+          <Property Name="ano06" Type="SByte" />
+          <Property Name="ano07" Type="SByte" />
+          <Property Name="ano08" Type="SByte" />
+          <Property Name="ano09" Type="SByte" />
+          <Property Name="ano10" Type="SByte" />
+          <Property Name="ano11" Type="SByte" />
+          <Property Name="ano12" Type="SByte" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3614,112 +3614,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tb_cadastro">
-            <EntityTypeMapping TypeName="manutModel.tb_cadastro">
-              <MappingFragment StoreEntitySet="tb_cadastro">
-                <ScalarProperty Name="ano12" ColumnName="ano12" />
-                <ScalarProperty Name="ano11" ColumnName="ano11" />
-                <ScalarProperty Name="ano10" ColumnName="ano10" />
-                <ScalarProperty Name="ano09" ColumnName="ano09" />
-                <ScalarProperty Name="ano08" ColumnName="ano08" />
-                <ScalarProperty Name="ano07" ColumnName="ano07" />
-                <ScalarProperty Name="ano06" ColumnName="ano06" />
-                <ScalarProperty Name="ano05" ColumnName="ano05" />
-                <ScalarProperty Name="ano04" ColumnName="ano04" />
-                <ScalarProperty Name="ano03" ColumnName="ano03" />
-                <ScalarProperty Name="ano02" ColumnName="ano02" />
-                <ScalarProperty Name="ano01" ColumnName="ano01" />
-                <ScalarProperty Name="sem12" ColumnName="sem12" />
-                <ScalarProperty Name="sem11" ColumnName="sem11" />
-                <ScalarProperty Name="sem10" ColumnName="sem10" />
-                <ScalarProperty Name="sem09" ColumnName="sem09" />
-                <ScalarProperty Name="sem08" ColumnName="sem08" />
-                <ScalarProperty Name="sem07" ColumnName="sem07" />
-                <ScalarProperty Name="sem06" ColumnName="sem06" />
-                <ScalarProperty Name="sem05" ColumnName="sem05" />
-                <ScalarProperty Name="sem04" ColumnName="sem04" />
-                <ScalarProperty Name="sem03" ColumnName="sem03" />
-                <ScalarProperty Name="sem02" ColumnName="sem02" />
-                <ScalarProperty Name="sem01" ColumnName="sem01" />
-                <ScalarProperty Name="tri12" ColumnName="tri12" />
-                <ScalarProperty Name="tri11" ColumnName="tri11" />
-                <ScalarProperty Name="tri10" ColumnName="tri10" />
-                <ScalarProperty Name="tri09" ColumnName="tri09" />
-                <ScalarProperty Name="tri08" ColumnName="tri08" />
-                <ScalarProperty Name="tri07" ColumnName="tri07" />
-                <ScalarProperty Name="tri06" ColumnName="tri06" />
-                <ScalarProperty Name="tri05" ColumnName="tri05" />
-                <ScalarProperty Name="tri04" ColumnName="tri04" />
-                <ScalarProperty Name="tri03" ColumnName="tri03" />
-                <ScalarProperty Name="tri02" ColumnName="tri02" />
-                <ScalarProperty Name="tri01" ColumnName="tri01" />
-                <ScalarProperty Name="bim12" ColumnName="bim12" />
-                <ScalarProperty Name="bim11" ColumnName="bim11" />
-                <ScalarProperty Name="bim10" ColumnName="bim10" />
-                <ScalarProperty Name="bim09" ColumnName="bim09" />
-                <ScalarProperty Name="bim08" ColumnName="bim08" />
-                <ScalarProperty Name="bim07" ColumnName="bim07" />
-                <ScalarProperty Name="bim06" ColumnName="bim06" />
-                <ScalarProperty Name="bim05" ColumnName="bim05" />
-                <ScalarProperty Name="bim04" ColumnName="bim04" />
-                <ScalarProperty Name="bim03" ColumnName="bim03" />
-                <ScalarProperty Name="bim02" ColumnName="bim02" />
-                <ScalarProperty Name="bim01" ColumnName="bim01" />
-                <ScalarProperty Name="mes12" ColumnName="mes12" />
-                <ScalarProperty Name="mes11" ColumnName="mes11" />
-                <ScalarProperty Name="mes10" ColumnName="mes10" />
-                <ScalarProperty Name="mes09" ColumnName="mes09" />
-                <ScalarProperty Name="mes08" ColumnName="mes08" />
-                <ScalarProperty Name="mes07" ColumnName="mes07" />
-                <ScalarProperty Name="mes06" ColumnName="mes06" />
-                <ScalarProperty Name="mes05" ColumnName="mes05" />
-                <ScalarProperty Name="mes04" ColumnName="mes04" />
-                <ScalarProperty Name="mes03" ColumnName="mes03" />
-                <ScalarProperty Name="mes02" ColumnName="mes02" />
-                <ScalarProperty Name="mes01" ColumnName="mes01" />
-                <ScalarProperty Name="contadorPmocEquipamento" ColumnName="contadorPmocEquipamento" />
-                <ScalarProperty Name="mesManuSemestre" ColumnName="mesManuSemestre" />
-                <ScalarProperty Name="obsLocal" ColumnName="obsLocal" />
-                <ScalarProperty Name="mesManuTri04" ColumnName="mesManuTri04" />
-                <ScalarProperty Name="mesManuTri03" ColumnName="mesManuTri03" />
-                <ScalarProperty Name="mesManuTri02" ColumnName="mesManuTri02" />
-                <ScalarProperty Name="mesManuTri01" ColumnName="mesManuTri01" />
-                <ScalarProperty Name="mesManuSem02" ColumnName="mesManuSem02" />
-                <ScalarProperty Name="mesManuSem01" ColumnName="mesManuSem01" />
-                <ScalarProperty Name="mesManuAno" ColumnName="mesManuAno" />
-                <ScalarProperty Name="periodicidade" ColumnName="periodicidade" />
-                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
-                <ScalarProperty Name="dataGarantia" ColumnName="dataGarantia" />
-                <ScalarProperty Name="dataCompra" ColumnName="dataCompra" />
-                <ScalarProperty Name="dataPrevista" ColumnName="dataPrevista" />
-                <ScalarProperty Name="fabricante" ColumnName="fabricante" />
-                <ScalarProperty Name="grupo" ColumnName="grupo" />
-                <ScalarProperty Name="diaUtil" ColumnName="diaUtil" />
-                <ScalarProperty Name="patrimonio" ColumnName="patrimonio" />
-                <ScalarProperty Name="capacidade" ColumnName="capacidade" />
-                <ScalarProperty Name="modelo" ColumnName="modelo" />
-                <ScalarProperty Name="serie" ColumnName="serie" />
-                <ScalarProperty Name="nomePredio" ColumnName="nomePredio" />
-                <ScalarProperty Name="autonumeroPredio" ColumnName="autonumeroPredio" />
-                <ScalarProperty Name="nomeSetor" ColumnName="nomeSetor" />
-                <ScalarProperty Name="autonumeroSetor" ColumnName="autonumeroSetor" />
-                <ScalarProperty Name="nomeEquipe" ColumnName="nomeEquipe" />
-                <ScalarProperty Name="autonumeroEquipe" ColumnName="autonumeroEquipe" />
-                <ScalarProperty Name="nomeLocalFisico" ColumnName="nomeLocalFisico" />
-                <ScalarProperty Name="autonumeroLocalFisico" ColumnName="autonumeroLocalFisico" />
-                <ScalarProperty Name="nomeLocalAtendido" ColumnName="nomeLocalAtendido" />
-                <ScalarProperty Name="autonumeroLocalAtendido" ColumnName="autonumeroLocalAtendido" />
-                <ScalarProperty Name="nomeSubSistema" ColumnName="nomeSubSistema" />
-                <ScalarProperty Name="autonumeroSubSistema" ColumnName="autonumeroSubSistema" />
-                <ScalarProperty Name="nomeSistema" ColumnName="nomeSistema" />
-                <ScalarProperty Name="autonumeroSistema" ColumnName="autonumeroSistema" />
-                <ScalarProperty Name="endereco" ColumnName="endereco" />
-                <ScalarProperty Name="nomeCliente" ColumnName="nomeCliente" />
-                <ScalarProperty Name="autonumeroCliente" ColumnName="autonumeroCliente" />
-                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tb_cliente">
             <EntityTypeMapping TypeName="manutModel.tb_cliente">
               <MappingFragment StoreEntitySet="tb_cliente">
@@ -3828,6 +3722,112 @@
                 <ScalarProperty Name="equip1" ColumnName="equip1" />
                 <ScalarProperty Name="contadorPmocEquipamento" ColumnName="contadorPmocEquipamento" />
                 <ScalarProperty Name="anoMes" ColumnName="anoMes" />
+                <ScalarProperty Name="autonumeroCliente" ColumnName="autonumeroCliente" />
+                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_cadastro">
+            <EntityTypeMapping TypeName="manutModel.tb_cadastro">
+              <MappingFragment StoreEntitySet="tb_cadastro">
+                <ScalarProperty Name="ano12" ColumnName="ano12" />
+                <ScalarProperty Name="ano11" ColumnName="ano11" />
+                <ScalarProperty Name="ano10" ColumnName="ano10" />
+                <ScalarProperty Name="ano09" ColumnName="ano09" />
+                <ScalarProperty Name="ano08" ColumnName="ano08" />
+                <ScalarProperty Name="ano07" ColumnName="ano07" />
+                <ScalarProperty Name="ano06" ColumnName="ano06" />
+                <ScalarProperty Name="ano05" ColumnName="ano05" />
+                <ScalarProperty Name="ano04" ColumnName="ano04" />
+                <ScalarProperty Name="ano03" ColumnName="ano03" />
+                <ScalarProperty Name="ano02" ColumnName="ano02" />
+                <ScalarProperty Name="ano01" ColumnName="ano01" />
+                <ScalarProperty Name="sem12" ColumnName="sem12" />
+                <ScalarProperty Name="sem11" ColumnName="sem11" />
+                <ScalarProperty Name="sem10" ColumnName="sem10" />
+                <ScalarProperty Name="sem09" ColumnName="sem09" />
+                <ScalarProperty Name="sem08" ColumnName="sem08" />
+                <ScalarProperty Name="sem07" ColumnName="sem07" />
+                <ScalarProperty Name="sem06" ColumnName="sem06" />
+                <ScalarProperty Name="sem05" ColumnName="sem05" />
+                <ScalarProperty Name="sem04" ColumnName="sem04" />
+                <ScalarProperty Name="sem03" ColumnName="sem03" />
+                <ScalarProperty Name="sem02" ColumnName="sem02" />
+                <ScalarProperty Name="sem01" ColumnName="sem01" />
+                <ScalarProperty Name="tri12" ColumnName="tri12" />
+                <ScalarProperty Name="tri11" ColumnName="tri11" />
+                <ScalarProperty Name="tri10" ColumnName="tri10" />
+                <ScalarProperty Name="tri09" ColumnName="tri09" />
+                <ScalarProperty Name="tri08" ColumnName="tri08" />
+                <ScalarProperty Name="tri07" ColumnName="tri07" />
+                <ScalarProperty Name="tri06" ColumnName="tri06" />
+                <ScalarProperty Name="tri05" ColumnName="tri05" />
+                <ScalarProperty Name="tri04" ColumnName="tri04" />
+                <ScalarProperty Name="tri03" ColumnName="tri03" />
+                <ScalarProperty Name="tri02" ColumnName="tri02" />
+                <ScalarProperty Name="tri01" ColumnName="tri01" />
+                <ScalarProperty Name="bim12" ColumnName="bim12" />
+                <ScalarProperty Name="bim11" ColumnName="bim11" />
+                <ScalarProperty Name="bim10" ColumnName="bim10" />
+                <ScalarProperty Name="bim09" ColumnName="bim09" />
+                <ScalarProperty Name="bim08" ColumnName="bim08" />
+                <ScalarProperty Name="bim07" ColumnName="bim07" />
+                <ScalarProperty Name="bim06" ColumnName="bim06" />
+                <ScalarProperty Name="bim05" ColumnName="bim05" />
+                <ScalarProperty Name="bim04" ColumnName="bim04" />
+                <ScalarProperty Name="bim03" ColumnName="bim03" />
+                <ScalarProperty Name="bim02" ColumnName="bim02" />
+                <ScalarProperty Name="bim01" ColumnName="bim01" />
+                <ScalarProperty Name="mes12" ColumnName="mes12" />
+                <ScalarProperty Name="mes11" ColumnName="mes11" />
+                <ScalarProperty Name="mes10" ColumnName="mes10" />
+                <ScalarProperty Name="mes09" ColumnName="mes09" />
+                <ScalarProperty Name="mes08" ColumnName="mes08" />
+                <ScalarProperty Name="mes07" ColumnName="mes07" />
+                <ScalarProperty Name="mes06" ColumnName="mes06" />
+                <ScalarProperty Name="mes05" ColumnName="mes05" />
+                <ScalarProperty Name="mes04" ColumnName="mes04" />
+                <ScalarProperty Name="mes03" ColumnName="mes03" />
+                <ScalarProperty Name="mes02" ColumnName="mes02" />
+                <ScalarProperty Name="mes01" ColumnName="mes01" />
+                <ScalarProperty Name="contadorPmocEquipamento" ColumnName="contadorPmocEquipamento" />
+                <ScalarProperty Name="mesManuSemestre" ColumnName="mesManuSemestre" />
+                <ScalarProperty Name="obsLocal" ColumnName="obsLocal" />
+                <ScalarProperty Name="mesManuTri04" ColumnName="mesManuTri04" />
+                <ScalarProperty Name="mesManuTri03" ColumnName="mesManuTri03" />
+                <ScalarProperty Name="mesManuTri02" ColumnName="mesManuTri02" />
+                <ScalarProperty Name="mesManuTri01" ColumnName="mesManuTri01" />
+                <ScalarProperty Name="mesManuSem02" ColumnName="mesManuSem02" />
+                <ScalarProperty Name="mesManuSem01" ColumnName="mesManuSem01" />
+                <ScalarProperty Name="mesManuAno" ColumnName="mesManuAno" />
+                <ScalarProperty Name="periodicidade" ColumnName="periodicidade" />
+                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
+                <ScalarProperty Name="dataGarantia" ColumnName="dataGarantia" />
+                <ScalarProperty Name="dataCompra" ColumnName="dataCompra" />
+                <ScalarProperty Name="dataPrevista" ColumnName="dataPrevista" />
+                <ScalarProperty Name="fabricante" ColumnName="fabricante" />
+                <ScalarProperty Name="grupo" ColumnName="grupo" />
+                <ScalarProperty Name="diaUtil" ColumnName="diaUtil" />
+                <ScalarProperty Name="patrimonio" ColumnName="patrimonio" />
+                <ScalarProperty Name="capacidade" ColumnName="capacidade" />
+                <ScalarProperty Name="modelo" ColumnName="modelo" />
+                <ScalarProperty Name="serie" ColumnName="serie" />
+                <ScalarProperty Name="nomePredio" ColumnName="nomePredio" />
+                <ScalarProperty Name="autonumeroPredio" ColumnName="autonumeroPredio" />
+                <ScalarProperty Name="nomeSetor" ColumnName="nomeSetor" />
+                <ScalarProperty Name="autonumeroSetor" ColumnName="autonumeroSetor" />
+                <ScalarProperty Name="nomeEquipe" ColumnName="nomeEquipe" />
+                <ScalarProperty Name="autonumeroEquipe" ColumnName="autonumeroEquipe" />
+                <ScalarProperty Name="nomeLocalFisico" ColumnName="nomeLocalFisico" />
+                <ScalarProperty Name="autonumeroLocalFisico" ColumnName="autonumeroLocalFisico" />
+                <ScalarProperty Name="nomeLocalAtendido" ColumnName="nomeLocalAtendido" />
+                <ScalarProperty Name="autonumeroLocalAtendido" ColumnName="autonumeroLocalAtendido" />
+                <ScalarProperty Name="nomeSubSistema" ColumnName="nomeSubSistema" />
+                <ScalarProperty Name="autonumeroSubSistema" ColumnName="autonumeroSubSistema" />
+                <ScalarProperty Name="nomeSistema" ColumnName="nomeSistema" />
+                <ScalarProperty Name="autonumeroSistema" ColumnName="autonumeroSistema" />
+                <ScalarProperty Name="endereco" ColumnName="endereco" />
+                <ScalarProperty Name="nomeCliente" ColumnName="nomeCliente" />
                 <ScalarProperty Name="autonumeroCliente" ColumnName="autonumeroCliente" />
                 <ScalarProperty Name="autonumero" ColumnName="autonumero" />
               </MappingFragment>

@@ -89,9 +89,9 @@ namespace apinovo
         public DbSet<checklisthistoricocivilitem> checklisthistoricocivilitem { get; set; }
         public DbSet<checklistveiculo> checklistveiculo { get; set; }
         public DbSet<tb_planilhafechada> tb_planilhafechada { get; set; }
-        public DbSet<tb_cadastro> tb_cadastro { get; set; }
         public DbSet<tb_cliente> tb_cliente { get; set; }
         public DbSet<checklisthistorico> checklisthistorico { get; set; }
         public DbSet<checklisthistoriconrofolha> checklisthistoriconrofolha { get; set; }
+        public DbSet<tb_cadastro> tb_cadastro { get; set; }
     }
 }

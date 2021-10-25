@@ -69,10 +69,10 @@
         <EntityTypeShape EntityType="manutModel.checklisthistoricocivilitem" Width="1.5" PointX="12.125" PointY="5.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.checklistveiculo" Width="1.5" PointX="15.75" PointY="5.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_planilhafechada" Width="1.5" PointX="6.5" PointY="1.75" IsExpanded="false" />
-        <EntityTypeShape EntityType="manutModel.tb_cadastro" Width="1.5" PointX="8.375" PointY="2.375" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_cliente" Width="1.5" PointX="10.375" PointY="2.375" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.checklisthistorico" Width="1.5" PointX="8" PointY="5.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.checklisthistoriconrofolha" Width="1.5" PointX="13.875" PointY="5.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="manutModel.tb_cadastro" Width="1.5" PointX="9.875" PointY="3.375" IsExpanded="false" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
