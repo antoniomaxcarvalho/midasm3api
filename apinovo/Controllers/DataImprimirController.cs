@@ -2491,10 +2491,10 @@ namespace apinovo.Controllers
                     {
                         local = HttpContext.Current.Server.MapPath("~/rpt/oServicoCFinal.rpt");
 
-                        if (qtdeItens > 30)
-                        {
+                        //if (qtdeItens > 30)
+                        //{
                             local = HttpContext.Current.Server.MapPath("~/rpt/oServicoCFinalMuitosItens.rpt");
-                        }
+                        //}
 
                     }
                     if (custoFinal == "F")

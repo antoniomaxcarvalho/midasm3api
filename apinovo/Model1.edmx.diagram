@@ -28,13 +28,11 @@
         <EntityTypeShape EntityType="manutModel.tb_fontes" Width="1.5" PointX="0.625" PointY="1.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_categoriaservico" Width="1.5" PointX="8.125" PointY="3.5" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_ordemservico" Width="1.5" PointX="6.5" PointY="2.375" IsExpanded="false" />
-        <EntityTypeShape EntityType="manutModel.tb_sistema" Width="1.5" PointX="4.5" PointY="3" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.grupotramitacao" Width="1.5" PointX="11.5" PointY="0.875" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tramitacao" Width="1.5" PointX="13.125" PointY="0.875" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.videoaula" Width="1.5" PointX="8.25" PointY="1.875" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.predio" Width="1.5" PointX="12" PointY="2.875" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.setor" Width="1.5" PointX="14" PointY="2.875" IsExpanded="false" />
-        <EntityTypeShape EntityType="manutModel.tb_subsistema" Width="1.5" PointX="9.5" PointY="4.125" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_subsistemacliente" Width="1.5" PointX="11.25" PointY="4.125" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.profissao" Width="1.5" PointX="4.5" PointY="4.75" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.pmoccivilcontingencia" Width="1.5" PointX="6.125" PointY="4.75" IsExpanded="false" />
@@ -67,12 +65,14 @@
         <EntityTypeShape EntityType="manutModel.checklisthistitemnrofolha" Width="1.5" PointX="6.125" PointY="5.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.checklisthistoricocivil" Width="1.5" PointX="10.125" PointY="5.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.checklisthistoricocivilitem" Width="1.5" PointX="12.125" PointY="5.25" IsExpanded="false" />
-        <EntityTypeShape EntityType="manutModel.checklistveiculo" Width="1.5" PointX="15.75" PointY="5.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="manutModel.checklistveiculo" Width="1.5" PointX="13.5" PointY="4.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_planilhafechada" Width="1.5" PointX="6.5" PointY="1.75" IsExpanded="false" />
-        <EntityTypeShape EntityType="manutModel.tb_cliente" Width="1.5" PointX="10.375" PointY="2.375" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.checklisthistorico" Width="1.5" PointX="8" PointY="5.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.checklisthistoriconrofolha" Width="1.5" PointX="13.875" PointY="5.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_cadastro" Width="1.5" PointX="9.875" PointY="3.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="manutModel.tb_sistema" Width="1.5" PointX="2.375" PointY="3.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="manutModel.tb_subsistema" Width="1.5" PointX="2.25" PointY="4.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="manutModel.tb_cliente" Width="1.5" PointX="8.375" PointY="2.375" IsExpanded="false" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

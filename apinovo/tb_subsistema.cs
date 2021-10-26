@@ -32,7 +32,7 @@ namespace apinovo
         public Nullable<sbyte> chkAno { get; set; }
         public Nullable<sbyte> chkSemestre { get; set; }
         public Nullable<sbyte> chkTrimestre { get; set; }
-        public string cancelado { get; set; }
         public string obsPmoc { get; set; }
+        public string cancelado { get; set; }
     }
 }

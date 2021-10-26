@@ -48,13 +48,11 @@ namespace apinovo
         public DbSet<tb_fontes> tb_fontes { get; set; }
         public DbSet<tb_categoriaservico> tb_categoriaservico { get; set; }
         public DbSet<tb_ordemservico> tb_ordemservico { get; set; }
-        public DbSet<tb_sistema> tb_sistema { get; set; }
         public DbSet<grupotramitacao> grupotramitacao { get; set; }
         public DbSet<tramitacao> tramitacao { get; set; }
         public DbSet<videoaula> videoaula { get; set; }
         public DbSet<predio> predio { get; set; }
         public DbSet<setor> setor { get; set; }
-        public DbSet<tb_subsistema> tb_subsistema { get; set; }
         public DbSet<tb_subsistemacliente> tb_subsistemacliente { get; set; }
         public DbSet<profissao> profissao { get; set; }
         public DbSet<pmoccivilcontingencia> pmoccivilcontingencia { get; set; }
@@ -89,9 +87,11 @@ namespace apinovo
         public DbSet<checklisthistoricocivilitem> checklisthistoricocivilitem { get; set; }
         public DbSet<checklistveiculo> checklistveiculo { get; set; }
         public DbSet<tb_planilhafechada> tb_planilhafechada { get; set; }
-        public DbSet<tb_cliente> tb_cliente { get; set; }
         public DbSet<checklisthistorico> checklisthistorico { get; set; }
         public DbSet<checklisthistoriconrofolha> checklisthistoriconrofolha { get; set; }
         public DbSet<tb_cadastro> tb_cadastro { get; set; }
+        public DbSet<tb_sistema> tb_sistema { get; set; }
+        public DbSet<tb_subsistema> tb_subsistema { get; set; }
+        public DbSet<tb_cliente> tb_cliente { get; set; }
     }
 }

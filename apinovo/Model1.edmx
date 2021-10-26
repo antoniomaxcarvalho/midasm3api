@@ -17,7 +17,7 @@
           <Property Name="autonumeroSubsistema" Type="int" />
           <Property Name="nomeSubSistema" Type="varchar" MaxLength="45" />
           <Property Name="item" Type="varchar" MaxLength="10" />
-          <Property Name="nome" Type="varchar" MaxLength="400" />
+          <Property Name="nome" Type="varchar" MaxLength="200" />
           <Property Name="d" Type="char" MaxLength="1" />
           <Property Name="e" Type="char" MaxLength="1" />
           <Property Name="q" Type="char" MaxLength="1" />
@@ -40,7 +40,7 @@
           <Property Name="nomeSubSistema" Type="varchar" MaxLength="45" />
           <Property Name="autonumeroCheckList" Type="int" />
           <Property Name="item" Type="varchar" MaxLength="10" />
-          <Property Name="nome" Type="varchar" MaxLength="400" />
+          <Property Name="nome" Type="varchar" MaxLength="300" />
           <Property Name="d" Type="char" MaxLength="1" />
           <Property Name="e" Type="char" MaxLength="1" />
           <Property Name="q" Type="char" MaxLength="1" />
@@ -62,7 +62,7 @@
           <Property Name="autonumeroSubSistema" Type="int" />
           <Property Name="contadorPmocEquipamento" Type="bigint" />
           <Property Name="item" Type="varchar" MaxLength="10" />
-          <Property Name="nome" Type="varchar" MaxLength="400" />
+          <Property Name="nome" Type="varchar" MaxLength="300" />
           <Property Name="d" Type="char" MaxLength="1" />
           <Property Name="e" Type="char" MaxLength="1" />
           <Property Name="q" Type="char" MaxLength="1" />
@@ -747,7 +747,7 @@
           <Property Name="autonumero" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="autonumeroCliente" Type="int" />
           <Property Name="nome" Type="varchar" MaxLength="70" />
-          <Property Name="nomeCliente" Type="varchar" MaxLength="45" />
+          <Property Name="nomeCliente" Type="varchar" MaxLength="60" />
           <Property Name="cancelado" Type="char" MaxLength="1" />
         </EntityType>
         <EntityType Name="tb_local_fisico">
@@ -802,7 +802,7 @@
           <Property Name="autonumeroPlanilhaFechada" Type="bigint" />
           <Property Name="item" Type="bigint" />
           <Property Name="codigo" Type="varchar" MaxLength="20" />
-          <Property Name="nome" Type="varchar" MaxLength="330" />
+          <Property Name="nome" Type="varchar" MaxLength="600" />
           <Property Name="unidade" Type="varchar" MaxLength="6" />
           <Property Name="preco" Type="decimal" Precision="10" Scale="2" />
           <Property Name="qtdeContratada" Type="decimal" Precision="10" Scale="4" />
@@ -1012,7 +1012,7 @@
           <Property Name="item" Type="bigint" Nullable="false" />
           <Property Name="codigo" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="nome" Type="varchar" MaxLength="1050" Nullable="false" />
-          <Property Name="unidade" Type="varchar" MaxLength="6" Nullable="false" />
+          <Property Name="unidade" Type="varchar" MaxLength="8" Nullable="false" />
           <Property Name="qtdeContratada" Type="decimal" Precision="10" Scale="4" Nullable="false" />
           <Property Name="preco" Type="decimal" Precision="10" Scale="3" Nullable="false" />
           <Property Name="estoque" Type="decimal" Precision="10" Scale="4" Nullable="false" />
@@ -1118,8 +1118,8 @@
           <Property Name="chkAno" Type="tinyint" />
           <Property Name="chkSemestre" Type="tinyint" />
           <Property Name="chkTrimestre" Type="tinyint" />
-          <Property Name="cancelado" Type="char" MaxLength="1" />
           <Property Name="obsPmoc" Type="varchar" MaxLength="200" />
+          <Property Name="cancelado" Type="char" MaxLength="1" />
         </EntityType>
         <EntityType Name="tb_subsistemacliente">
           <Key>
@@ -1329,13 +1329,11 @@
           <EntitySet Name="tb_fontes" EntityType="manutModel.tb_fontes" />
           <EntitySet Name="tb_categoriaservico" EntityType="manutModel.tb_categoriaservico" />
           <EntitySet Name="tb_ordemservico" EntityType="manutModel.tb_ordemservico" />
-          <EntitySet Name="tb_sistema" EntityType="manutModel.tb_sistema" />
           <EntitySet Name="grupotramitacao" EntityType="manutModel.grupotramitacao" />
           <EntitySet Name="tramitacao" EntityType="manutModel.tramitacao" />
           <EntitySet Name="videoaula" EntityType="manutModel.videoaula" />
           <EntitySet Name="predio" EntityType="manutModel.predio" />
           <EntitySet Name="setor" EntityType="manutModel.setor" />
-          <EntitySet Name="tb_subsistema" EntityType="manutModel.tb_subsistema" />
           <EntitySet Name="tb_subsistemacliente" EntityType="manutModel.tb_subsistemacliente" />
           <EntitySet Name="profissao" EntityType="manutModel.profissao" />
           <EntitySet Name="pmoccivilcontingencia" EntityType="manutModel.pmoccivilcontingencia" />
@@ -1370,10 +1368,12 @@
           <EntitySet Name="checklisthistoricocivilitem" EntityType="manutModel.checklisthistoricocivilitem" />
           <EntitySet Name="checklistveiculo" EntityType="manutModel.checklistveiculo" />
           <EntitySet Name="tb_planilhafechada" EntityType="manutModel.tb_planilhafechada" />
-          <EntitySet Name="tb_cliente" EntityType="manutModel.tb_cliente" />
           <EntitySet Name="checklisthistorico" EntityType="manutModel.checklisthistorico" />
           <EntitySet Name="checklisthistoriconrofolha" EntityType="manutModel.checklisthistoriconrofolha" />
           <EntitySet Name="tb_cadastro" EntityType="manutModel.tb_cadastro" />
+          <EntitySet Name="tb_sistema" EntityType="manutModel.tb_sistema" />
+          <EntitySet Name="tb_subsistema" EntityType="manutModel.tb_subsistema" />
+          <EntitySet Name="tb_cliente" EntityType="manutModel.tb_cliente" />
         </EntityContainer>
         <EntityType Name="tb_tipo_usuario">
           <Key>
@@ -1601,14 +1601,6 @@
           <Property Name="medicao" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="local" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="tb_sistema">
-          <Key>
-            <PropertyRef Name="autonumero" />
-          </Key>
-          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="nome" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="grupotramitacao">
           <Key>
             <PropertyRef Name="autonumero" />
@@ -1671,31 +1663,6 @@
           <Property Name="nome" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
           <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="contadorPmocCivil" Type="Int64" />
-        </EntityType>
-        <EntityType Name="tb_subsistema">
-          <Key>
-            <PropertyRef Name="autonumero" />
-          </Key>
-          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="autonumeroSistema" Type="Int32" Nullable="false" />
-          <Property Name="nome" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="nomeSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroEquipe" Type="Int32" />
-          <Property Name="nomeEquipe" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="qtdePorGrupoRelatorio" Type="Int32" />
-          <Property Name="qtdeAtendidaEquipePorDia" Type="Int32" />
-          <Property Name="autonumeroEquipe2" Type="Int32" />
-          <Property Name="nomeEquipe2" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="anual" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="semestre" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Name="trimestre" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
-          <Property Name="chkTodoMes" Type="SByte" />
-          <Property Name="mesesParaCalcular" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="chkAno" Type="SByte" />
-          <Property Name="chkSemestre" Type="SByte" />
-          <Property Name="chkTrimestre" Type="SByte" />
-          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="obsPmoc" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="tb_subsistemacliente">
           <Key>
@@ -2342,47 +2309,6 @@
           <Property Name="qtdeCustoFixo" Type="Decimal" Nullable="false" />
           <Property Name="qtdeUsada" Type="Decimal" Nullable="false" />
         </EntityType>
-        <EntityType Name="tb_cliente">
-          <Key>
-            <PropertyRef Name="autonumero" />
-          </Key>
-          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="sigla" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="nome" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
-          <Property Name="contrato" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="cep" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
-          <Property Name="endereco" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
-          <Property Name="numero" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="complemento" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="cidade" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="estado" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="email" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
-          <Property Name="telefone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="contato" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="dataInicio" Type="DateTime" />
-          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="dataBase" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="bdiServico" Type="Double" />
-          <Property Name="bdiMaterial" Type="Double" />
-          <Property Name="contadorOs" Type="Int64" />
-          <Property Name="dataLimite" Type="DateTime" />
-          <Property Name="planilhaFechada" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="prazoInicialMeses" Type="Int32" />
-          <Property Name="prorrogacoesMeses" Type="Int32" />
-          <Property Name="reducao" Type="Decimal" />
-          <Property Name="contadorOrcamento" Type="Int64" />
-          <Property Name="margem" Type="Decimal" Nullable="false" />
-          <Property Name="qtdeCustoFixoEtapa" Type="Decimal" Nullable="false" />
-          <Property Name="obra" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="contadorOrdemServico" Type="Int64" />
-          <Property Name="cap" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="processo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="prazoInicialDias" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="acrescimoEstoque" Type="Decimal" />
-          <Property Name="contadorPmocCivil" Type="Int64" />
-          <Property Name="contadorPmocEquipamento" Type="Int64" />
-          <Property Name="informacoesPMOC" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="checklisthistorico">
           <Key>
             <PropertyRef Name="autonumero" />
@@ -2556,6 +2482,80 @@
           <Property Name="ano10" Type="SByte" />
           <Property Name="ano11" Type="SByte" />
           <Property Name="ano12" Type="SByte" />
+        </EntityType>
+        <EntityType Name="tb_sistema">
+          <Key>
+            <PropertyRef Name="autonumero" />
+          </Key>
+          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nome" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tb_subsistema">
+          <Key>
+            <PropertyRef Name="autonumero" />
+          </Key>
+          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="autonumeroSistema" Type="Int32" Nullable="false" />
+          <Property Name="nome" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="nomeSistema" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroEquipe" Type="Int32" />
+          <Property Name="nomeEquipe" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="qtdePorGrupoRelatorio" Type="Int32" />
+          <Property Name="qtdeAtendidaEquipePorDia" Type="Int32" />
+          <Property Name="autonumeroEquipe2" Type="Int32" />
+          <Property Name="nomeEquipe2" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="anual" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="semestre" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="trimestre" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="chkTodoMes" Type="SByte" />
+          <Property Name="mesesParaCalcular" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="chkAno" Type="SByte" />
+          <Property Name="chkSemestre" Type="SByte" />
+          <Property Name="chkTrimestre" Type="SByte" />
+          <Property Name="obsPmoc" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tb_cliente">
+          <Key>
+            <PropertyRef Name="autonumero" />
+          </Key>
+          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="sigla" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="nome" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="contrato" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="cep" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="endereco" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="numero" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="complemento" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="cidade" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="estado" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="telefone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="contato" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="dataInicio" Type="DateTime" />
+          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="dataBase" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="bdiServico" Type="Double" />
+          <Property Name="bdiMaterial" Type="Double" />
+          <Property Name="contadorOs" Type="Int64" />
+          <Property Name="dataLimite" Type="DateTime" />
+          <Property Name="planilhaFechada" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="prazoInicialMeses" Type="Int32" />
+          <Property Name="prorrogacoesMeses" Type="Int32" />
+          <Property Name="reducao" Type="Decimal" />
+          <Property Name="contadorOrcamento" Type="Int64" />
+          <Property Name="margem" Type="Decimal" Nullable="false" />
+          <Property Name="qtdeCustoFixoEtapa" Type="Decimal" Nullable="false" />
+          <Property Name="obra" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="contadorOrdemServico" Type="Int64" />
+          <Property Name="cap" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="processo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="prazoInicialDias" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="acrescimoEstoque" Type="Decimal" />
+          <Property Name="contadorPmocCivil" Type="Int64" />
+          <Property Name="contadorPmocEquipamento" Type="Int64" />
+          <Property Name="informacoesPMOC" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2833,15 +2833,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tb_sistema">
-            <EntityTypeMapping TypeName="manutModel.tb_sistema">
-              <MappingFragment StoreEntitySet="tb_sistema">
-                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
-                <ScalarProperty Name="nome" ColumnName="nome" />
-                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="grupotramitacao">
             <EntityTypeMapping TypeName="manutModel.grupotramitacao">
               <MappingFragment StoreEntitySet="grupotramitacao">
@@ -2906,32 +2897,6 @@
                 <ScalarProperty Name="autonumeroPredio" ColumnName="autonumeroPredio" />
                 <ScalarProperty Name="nomeCliente" ColumnName="nomeCliente" />
                 <ScalarProperty Name="autonumeroCliente" ColumnName="autonumeroCliente" />
-                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tb_subsistema">
-            <EntityTypeMapping TypeName="manutModel.tb_subsistema">
-              <MappingFragment StoreEntitySet="tb_subsistema">
-                <ScalarProperty Name="obsPmoc" ColumnName="obsPmoc" />
-                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
-                <ScalarProperty Name="chkTrimestre" ColumnName="chkTrimestre" />
-                <ScalarProperty Name="chkSemestre" ColumnName="chkSemestre" />
-                <ScalarProperty Name="chkAno" ColumnName="chkAno" />
-                <ScalarProperty Name="mesesParaCalcular" ColumnName="mesesParaCalcular" />
-                <ScalarProperty Name="chkTodoMes" ColumnName="chkTodoMes" />
-                <ScalarProperty Name="trimestre" ColumnName="trimestre" />
-                <ScalarProperty Name="semestre" ColumnName="semestre" />
-                <ScalarProperty Name="anual" ColumnName="anual" />
-                <ScalarProperty Name="nomeEquipe2" ColumnName="nomeEquipe2" />
-                <ScalarProperty Name="autonumeroEquipe2" ColumnName="autonumeroEquipe2" />
-                <ScalarProperty Name="qtdeAtendidaEquipePorDia" ColumnName="qtdeAtendidaEquipePorDia" />
-                <ScalarProperty Name="qtdePorGrupoRelatorio" ColumnName="qtdePorGrupoRelatorio" />
-                <ScalarProperty Name="nomeEquipe" ColumnName="nomeEquipe" />
-                <ScalarProperty Name="autonumeroEquipe" ColumnName="autonumeroEquipe" />
-                <ScalarProperty Name="nomeSistema" ColumnName="nomeSistema" />
-                <ScalarProperty Name="nome" ColumnName="nome" />
-                <ScalarProperty Name="autonumeroSistema" ColumnName="autonumeroSistema" />
                 <ScalarProperty Name="autonumero" ColumnName="autonumero" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -3614,48 +3579,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tb_cliente">
-            <EntityTypeMapping TypeName="manutModel.tb_cliente">
-              <MappingFragment StoreEntitySet="tb_cliente">
-                <ScalarProperty Name="informacoesPMOC" ColumnName="informacoesPMOC" />
-                <ScalarProperty Name="contadorPmocEquipamento" ColumnName="contadorPmocEquipamento" />
-                <ScalarProperty Name="contadorPmocCivil" ColumnName="contadorPmocCivil" />
-                <ScalarProperty Name="acrescimoEstoque" ColumnName="acrescimoEstoque" />
-                <ScalarProperty Name="prazoInicialDias" ColumnName="prazoInicialDias" />
-                <ScalarProperty Name="processo" ColumnName="processo" />
-                <ScalarProperty Name="cap" ColumnName="cap" />
-                <ScalarProperty Name="contadorOrdemServico" ColumnName="contadorOrdemServico" />
-                <ScalarProperty Name="obra" ColumnName="obra" />
-                <ScalarProperty Name="qtdeCustoFixoEtapa" ColumnName="qtdeCustoFixoEtapa" />
-                <ScalarProperty Name="margem" ColumnName="margem" />
-                <ScalarProperty Name="contadorOrcamento" ColumnName="contadorOrcamento" />
-                <ScalarProperty Name="reducao" ColumnName="reducao" />
-                <ScalarProperty Name="prorrogacoesMeses" ColumnName="prorrogacoesMeses" />
-                <ScalarProperty Name="prazoInicialMeses" ColumnName="prazoInicialMeses" />
-                <ScalarProperty Name="planilhaFechada" ColumnName="planilhaFechada" />
-                <ScalarProperty Name="dataLimite" ColumnName="dataLimite" />
-                <ScalarProperty Name="contadorOs" ColumnName="contadorOs" />
-                <ScalarProperty Name="bdiMaterial" ColumnName="bdiMaterial" />
-                <ScalarProperty Name="bdiServico" ColumnName="bdiServico" />
-                <ScalarProperty Name="dataBase" ColumnName="dataBase" />
-                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
-                <ScalarProperty Name="dataInicio" ColumnName="dataInicio" />
-                <ScalarProperty Name="contato" ColumnName="contato" />
-                <ScalarProperty Name="telefone" ColumnName="telefone" />
-                <ScalarProperty Name="email" ColumnName="email" />
-                <ScalarProperty Name="estado" ColumnName="estado" />
-                <ScalarProperty Name="cidade" ColumnName="cidade" />
-                <ScalarProperty Name="complemento" ColumnName="complemento" />
-                <ScalarProperty Name="numero" ColumnName="numero" />
-                <ScalarProperty Name="endereco" ColumnName="endereco" />
-                <ScalarProperty Name="cep" ColumnName="cep" />
-                <ScalarProperty Name="contrato" ColumnName="contrato" />
-                <ScalarProperty Name="nome" ColumnName="nome" />
-                <ScalarProperty Name="sigla" ColumnName="sigla" />
-                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="checklisthistorico">
             <EntityTypeMapping TypeName="manutModel.checklisthistorico">
               <MappingFragment StoreEntitySet="checklisthistorico">
@@ -3829,6 +3752,83 @@
                 <ScalarProperty Name="endereco" ColumnName="endereco" />
                 <ScalarProperty Name="nomeCliente" ColumnName="nomeCliente" />
                 <ScalarProperty Name="autonumeroCliente" ColumnName="autonumeroCliente" />
+                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_sistema">
+            <EntityTypeMapping TypeName="manutModel.tb_sistema">
+              <MappingFragment StoreEntitySet="tb_sistema">
+                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
+                <ScalarProperty Name="nome" ColumnName="nome" />
+                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_subsistema">
+            <EntityTypeMapping TypeName="manutModel.tb_subsistema">
+              <MappingFragment StoreEntitySet="tb_subsistema">
+                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
+                <ScalarProperty Name="obsPmoc" ColumnName="obsPmoc" />
+                <ScalarProperty Name="chkTrimestre" ColumnName="chkTrimestre" />
+                <ScalarProperty Name="chkSemestre" ColumnName="chkSemestre" />
+                <ScalarProperty Name="chkAno" ColumnName="chkAno" />
+                <ScalarProperty Name="mesesParaCalcular" ColumnName="mesesParaCalcular" />
+                <ScalarProperty Name="chkTodoMes" ColumnName="chkTodoMes" />
+                <ScalarProperty Name="trimestre" ColumnName="trimestre" />
+                <ScalarProperty Name="semestre" ColumnName="semestre" />
+                <ScalarProperty Name="anual" ColumnName="anual" />
+                <ScalarProperty Name="nomeEquipe2" ColumnName="nomeEquipe2" />
+                <ScalarProperty Name="autonumeroEquipe2" ColumnName="autonumeroEquipe2" />
+                <ScalarProperty Name="qtdeAtendidaEquipePorDia" ColumnName="qtdeAtendidaEquipePorDia" />
+                <ScalarProperty Name="qtdePorGrupoRelatorio" ColumnName="qtdePorGrupoRelatorio" />
+                <ScalarProperty Name="nomeEquipe" ColumnName="nomeEquipe" />
+                <ScalarProperty Name="autonumeroEquipe" ColumnName="autonumeroEquipe" />
+                <ScalarProperty Name="nomeSistema" ColumnName="nomeSistema" />
+                <ScalarProperty Name="nome" ColumnName="nome" />
+                <ScalarProperty Name="autonumeroSistema" ColumnName="autonumeroSistema" />
+                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_cliente">
+            <EntityTypeMapping TypeName="manutModel.tb_cliente">
+              <MappingFragment StoreEntitySet="tb_cliente">
+                <ScalarProperty Name="informacoesPMOC" ColumnName="informacoesPMOC" />
+                <ScalarProperty Name="contadorPmocEquipamento" ColumnName="contadorPmocEquipamento" />
+                <ScalarProperty Name="contadorPmocCivil" ColumnName="contadorPmocCivil" />
+                <ScalarProperty Name="acrescimoEstoque" ColumnName="acrescimoEstoque" />
+                <ScalarProperty Name="prazoInicialDias" ColumnName="prazoInicialDias" />
+                <ScalarProperty Name="processo" ColumnName="processo" />
+                <ScalarProperty Name="cap" ColumnName="cap" />
+                <ScalarProperty Name="contadorOrdemServico" ColumnName="contadorOrdemServico" />
+                <ScalarProperty Name="obra" ColumnName="obra" />
+                <ScalarProperty Name="qtdeCustoFixoEtapa" ColumnName="qtdeCustoFixoEtapa" />
+                <ScalarProperty Name="margem" ColumnName="margem" />
+                <ScalarProperty Name="contadorOrcamento" ColumnName="contadorOrcamento" />
+                <ScalarProperty Name="reducao" ColumnName="reducao" />
+                <ScalarProperty Name="prorrogacoesMeses" ColumnName="prorrogacoesMeses" />
+                <ScalarProperty Name="prazoInicialMeses" ColumnName="prazoInicialMeses" />
+                <ScalarProperty Name="planilhaFechada" ColumnName="planilhaFechada" />
+                <ScalarProperty Name="dataLimite" ColumnName="dataLimite" />
+                <ScalarProperty Name="contadorOs" ColumnName="contadorOs" />
+                <ScalarProperty Name="bdiMaterial" ColumnName="bdiMaterial" />
+                <ScalarProperty Name="bdiServico" ColumnName="bdiServico" />
+                <ScalarProperty Name="dataBase" ColumnName="dataBase" />
+                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
+                <ScalarProperty Name="dataInicio" ColumnName="dataInicio" />
+                <ScalarProperty Name="contato" ColumnName="contato" />
+                <ScalarProperty Name="telefone" ColumnName="telefone" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+                <ScalarProperty Name="cidade" ColumnName="cidade" />
+                <ScalarProperty Name="complemento" ColumnName="complemento" />
+                <ScalarProperty Name="numero" ColumnName="numero" />
+                <ScalarProperty Name="endereco" ColumnName="endereco" />
+                <ScalarProperty Name="cep" ColumnName="cep" />
+                <ScalarProperty Name="contrato" ColumnName="contrato" />
+                <ScalarProperty Name="nome" ColumnName="nome" />
+                <ScalarProperty Name="sigla" ColumnName="sigla" />
                 <ScalarProperty Name="autonumero" ColumnName="autonumero" />
               </MappingFragment>
             </EntityTypeMapping>
