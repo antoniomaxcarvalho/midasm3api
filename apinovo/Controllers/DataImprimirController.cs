@@ -2547,6 +2547,8 @@ namespace apinovo.Controllers
 
                         rd.SetParameterValue("p1", qtde.ToString());
 
+                        var xxx = "  { tb_ordemservico1.cancelado }  <> 'S' and  { tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and { tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
+
                         rd.RecordSelectionFormula = " {tb_ordemservico1.cancelado}  <> 'S' and  {tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and {tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
 
 
