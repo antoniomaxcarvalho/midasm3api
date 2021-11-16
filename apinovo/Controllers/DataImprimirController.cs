@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Data.Entity.Migrations;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -2469,8 +2470,12 @@ namespace apinovo.Controllers
                                  select p).ToList();
 
                     qtde = ordem.Count();
-                    valorOs = Convert.ToDecimal(ordem[0].valor);
+                    //Debug.WriteLine(qtde);
+                    valorOs = Convert.ToDecimal((from p in dc.tb_os.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.codigoOrdemServico == codigoOrdemServico.Trim())
+                                                             select p).ToList().Sum(p=> p.valor));
                 }
+
+                //Debug.WriteLine(valorOs);
 
                 using (var dc = new manutEntities())
                 {
@@ -2523,13 +2528,14 @@ namespace apinovo.Controllers
 
                         var xx = " {tb_os_itens1.quantidadePF} > 0 and {tb_ordemservico1.cancelado}  <> 'S'  and {tb_os_itens1.cancelado} <> 'S' and  {tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and {tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
 
+                        //Debug.WriteLine(xx);
 
                         rd.Load(local);
 
                         rd.SetParameterValue("p1", qtde.ToString());
                         //rd.OpenSubreport("SCO").RecordSelectionFormula = "";
 
-
+                        //*Debug.WriteLine(local);
                         rd.RecordSelectionFormula = " {tb_os_itens1.quantidadePF} > 0 and {tb_ordemservico1.cancelado}  <> 'S'  and {tb_os_itens1.cancelado} <> 'S' and  {tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and {tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
 
                         //  var filtroDoSubReport = "{tb_os_itens1.autonumeroCliente} = {?Pm-tb_ordemservico1.autonumeroCliente} and " +
@@ -2548,7 +2554,8 @@ namespace apinovo.Controllers
                         rd.SetParameterValue("p1", qtde.ToString());
 
                         var xxx = "  { tb_ordemservico1.cancelado }  <> 'S' and  { tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and { tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
-
+                        //Debug.WriteLine(xxx);
+                        //Debug.WriteLine(local);
                         rd.RecordSelectionFormula = " {tb_ordemservico1.cancelado}  <> 'S' and  {tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and {tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
 
 
