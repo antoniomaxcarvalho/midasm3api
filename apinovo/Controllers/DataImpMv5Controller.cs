@@ -1,12 +1,7 @@
 ﻿using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
 using System;
-using System.Data.Entity.Migrations;
-using System.Data.Entity.Validation;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web.Http.Cors;
 using System.Web.Mvc;
 //using Adm.Cors;
 
@@ -22,59 +17,69 @@ namespace apinovo.Controllers
             // Quando for Criar uma Pasta para colocar o relatorios, será necessario configurar o IIS7
             // para poder ler a Pasta RPT.
 
-
-            var message = String.Empty;
-
-
-            using (var rd = new ReportDocument())
+            try
             {
+                var message = String.Empty;
 
-                var local = Server.MapPath("../Rpt/EstoqueWeb.rpt");
-                if (System.IO.File.Exists(local))
+
+                using (var rd = new ReportDocument())
                 {
 
-                    switch (modelo)
+                    var local = Server.MapPath("../Rpt/EstoqueWeb.rpt");
+                    if (System.IO.File.Exists(local))
                     {
-                        case "G":
-                            {
-                                local = Server.MapPath("../Rpt/EstoqueWeb.rpt");
-                                break;
-                            }
-                        case "S":
-                            {
-                                local = Server.MapPath("../Rpt/EstoqueWebSetorSintetico.rpt");
-                                break;
-                            }
-                        case "F":
-                            {
-                                local = Server.MapPath("../Rpt/EstoqueWebFornecedor.rpt");
-                                break;
-                            }
 
+                        switch (modelo)
+                        {
+                            case "G":
+                                {
+                                    local = Server.MapPath("../Rpt/EstoqueWeb.rpt");
+                                    break;
+                                }
+                            case "S":
+                                {
+                                    local = Server.MapPath("../Rpt/EstoqueWebSetorSintetico.rpt");
+                                    break;
+                                }
+                            case "F":
+                                {
+                                    local = Server.MapPath("../Rpt/EstoqueWebFornecedor.rpt");
+                                    break;
+                                }
+
+                        }
                     }
+
+
+
+
+
+                    rd.Load(local);
+
+
+
+
+                    Response.Buffer = false;
+                    Response.ClearContent();
+                    Response.ClearHeaders();
+
+                    Stream stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    rd.Close();
+                    rd.Dispose();
+                    return File(stream, "application/pdf", "pedido.pdf");
+
                 }
-
-
-
-
-
-                rd.Load(local);
-
-
-
-
-                Response.Buffer = false;
-                Response.ClearContent();
-                Response.ClearHeaders();
-
-                Stream stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
-                stream.Seek(0, SeekOrigin.Begin);
-
-                rd.Close();
-                rd.Dispose();
-                return File(stream, "application/pdf", "pedido.pdf");
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
 
             }
+
         }
 
     }

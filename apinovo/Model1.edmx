@@ -537,7 +537,7 @@
           <Property Name="dataGarantia" Type="date" />
           <Property Name="cancelado" Type="char" MaxLength="1" />
           <Property Name="periodicidade" Type="int" />
-          <Property Name="mesManuAno" Type="varchar" MaxLength="10" />
+          <Property Name="mesManuAno" Type="varchar" MaxLength="2" />
           <Property Name="mesManuSem01" Type="varchar" MaxLength="2" />
           <Property Name="mesManuSem02" Type="varchar" MaxLength="2" />
           <Property Name="mesManuTri01" Type="varchar" MaxLength="2" />
@@ -1118,8 +1118,8 @@
           <Property Name="chkAno" Type="tinyint" />
           <Property Name="chkSemestre" Type="tinyint" />
           <Property Name="chkTrimestre" Type="tinyint" />
-          <Property Name="obsPmoc" Type="varchar" MaxLength="200" />
           <Property Name="cancelado" Type="char" MaxLength="1" />
+          <Property Name="obsPmoc" Type="varchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="tb_subsistemacliente">
           <Key>

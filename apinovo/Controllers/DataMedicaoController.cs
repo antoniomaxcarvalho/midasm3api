@@ -633,12 +633,12 @@ namespace apinovo.Controllers
                 // Atualizar Tb_ordemservico  -----------------------------------------------------------------------------------------
 
 
-                var ordem = from p in dc.tb_ordemservico.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" &&
+                var ordem = (from p in dc.tb_ordemservico.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" &&
                            a.dataEmissao >= dataInicioMedicao && a.dataEmissao <= dataFimMedicao)
-                            select p;
+                            select p).ToList();
 
                 // Debug.WriteLine(ordem.Count());
-                ordem.ToList().ForEach(x =>
+                ordem.ForEach(x =>
                 {
                     x.etapa = etapa;
                     x.medicao = medicao;
@@ -650,7 +650,7 @@ namespace apinovo.Controllers
 
                 // Debug.WriteLine(1111111);
                 //dc.tb_ordemservico.Where(x => x.medicao == medicao && x.etapa == etapa && x.cancelado != "S" && x.autonumeroCliente == autonumeroCliente).ToList().ForEach(x =>
-                ordem.ToList().ForEach(x =>
+                ordem.ForEach(x =>
                 {
 
                     Debug.WriteLine(x.codigoOs);
@@ -965,9 +965,9 @@ namespace apinovo.Controllers
                                       i,
                                       k
 
-                                  });
+                                  }).ToList();
 
-                    itens3.ToList().ForEach(x =>
+                    itens3.ForEach(x =>
                     {
                         x.i.etapa = etapa;
                         x.i.medicao = medicao;
@@ -1084,8 +1084,8 @@ namespace apinovo.Controllers
                                           {
                                               i,
                                               k
-                                          });
-                            itens3.ToList().ForEach(x =>
+                                          }).ToList();
+                            itens3.ForEach(x =>
                             {
                                 x.i.etapa = "";
                                 x.i.medicao = "";
@@ -1097,10 +1097,10 @@ namespace apinovo.Controllers
                             // FIM - LIMPAR Tb_os e Tb_os_itens com p nro da etapa e medicao -----------------------------------------------
 
                             // LIMPAR Tb_ordemservico  -----------------------------------------------------------------------------------------
-                            var ordem = from p in dc.tb_ordemservico.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" &&
+                            var ordem = (from p in dc.tb_ordemservico.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" &&
                                         a.medicao == medicao && a.etapa == etapa)
-                                        select p;
-                            ordem.ToList().ForEach(x =>
+                                        select p).ToList();
+                            ordem.ForEach(x =>
                             {
                                 x.etapa = "";
                                 x.medicao = "";
@@ -1393,12 +1393,11 @@ namespace apinovo.Controllers
                                 {
                                     autonumero = (int)i.autonumeroSistema,
                                     nome = i.nomeSistema
-                                }).Distinct();
+                                }).Distinct().ToList();
 
-                return resposta.ToList();
+                return resposta;
             }
         }
-
 
         [HttpPost]
         public HttpResponseMessage RelatorioFotografico()

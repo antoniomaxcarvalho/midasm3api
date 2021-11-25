@@ -9,7 +9,6 @@ using System;
 using System.Collections;
 using System.Data.Entity.Migrations;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -32,48 +31,59 @@ namespace apinovo.Controllers
         public HttpResponseMessage ImprimirOs(string codigoOs, string modelo, string valor, string semBdioS)
         {
             var c = 1;
-            using (var rd = new ReportDocument())
+            try
             {
-                var Response = HttpContext.Current.ApplicationInstance.Response;
-                var local = HttpContext.Current.Server.MapPath("~/rpt/os.rpt");
-
-                if (semBdioS == "S")
+                using (var rd = new ReportDocument())
                 {
-                    local = HttpContext.Current.Server.MapPath("~/rpt/osSemBdi.rpt");
+                    var Response = HttpContext.Current.ApplicationInstance.Response;
+                    var local = HttpContext.Current.Server.MapPath("~/rpt/os.rpt");
+
+                    if (semBdioS == "S")
+                    {
+                        local = HttpContext.Current.Server.MapPath("~/rpt/osSemBdi.rpt");
+                    }
+
+                    if (Convert.ToDecimal(valor) == 0m)
+                    {
+                        local = HttpContext.Current.Server.MapPath("~/rpt/osSemValor.rpt");
+                    }
+
+                    //var filtro = " {tb_os_itens1.cancelado} <> 'S' ";
+
+                    rd.Load(local);
+                    rd.SetParameterValue("p1", codigoOs);
+                    rd.SetParameterValue("p2", modelo);
+
+                    //rd.RecordSelectionFormula = filtro;
+
+                    Response.Buffer = false;
+                    Response.ClearContent();
+                    Response.ClearHeaders();
+
+                    var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    ////75 is my print job limit.
+                    //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
+                    //return CreateReport(reportClass);
+
+                    rd.Close();
+                    rd.Dispose();
+
+                    var resp = Request.CreateResponse(HttpStatusCode.OK);
+                    resp.Content = new StreamContent(stream);
+                    return resp;
+
                 }
-
-                if (Convert.ToDecimal(valor) == 0m)
-                {
-                    local = HttpContext.Current.Server.MapPath("~/rpt/osSemValor.rpt");
-                }
-
-                //var filtro = " {tb_os_itens1.cancelado} <> 'S' ";
-
-                rd.Load(local);
-                rd.SetParameterValue("p1", codigoOs);
-                rd.SetParameterValue("p2", modelo);
-
-                //rd.RecordSelectionFormula = filtro;
-
-                Response.Buffer = false;
-                Response.ClearContent();
-                Response.ClearHeaders();
-
-                var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
-                stream.Seek(0, SeekOrigin.Begin);
-
-                ////75 is my print job limit.
-                //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
-                //return CreateReport(reportClass);
-
-                rd.Close();
-                rd.Dispose();
-
-                var resp = Request.CreateResponse(HttpStatusCode.OK);
-                resp.Content = new StreamContent(stream);
-                return resp;
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
 
             }
+
 
         }
 
@@ -81,45 +91,56 @@ namespace apinovo.Controllers
         [HttpGet]
         public HttpResponseMessage ImprimirOsItensImportados(string codigoOs, string modelo, string valor)
         {
-
-            using (var rd = new ReportDocument())
+            try
             {
-                var Response = HttpContext.Current.ApplicationInstance.Response;
 
-                var local = HttpContext.Current.Server.MapPath("~/rpt/osItemInformado.rpt");
-
-                if (Convert.ToDecimal(valor) == 0m)
+                using (var rd = new ReportDocument())
                 {
-                    local = HttpContext.Current.Server.MapPath("~/rpt/osSemValor.rpt");
+                    var Response = HttpContext.Current.ApplicationInstance.Response;
+
+                    var local = HttpContext.Current.Server.MapPath("~/rpt/osItemInformado.rpt");
+
+                    if (Convert.ToDecimal(valor) == 0m)
+                    {
+                        local = HttpContext.Current.Server.MapPath("~/rpt/osSemValor.rpt");
+                    }
+
+                    //var filtro = " {tb_os_itens1.cancelado} <> 'S' ";
+
+                    rd.Load(local);
+                    rd.SetParameterValue("p1", codigoOs);
+                    rd.SetParameterValue("p2", modelo);
+
+                    //rd.RecordSelectionFormula = filtro;
+
+                    Response.Buffer = false;
+                    Response.ClearContent();
+                    Response.ClearHeaders();
+
+                    var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    ////75 is my print job limit.
+                    //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
+                    //return CreateReport(reportClass);
+
+                    rd.Close();
+                    rd.Dispose();
+
+                    var resp = Request.CreateResponse(HttpStatusCode.OK);
+                    resp.Content = new StreamContent(stream);
+                    return resp;
+
                 }
-
-                //var filtro = " {tb_os_itens1.cancelado} <> 'S' ";
-
-                rd.Load(local);
-                rd.SetParameterValue("p1", codigoOs);
-                rd.SetParameterValue("p2", modelo);
-
-                //rd.RecordSelectionFormula = filtro;
-
-                Response.Buffer = false;
-                Response.ClearContent();
-                Response.ClearHeaders();
-
-                var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
-                stream.Seek(0, SeekOrigin.Begin);
-
-                ////75 is my print job limit.
-                //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
-                //return CreateReport(reportClass);
-
-                rd.Close();
-                rd.Dispose();
-
-                var resp = Request.CreateResponse(HttpStatusCode.OK);
-                resp.Content = new StreamContent(stream);
-                return resp;
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
 
             }
+
 
         }
 
@@ -1747,9 +1768,6 @@ namespace apinovo.Controllers
                         return resp;
                     }
 
-
-
-
                 }
 
 
@@ -2228,46 +2246,56 @@ namespace apinovo.Controllers
         [HttpGet]
         public HttpResponseMessage ImprimirOrcamento(string autonumero, string comPlanilhaFechada)
         {
-
-            using (var rd = new ReportDocument())
+            try
             {
-                var Response = HttpContext.Current.ApplicationInstance.Response;
-
-                var local = HttpContext.Current.Server.MapPath("~/rpt/orcamento.rpt");
-
-
-                if (comPlanilhaFechada == "S")
+                using (var rd = new ReportDocument())
                 {
-                    local = HttpContext.Current.Server.MapPath("~/rpt/orcamentoEPlanilhaFechada.rpt");
+                    var Response = HttpContext.Current.ApplicationInstance.Response;
+
+                    var local = HttpContext.Current.Server.MapPath("~/rpt/orcamento.rpt");
+
+
+                    if (comPlanilhaFechada == "S")
+                    {
+                        local = HttpContext.Current.Server.MapPath("~/rpt/orcamentoEPlanilhaFechada.rpt");
+                    }
+
+                    var filtro = "{tb_orcamento_itens1.cancelado} <> 'S' and  {tb_orcamento1.autonumero} = " + autonumero;
+
+                    rd.Load(local);
+                    //rd.SetParameterValue("p1", codigoOs);
+                    //rd.SetParameterValue("p2", modelo);
+
+                    rd.RecordSelectionFormula = filtro;
+
+                    Response.Buffer = false;
+                    Response.ClearContent();
+                    Response.ClearHeaders();
+
+                    var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    ////75 is my print job limit.
+                    //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
+                    //return CreateReport(reportClass);
+
+                    rd.Close();
+                    rd.Dispose();
+
+                    var resp = Request.CreateResponse(HttpStatusCode.OK);
+                    resp.Content = new StreamContent(stream);
+                    return resp;
+
                 }
-
-                var filtro = "{tb_orcamento_itens1.cancelado} <> 'S' and  {tb_orcamento1.autonumero} = " + autonumero;
-
-                rd.Load(local);
-                //rd.SetParameterValue("p1", codigoOs);
-                //rd.SetParameterValue("p2", modelo);
-
-                rd.RecordSelectionFormula = filtro;
-
-                Response.Buffer = false;
-                Response.ClearContent();
-                Response.ClearHeaders();
-
-                var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
-                stream.Seek(0, SeekOrigin.Begin);
-
-                ////75 is my print job limit.
-                //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
-                //return CreateReport(reportClass);
-
-                rd.Close();
-                rd.Dispose();
-
-                var resp = Request.CreateResponse(HttpStatusCode.OK);
-                resp.Content = new StreamContent(stream);
-                return resp;
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
 
             }
+
 
         }
 
@@ -2275,66 +2303,77 @@ namespace apinovo.Controllers
         public HttpResponseMessage ImprimirItensCompatibilizado(string dataInicio, string dataFim, Int64 autonumeroCliente,
                                    Int64 autonumeroSistema, Int32 autonumeroServico)
         {
-
-            using (var rd = new ReportDocument())
+            try
             {
-                var Response = HttpContext.Current.ApplicationInstance.Response;
 
-                var local = HttpContext.Current.Server.MapPath("~/rpt/itensCompatibilizado.rpt");
-                var tipoServico = "CORRETIVO";
-                if (autonumeroServico == 1)
+                using (var rd = new ReportDocument())
                 {
-                    tipoServico = "PREVENTIVO";
+                    var Response = HttpContext.Current.ApplicationInstance.Response;
+
+                    var local = HttpContext.Current.Server.MapPath("~/rpt/itensCompatibilizado.rpt");
+                    var tipoServico = "CORRETIVO";
+                    if (autonumeroServico == 1)
+                    {
+                        tipoServico = "PREVENTIVO";
+                    }
+                    if (autonumeroServico == 2)
+                    {
+                        tipoServico = "CORRETIVO";
+                    }
+
+                    var servico = "";
+                    if (autonumeroServico > 0)
+                    {
+                        servico = " and { tb_os1.autonumeroServico} = " + autonumeroServico;
+                    }
+
+                    var campo = "{tb_os1.dataTermino}";
+
+                    var filtro = campo + " >= DATE (" +
+                                     Convert.ToDateTime(dataInicio).Year.ToString("####") + ", " +
+                                     Convert.ToDateTime(dataInicio).Month.ToString("####") + ", " +
+                                     Convert.ToDateTime(dataInicio).Day.ToString("####") + ") AND " +
+                                     campo + " <= DATE (" +
+                                     Convert.ToDateTime(dataFim).Year.ToString("####") + ", " +
+                                     Convert.ToDateTime(dataFim).Month.ToString("####") + ", " +
+                                     Convert.ToDateTime(dataFim).Day.ToString("####") + ") AND {tb_os1.cancelado} <> 'S' ";
+
+                    filtro = filtro + "AND {tb_os1.nomeStatus} = 'Fechada' and {tb_os1.cancelado} <> 'S' and {tb_os_itens1.cancelado} <> 'S' and  {tb_os1.autonumeroCliente} = " + autonumeroCliente + " and {tb_os1.autonumeroSistema} = " + autonumeroSistema + servico;
+
+                    var intervalo = "PERÍODO DE " + dataInicio + " ATÉ " + dataFim;
+
+                    rd.Load(local);
+                    rd.SetParameterValue("p1", intervalo);
+                    rd.SetParameterValue("p2", tipoServico);
+
+                    rd.RecordSelectionFormula = filtro;
+
+                    Response.Buffer = false;
+                    Response.ClearContent();
+                    Response.ClearHeaders();
+
+                    var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    ////75 is my print job limit.
+                    //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
+                    //return CreateReport(reportClass);
+                    rd.Close();
+                    rd.Dispose();
+
+                    var resp = Request.CreateResponse(HttpStatusCode.OK);
+                    resp.Content = new StreamContent(stream);
+                    return resp;
                 }
-                if (autonumeroServico == 2)
-                {
-                    tipoServico = "CORRETIVO";
-                }
-
-                var servico = "";
-                if (autonumeroServico > 0)
-                {
-                    servico = " and { tb_os1.autonumeroServico} = " + autonumeroServico;
-                }
-
-                var campo = "{tb_os1.dataTermino}";
-
-                var filtro = campo + " >= DATE (" +
-                                 Convert.ToDateTime(dataInicio).Year.ToString("####") + ", " +
-                                 Convert.ToDateTime(dataInicio).Month.ToString("####") + ", " +
-                                 Convert.ToDateTime(dataInicio).Day.ToString("####") + ") AND " +
-                                 campo + " <= DATE (" +
-                                 Convert.ToDateTime(dataFim).Year.ToString("####") + ", " +
-                                 Convert.ToDateTime(dataFim).Month.ToString("####") + ", " +
-                                 Convert.ToDateTime(dataFim).Day.ToString("####") + ") AND {tb_os1.cancelado} <> 'S' ";
-
-                filtro = filtro + "AND {tb_os1.nomeStatus} = 'Fechada' and {tb_os1.cancelado} <> 'S' and {tb_os_itens1.cancelado} <> 'S' and  {tb_os1.autonumeroCliente} = " + autonumeroCliente + " and {tb_os1.autonumeroSistema} = " + autonumeroSistema + servico;
-
-                var intervalo = "PERÍODO DE " + dataInicio + " ATÉ " + dataFim;
-
-                rd.Load(local);
-                rd.SetParameterValue("p1", intervalo);
-                rd.SetParameterValue("p2", tipoServico);
-
-                rd.RecordSelectionFormula = filtro;
-
-                Response.Buffer = false;
-                Response.ClearContent();
-                Response.ClearHeaders();
-
-                var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
-                stream.Seek(0, SeekOrigin.Begin);
-
-                ////75 is my print job limit.
-                //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
-                //return CreateReport(reportClass);
-                rd.Close();
-                rd.Dispose();
-
-                var resp = Request.CreateResponse(HttpStatusCode.OK);
-                resp.Content = new StreamContent(stream);
-                return resp;
             }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
+            }
+
 
         }
 
@@ -2472,7 +2511,7 @@ namespace apinovo.Controllers
                     qtde = ordem.Count();
                     //Debug.WriteLine(qtde);
                     valorOs = Convert.ToDecimal((from p in dc.tb_os.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.codigoOrdemServico == codigoOrdemServico.Trim())
-                                                             select p).ToList().Sum(p=> p.valor));
+                                                 select p).ToList().Sum(p => p.valor));
                 }
 
                 //Debug.WriteLine(valorOs);
@@ -2498,7 +2537,7 @@ namespace apinovo.Controllers
 
                         //if (qtdeItens > 30)
                         //{
-                            local = HttpContext.Current.Server.MapPath("~/rpt/oServicoCFinalMuitosItens.rpt");
+                        local = HttpContext.Current.Server.MapPath("~/rpt/oServicoCFinalMuitosItens.rpt");
                         //}
 
                     }
@@ -2836,7 +2875,7 @@ namespace apinovo.Controllers
 
                 }
 
-                return null;
+
             }
 
 
@@ -2866,49 +2905,60 @@ namespace apinovo.Controllers
         public HttpResponseMessage ImprimirTramitacao(int autonumeroGrupoTramitacao, int autonumeroCliente)
         {
             var c = 1;
-            using (var rd = new ReportDocument())
+            try
             {
-                var Response = HttpContext.Current.ApplicationInstance.Response;
-
-                var local = HttpContext.Current.Server.MapPath("~/rpt/tramitacao.rpt");
-
-                var filtro = "{tramitacao1.cancelado} <> 'S' ";
-
-                if (autonumeroGrupoTramitacao > 0)
+                using (var rd = new ReportDocument())
                 {
-                    filtro = filtro + "AND {tramitacao1.autonumeroGrupoTramitacao} = " + autonumeroGrupoTramitacao;
+                    var Response = HttpContext.Current.ApplicationInstance.Response;
+
+                    var local = HttpContext.Current.Server.MapPath("~/rpt/tramitacao.rpt");
+
+                    var filtro = "{tramitacao1.cancelado} <> 'S' ";
+
+                    if (autonumeroGrupoTramitacao > 0)
+                    {
+                        filtro = filtro + "AND {tramitacao1.autonumeroGrupoTramitacao} = " + autonumeroGrupoTramitacao;
+                    }
+
+                    if (autonumeroCliente > 0)
+                    {
+                        filtro = filtro + "AND {tramitacao1.autonumeroCliente} = " + autonumeroCliente;
+                    }
+
+                    rd.Load(local);
+                    //rd.SetParameterValue("p1", codigoOs);
+                    //rd.SetParameterValue("p2", modelo);
+
+                    rd.RecordSelectionFormula = filtro;
+
+                    Response.Buffer = false;
+                    Response.ClearContent();
+                    Response.ClearHeaders();
+
+                    var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    ////75 is my print job limit.
+                    //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
+                    //return CreateReport(reportClass);
+
+                    rd.Close();
+                    rd.Dispose();
+
+                    var resp = Request.CreateResponse(HttpStatusCode.OK);
+                    resp.Content = new StreamContent(stream);
+                    return resp;
+
                 }
-
-                if (autonumeroCliente > 0)
-                {
-                    filtro = filtro + "AND {tramitacao1.autonumeroCliente} = " + autonumeroCliente;
-                }
-
-                rd.Load(local);
-                //rd.SetParameterValue("p1", codigoOs);
-                //rd.SetParameterValue("p2", modelo);
-
-                rd.RecordSelectionFormula = filtro;
-
-                Response.Buffer = false;
-                Response.ClearContent();
-                Response.ClearHeaders();
-
-                var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
-                stream.Seek(0, SeekOrigin.Begin);
-
-                ////75 is my print job limit.
-                //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
-                //return CreateReport(reportClass);
-
-                rd.Close();
-                rd.Dispose();
-
-                var resp = Request.CreateResponse(HttpStatusCode.OK);
-                resp.Content = new StreamContent(stream);
-                return resp;
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
 
             }
+
 
         }
 

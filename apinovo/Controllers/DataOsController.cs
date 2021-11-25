@@ -1093,6 +1093,8 @@ namespace apinovo.Controllers
                                              && a.dataTermino >= data11 && a.dataTermino <= data22 &&
                                              a.nomeStatus == "Fechada" && a.autonumeroSistema == autonumeroSistema && !b.nomeFonte.Contains("MANUT") && !b.nomeFonte.Contains("EQUIPE") && a.autonumeroServico == autonumeroServico
                                            select b).OrderBy(p => p.autonumeroOs);
+
+
                 }
 
                 return itensForaDaPlanilha.ToList(); ;

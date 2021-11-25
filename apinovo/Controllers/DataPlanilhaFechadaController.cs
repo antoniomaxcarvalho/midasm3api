@@ -391,7 +391,7 @@ namespace apinovo.Controllers
         [HttpPost]
         public string somarQtdeContratadaPlanilha()
         {
-   
+
             var autonumero = Convert.ToInt64(HttpContext.Current.Request.Form["autonumero"]);
             var qtdeSoma = Convert.ToDecimal(HttpContext.Current.Request.Form["qtdeSoma"]);
 
@@ -406,7 +406,7 @@ namespace apinovo.Controllers
                     //{
                     //    throw new ArgumentException("Erro - Estoque Negativo");
                     //}
-                    linha.qtdeContratada = linha.qtdeContratada +  qtdeSoma;
+                    linha.qtdeContratada = linha.qtdeContratada + qtdeSoma;
                     //linha.estoque = estoque;
                     dc.tb_planilhafechada.AddOrUpdate(linha);
                     dc.SaveChanges();
@@ -509,7 +509,7 @@ namespace apinovo.Controllers
                 {
                     //var multiplicador = ( 1 + (acrescimoEstoque / 100));
 
-                    var multiplicador =  (acrescimoEstoque / 100);
+                    var multiplicador = (acrescimoEstoque / 100);
 
                     dc.tb_planilhafechada.Where(p => p.autonumeroCliente == autonumeroCliente).ToList().ForEach(x =>
                    {
@@ -518,7 +518,7 @@ namespace apinovo.Controllers
                        dc.tb_planilhafechada.AddOrUpdate(x);
 
                    });
-                    
+
                     dc.SaveChanges();
                 }
 
@@ -601,100 +601,110 @@ namespace apinovo.Controllers
         public HttpResponseMessage totalUtilizado()
         {
             var cc = 1;
-            using (var dc = new manutEntities())
+            try
             {
-                var autonumeroCliente = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
-                var nomeCliente = HttpContext.Current.Request.Form["nomeCliente"].ToString();
-
-                var totalPlanilhaFechada = (from i in dc.tb_planilhafechada where i.autonumeroCliente == autonumeroCliente select i).Sum(i => i.qtdeContratada * i.preco);
-
-                var totalCustoFixo = (from i in dc.tb_planilhafechada where i.autonumeroCliente == autonumeroCliente select i).Sum(i => i.qtdeCustoFixo * i.preco);
-
-                var totalCustoFixoUsadaoOs = (from i in dc.tb_os where i.autonumeroCliente == autonumeroCliente && i.cancelado != "S" && i.importadaCustoFixo == "S" select i).Sum(i => i.valor);
-
-                var totalOsFechadaMedida = (from i in dc.tb_os where i.autonumeroCliente == autonumeroCliente && i.cancelado != "S" && (!i.nomeStatus.Contains("Aberta")) select i).Sum(i => i.valor);
-
-                var totalOsAberta = (from i in dc.tb_os where i.autonumeroCliente == autonumeroCliente && i.cancelado != "S" && i.nomeStatus.Contains("Aberta") select i).Sum(i => i.valor);
-
-                var totalOrcamentoAberto = (from i in dc.tb_orcamento where i.autonumeroCliente == autonumeroCliente && i.cancelado != "S" && i.codigoOs == "" select i).Sum(i => i.valor);
-
-                var totalPrecoXEstoque = (from i in dc.tb_planilhafechada where i.autonumeroCliente == autonumeroCliente select i).Sum(i => i.estoque * i.preco);
-
-
-                //if (totalPlanilhaFechada == null)
-                //{
-                //    totalPlanilhaFechada = 0;
-                //}
-                //if (totalCustoFixo == null)
-                //{
-                //    totalCustoFixo = 0;
-                //}
-                if (totalCustoFixoUsadaoOs == null)
+                using (var dc = new manutEntities())
                 {
-                    totalCustoFixoUsadaoOs = 0;
+                    var autonumeroCliente = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
+                    var nomeCliente = HttpContext.Current.Request.Form["nomeCliente"].ToString();
+
+                    var totalPlanilhaFechada = (from i in dc.tb_planilhafechada where i.autonumeroCliente == autonumeroCliente select i).Sum(i => i.qtdeContratada * i.preco);
+
+                    var totalCustoFixo = (from i in dc.tb_planilhafechada where i.autonumeroCliente == autonumeroCliente select i).Sum(i => i.qtdeCustoFixo * i.preco);
+
+                    var totalCustoFixoUsadaoOs = (from i in dc.tb_os where i.autonumeroCliente == autonumeroCliente && i.cancelado != "S" && i.importadaCustoFixo == "S" select i).Sum(i => i.valor);
+
+                    var totalOsFechadaMedida = (from i in dc.tb_os where i.autonumeroCliente == autonumeroCliente && i.cancelado != "S" && (!i.nomeStatus.Contains("Aberta")) select i).Sum(i => i.valor);
+
+                    var totalOsAberta = (from i in dc.tb_os where i.autonumeroCliente == autonumeroCliente && i.cancelado != "S" && i.nomeStatus.Contains("Aberta") select i).Sum(i => i.valor);
+
+                    var totalOrcamentoAberto = (from i in dc.tb_orcamento where i.autonumeroCliente == autonumeroCliente && i.cancelado != "S" && i.codigoOs == "" select i).Sum(i => i.valor);
+
+                    var totalPrecoXEstoque = (from i in dc.tb_planilhafechada where i.autonumeroCliente == autonumeroCliente select i).Sum(i => i.estoque * i.preco);
+
+
+                    //if (totalPlanilhaFechada == null)
+                    //{
+                    //    totalPlanilhaFechada = 0;
+                    //}
+                    //if (totalCustoFixo == null)
+                    //{
+                    //    totalCustoFixo = 0;
+                    //}
+                    if (totalCustoFixoUsadaoOs == null)
+                    {
+                        totalCustoFixoUsadaoOs = 0;
+                    }
+                    if (totalOsAberta == null)
+                    {
+                        totalOsAberta = 0;
+                    }
+                    if (totalOrcamentoAberto == null)
+                    {
+                        totalOrcamentoAberto = 0;
+                    }
+                    if (totalOsFechadaMedida == null)
+                    {
+                        totalOsFechadaMedida = 0;
+                    }
+
+
+                    decimal saldoCustoFixo = (decimal)(totalCustoFixo - totalCustoFixoUsadaoOs);
+                    if (saldoCustoFixo < 0)
+                    {
+
+                        saldoCustoFixo = 0m;
+                    }
+
+                    decimal totalUtilizado = (decimal)(totalPlanilhaFechada - saldoCustoFixo - totalOsFechadaMedida);
+
+                    using (var rd = new ReportDocument())
+                    {
+                        var Response = HttpContext.Current.ApplicationInstance.Response;
+
+                        var local = HttpContext.Current.Server.MapPath("~/rpt/totalUtilizado.rpt");
+
+                        rd.Load(local);
+
+                        rd.SetParameterValue("totalPlanilhaFechada", totalPlanilhaFechada);
+                        //rd.SetParameterValue("totalCustoFixo", totalCustoFixo);
+                        //rd.SetParameterValue("totalCustoFixoUsadaoOs", totalCustoFixoUsadaoOs);
+                        rd.SetParameterValue("totalOsFechadaMedida", totalOsFechadaMedida);
+                        rd.SetParameterValue("totalOsAberta", totalOsAberta);
+                        rd.SetParameterValue("totalOrcamentoAberto", totalOrcamentoAberto);
+                        rd.SetParameterValue("saldoCustoFixo", saldoCustoFixo);
+                        rd.SetParameterValue("totalUtilizado", totalUtilizado);
+                        rd.SetParameterValue("nomeCliente", nomeCliente);
+                        rd.SetParameterValue("totalPrecoXEstoque", totalPrecoXEstoque);
+
+                        rd.RecordSelectionFormula = string.Empty;
+
+                        Response.Buffer = false;
+                        Response.ClearContent();
+                        Response.ClearHeaders();
+
+                        var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
+                        stream.Seek(0, SeekOrigin.Begin);
+
+                        ////75 is my print job limit.
+                        //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
+                        //return CreateReport(reportClass);
+
+                        rd.Close();
+                        rd.Dispose();
+
+                        var resp = Request.CreateResponse(HttpStatusCode.OK);
+                        resp.Content = new StreamContent(stream);
+                        return resp;
+                    }
                 }
-                if (totalOsAberta == null)
-                {
-                    totalOsAberta = 0;
-                }
-                if (totalOrcamentoAberto == null)
-                {
-                    totalOrcamentoAberto = 0;
-                }
-                if (totalOsFechadaMedida == null)
-                {
-                    totalOsFechadaMedida = 0;
-                }
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
 
-
-                decimal saldoCustoFixo = (decimal)(totalCustoFixo - totalCustoFixoUsadaoOs);
-                if (saldoCustoFixo < 0)
-                {
-
-                    saldoCustoFixo = 0m;
-                }
-
-                decimal totalUtilizado = (decimal)(totalPlanilhaFechada - saldoCustoFixo - totalOsFechadaMedida);
-
-                using (var rd = new ReportDocument())
-                {
-                    var Response = HttpContext.Current.ApplicationInstance.Response;
-
-                    var local = HttpContext.Current.Server.MapPath("~/rpt/totalUtilizado.rpt");
-
-                    rd.Load(local);
-
-                    rd.SetParameterValue("totalPlanilhaFechada", totalPlanilhaFechada);
-                    //rd.SetParameterValue("totalCustoFixo", totalCustoFixo);
-                    //rd.SetParameterValue("totalCustoFixoUsadaoOs", totalCustoFixoUsadaoOs);
-                    rd.SetParameterValue("totalOsFechadaMedida", totalOsFechadaMedida);
-                    rd.SetParameterValue("totalOsAberta", totalOsAberta);
-                    rd.SetParameterValue("totalOrcamentoAberto", totalOrcamentoAberto);
-                    rd.SetParameterValue("saldoCustoFixo", saldoCustoFixo);
-                    rd.SetParameterValue("totalUtilizado", totalUtilizado);
-                    rd.SetParameterValue("nomeCliente", nomeCliente);
-                    rd.SetParameterValue("totalPrecoXEstoque", totalPrecoXEstoque);
-
-                    rd.RecordSelectionFormula = string.Empty;
-
-                    Response.Buffer = false;
-                    Response.ClearContent();
-                    Response.ClearHeaders();
-
-                    var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
-                    stream.Seek(0, SeekOrigin.Begin);
-
-                    ////75 is my print job limit.
-                    //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
-                    //return CreateReport(reportClass);
-
-                    rd.Close();
-                    rd.Dispose();
-
-                    var resp = Request.CreateResponse(HttpStatusCode.OK);
-                    resp.Content = new StreamContent(stream);
-                    return resp;
-                }
             }
 
         }
