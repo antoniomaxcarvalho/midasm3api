@@ -351,7 +351,14 @@ namespace apinovo.Controllers
 
                             linha.quantidade = qtde;
                             linha.total = qtde * Convert.ToDecimal(linha.precoUnitario);
+
+                            if (linha.autonumeroPlanilhaFechada > 0)
+                            {
+                                linha.quantidadePF = linha.quantidade;
+                                linha.totalPF = linha.total;
+                            }
                             linha.memoriaCalculo = memoriaCalculo;
+
                             dc.tb_orcamento_itens.AddOrUpdate(linha);
                             dc.SaveChanges();
 
@@ -369,6 +376,7 @@ namespace apinovo.Controllers
                                 if (k != null)
                                 {
                                     k.valor = totalItens;
+                                  
                                     dc.tb_orcamento.AddOrUpdate(k);
                                     dc.SaveChanges();
                                 }

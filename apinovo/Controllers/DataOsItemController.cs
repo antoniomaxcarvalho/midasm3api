@@ -471,6 +471,12 @@ namespace apinovo.Controllers
 
                             linha.quantidade = qtde;
                             linha.total = qtde * Convert.ToDecimal(linha.precoUnitario);
+
+                            if (linha.nomeFonte.Contains("MANUT") || linha.nomeFonte.Contains("EQUIPE"))
+                            {
+                                linha.quantidadePF = linha.quantidade;
+                                linha.totalPF = linha.total;
+                            }
                             linha.memoriaCalculo = memoriaCalculo;
                             dc.tb_os_itens.AddOrUpdate(linha);
                             dc.SaveChanges();
