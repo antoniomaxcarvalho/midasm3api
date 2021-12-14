@@ -31,7 +31,6 @@ namespace apinovo
         public DbSet<tb_tipo_usuario> tb_tipo_usuario { get; set; }
         public DbSet<tb_os_acompanhamento> tb_os_acompanhamento { get; set; }
         public DbSet<tb_predio> tb_predio { get; set; }
-        public DbSet<tb_insumo> tb_insumo { get; set; }
         public DbSet<tb_servico> tb_servico { get; set; }
         public DbSet<tb_local> tb_local { get; set; }
         public DbSet<tb_preventiva> tb_preventiva { get; set; }
@@ -93,5 +92,6 @@ namespace apinovo
         public DbSet<tb_sistema> tb_sistema { get; set; }
         public DbSet<tb_subsistema> tb_subsistema { get; set; }
         public DbSet<tb_cliente> tb_cliente { get; set; }
+        public DbSet<tb_insumo> tb_insumo { get; set; }
     }
 }

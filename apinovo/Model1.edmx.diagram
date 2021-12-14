@@ -11,7 +11,6 @@
         <EntityTypeShape EntityType="manutModel.tb_tipo_usuario" Width="1.5" PointX="4.375" PointY="3.5" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_os_acompanhamento" Width="1.5" PointX="0.625" PointY="2.375" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_predio" Width="1.5" PointX="2.75" PointY="2" IsExpanded="false" />
-        <EntityTypeShape EntityType="manutModel.tb_insumo" Width="1.5" PointX="2.875" PointY="0.75" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_servico" Width="1.5" PointX="2.625" PointY="2.5" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_local" Width="1.5" PointX="4.875" PointY="0.75" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_preventiva" Width="1.5" PointX="4.625" PointY="2.5" IsExpanded="false" />
@@ -73,6 +72,7 @@
         <EntityTypeShape EntityType="manutModel.tb_sistema" Width="1.5" PointX="2.375" PointY="3.75" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_subsistema" Width="1.5" PointX="2.25" PointY="4.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_cliente" Width="1.5" PointX="8.375" PointY="2.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="manutModel.tb_insumo" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="false" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
