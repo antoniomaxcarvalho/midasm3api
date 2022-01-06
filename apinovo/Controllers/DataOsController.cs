@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Validation;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -1049,11 +1050,28 @@ namespace apinovo.Controllers
             {
                 if (!string.IsNullOrEmpty(clientesDoUsuario))
                 {
-                    user = from p in dc.tb_os.Where((a => a.cancelado != "S" && clientesDoUsuario.Contains(a.siglaCliente)
-                           && ((a.dataSolicitacao >= data11 && a.dataSolicitacao <= data22) ||
-                           (a.dataSolicitacao <= data11 && a.nomeStatus != "Fechada" && a.nomeStatus != "O.S. Medida"))
-                           )).OrderByDescending(p => p.autonumero)
-                           select p;
+                    if (clientesDoUsuario.IndexOf("0") == -1)  // Não exite o Nro Zero na String
+                    {
+                   
+                        user = from p in dc.tb_os.Where((a => a.cancelado != "S"
+                        && ((a.dataSolicitacao >= data11 && a.dataSolicitacao <= data22) ||
+                        (a.dataSolicitacao <= data11 && a.nomeStatus != "Fechada" && a.nomeStatus != "O.S. Medida"))
+                        )).OrderByDescending(p => p.autonumero)
+                               select p;
+                    }
+                    else
+                    {
+
+                        user = from p in dc.tb_os.Where((a => a.cancelado != "S" 
+                               && clientesDoUsuario.Contains(a.siglaCliente)
+                          && ((a.dataSolicitacao >= data11 && a.dataSolicitacao <= data22) ||
+                          (a.dataSolicitacao <= data11 && a.nomeStatus != "Fechada" && a.nomeStatus != "O.S. Medida"))
+                          )).OrderByDescending(p => p.autonumero)
+                               select p;
+
+                        var k = user.ToList().Where(p => clientesDoUsuario.Contains(p.autonumeroCliente.ToString().PadLeft(4, '0')));
+                        return k;
+                    }
                 }
                 else
                 {
@@ -1063,7 +1081,7 @@ namespace apinovo.Controllers
                         )).OrderByDescending(p => p.autonumero)
                            select p;
                 }
-                return user.ToList(); ;
+                return user.ToList();
             }
         }
 
