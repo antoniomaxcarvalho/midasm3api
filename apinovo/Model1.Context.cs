@@ -31,7 +31,6 @@ namespace apinovo
         public DbSet<tb_tipo_usuario> tb_tipo_usuario { get; set; }
         public DbSet<tb_os_acompanhamento> tb_os_acompanhamento { get; set; }
         public DbSet<tb_predio> tb_predio { get; set; }
-        public DbSet<tb_servico> tb_servico { get; set; }
         public DbSet<tb_local> tb_local { get; set; }
         public DbSet<tb_preventiva> tb_preventiva { get; set; }
         public DbSet<tb_feriado> tb_feriado { get; set; }
@@ -44,7 +43,6 @@ namespace apinovo
         public DbSet<tb_situacaoordemservico> tb_situacaoordemservico { get; set; }
         public DbSet<tb_ata> tb_ata { get; set; }
         public DbSet<tb_diarioplantao> tb_diarioplantao { get; set; }
-        public DbSet<tb_fontes> tb_fontes { get; set; }
         public DbSet<tb_categoriaservico> tb_categoriaservico { get; set; }
         public DbSet<tb_ordemservico> tb_ordemservico { get; set; }
         public DbSet<grupotramitacao> grupotramitacao { get; set; }
@@ -77,8 +75,6 @@ namespace apinovo
         public DbSet<subsistemaqtdepmoc> subsistemaqtdepmoc { get; set; }
         public DbSet<tb_empresa> tb_empresa { get; set; }
         public DbSet<osfotos> osfotos { get; set; }
-        public DbSet<tb_os> tb_os { get; set; }
-        public DbSet<tb_os_itens> tb_os_itens { get; set; }
         public DbSet<checklist> checklist { get; set; }
         public DbSet<checklisthistitem> checklisthistitem { get; set; }
         public DbSet<checklisthistitemnrofolha> checklisthistitemnrofolha { get; set; }
@@ -92,6 +88,10 @@ namespace apinovo
         public DbSet<tb_sistema> tb_sistema { get; set; }
         public DbSet<tb_subsistema> tb_subsistema { get; set; }
         public DbSet<tb_cliente> tb_cliente { get; set; }
+        public DbSet<tb_os> tb_os { get; set; }
+        public DbSet<tb_os_itens> tb_os_itens { get; set; }
+        public DbSet<tb_fontes> tb_fontes { get; set; }
         public DbSet<tb_insumo> tb_insumo { get; set; }
+        public DbSet<tb_servico> tb_servico { get; set; }
     }
 }
