@@ -1039,7 +1039,7 @@ namespace apinovo.Controllers
 
         }
 
-
+        [HttpGet]
         public IEnumerable<tb_os> GetAllOsData(string clientesDoUsuario, string data1, string data2)
         {
             IQueryable<tb_os> user;
@@ -1085,6 +1085,23 @@ namespace apinovo.Controllers
             }
         }
 
+        [HttpGet]
+        public IEnumerable<tb_os> GetAllOsDataCliente(long autonumeroCliente, string data1, string data2)
+        {
+            var c = 1;
+            var data11 = Convert.ToDateTime(data1);
+            var data22 = Convert.ToDateTime(data2);
+
+            using (var dc = new manutEntities())
+            {
+                return (from p in dc.tb_os.Where(a => a.cancelado != "S"
+                       && a.autonumeroCliente == autonumeroCliente && a.dataSolicitacao >= data11 && a.dataSolicitacao <= data22).OrderByDescending(p => p.autonumero)
+                        select p).ToList();
+            }
+        }
+
+
+        [HttpGet]
         public IEnumerable<tb_os_itens> GetAllOsSistemaCompatibildade(Int64 autonumeroCliente, string data1, string data2, Int32 autonumeroSistema, Int32 autonumeroServico)
         {
             var c = 1;
@@ -1212,6 +1229,7 @@ namespace apinovo.Controllers
             return "";
         }
 
+        [HttpGet]
         public IEnumerable<itensPlanilha> GetAllItensParaOS(Int64 autonumeroCliente, string data1, string data2, Int32 autonumeroSistema, Int32 autonumeroServico, string codigoOs)
         {
             var c = 1;
@@ -1358,6 +1376,7 @@ namespace apinovo.Controllers
 
         //}
 
+        [HttpGet]
         public IEnumerable<resumoPlanilha> GetAllResumoOs(Int64 autonumeroCliente, string data1, string data2)
         {
             IQueryable<resumoPlanilha> itensPlanilha;
@@ -1456,7 +1475,7 @@ namespace apinovo.Controllers
         //    return dtStartA < dtEndB && dtStartB < dtEndA;
         //}
 
-
+        [HttpGet]
         public IEnumerable<resumoPlanilha> GetAllResumoSsValorZerado(Int64 autonumeroCliente, string data1, string data2)
         {
             IQueryable<resumoPlanilha> itensPlanilha;
@@ -1527,7 +1546,7 @@ namespace apinovo.Controllers
 
         }
 
-
+        [HttpGet]
         public System.Collections.IEnumerable GetSsValorZeradoPorSistema(Int64 autonumeroCliente, string data1, string data2, Int64 autonumeroSistema)
         {
             var data11 = Convert.ToDateTime(data1);
