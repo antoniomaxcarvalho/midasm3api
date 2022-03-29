@@ -1631,6 +1631,30 @@ namespace apinovo.Controllers
             }
         }
 
+        [HttpPost]
+        public string AlterarValorGlobalMedido()
+        {
+            using (var dc = new manutEntities())
+            {
+
+                var autonumeroCliente = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroCliente"]);
+                var medicao = HttpContext.Current.Request.Form["medicao"].ToString();
+                var etapa = HttpContext.Current.Request.Form["etapa"].ToString();
+                var valorGlobalMedido = Convert.ToDecimal(HttpContext.Current.Request.Form["valorGlobalMedido"].ToString());
+
+                var tb_medicao = dc.tb_medicao.Where(x => x.medicao == medicao && x.etapa == etapa && x.cancelado != "S" && x.autonumeroCliente == autonumeroCliente).ToList();
+
+                foreach (var item in tb_medicao)
+                {
+                    item.valorGlobalMedido = valorGlobalMedido;
+                    dc.tb_medicao.AddOrUpdate(item);
+                    dc.SaveChanges();
+                }
+
+                return "";
+            }
+        }
+
 
         public class medicaoitens
         {

@@ -17,7 +17,7 @@
           <Property Name="autonumeroSubsistema" Type="int" />
           <Property Name="nomeSubSistema" Type="varchar" MaxLength="45" />
           <Property Name="item" Type="varchar" MaxLength="10" />
-          <Property Name="nome" Type="varchar" MaxLength="200" />
+          <Property Name="nome" Type="varchar" MaxLength="400" />
           <Property Name="d" Type="char" MaxLength="1" />
           <Property Name="e" Type="char" MaxLength="1" />
           <Property Name="q" Type="char" MaxLength="1" />
@@ -40,7 +40,7 @@
           <Property Name="nomeSubSistema" Type="varchar" MaxLength="45" />
           <Property Name="autonumeroCheckList" Type="int" />
           <Property Name="item" Type="varchar" MaxLength="10" />
-          <Property Name="nome" Type="varchar" MaxLength="300" />
+          <Property Name="nome" Type="varchar" MaxLength="400" />
           <Property Name="d" Type="char" MaxLength="1" />
           <Property Name="e" Type="char" MaxLength="1" />
           <Property Name="q" Type="char" MaxLength="1" />
@@ -62,7 +62,7 @@
           <Property Name="autonumeroSubSistema" Type="int" />
           <Property Name="contadorPmocEquipamento" Type="bigint" />
           <Property Name="item" Type="varchar" MaxLength="10" />
-          <Property Name="nome" Type="varchar" MaxLength="300" />
+          <Property Name="nome" Type="varchar" MaxLength="400" />
           <Property Name="d" Type="char" MaxLength="1" />
           <Property Name="e" Type="char" MaxLength="1" />
           <Property Name="q" Type="char" MaxLength="1" />
@@ -747,7 +747,7 @@
           <Property Name="autonumero" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="autonumeroCliente" Type="int" />
           <Property Name="nome" Type="varchar" MaxLength="70" />
-          <Property Name="nomeCliente" Type="varchar" MaxLength="60" />
+          <Property Name="nomeCliente" Type="varchar" MaxLength="45" />
           <Property Name="cancelado" Type="char" MaxLength="1" />
         </EntityType>
         <EntityType Name="tb_local_fisico">
@@ -802,7 +802,7 @@
           <Property Name="autonumeroPlanilhaFechada" Type="bigint" />
           <Property Name="item" Type="bigint" />
           <Property Name="codigo" Type="varchar" MaxLength="20" />
-          <Property Name="nome" Type="varchar" MaxLength="600" />
+          <Property Name="nome" Type="varchar" MaxLength="330" />
           <Property Name="unidade" Type="varchar" MaxLength="6" />
           <Property Name="preco" Type="decimal" Precision="10" Scale="2" />
           <Property Name="qtdeContratada" Type="decimal" Precision="10" Scale="4" />
@@ -1012,7 +1012,7 @@
           <Property Name="item" Type="bigint" Nullable="false" />
           <Property Name="codigo" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="nome" Type="varchar" MaxLength="1050" Nullable="false" />
-          <Property Name="unidade" Type="varchar" MaxLength="8" Nullable="false" />
+          <Property Name="unidade" Type="varchar" MaxLength="6" Nullable="false" />
           <Property Name="qtdeContratada" Type="decimal" Precision="10" Scale="4" Nullable="false" />
           <Property Name="preco" Type="decimal" Precision="10" Scale="3" Nullable="false" />
           <Property Name="estoque" Type="decimal" Precision="10" Scale="4" Nullable="false" />

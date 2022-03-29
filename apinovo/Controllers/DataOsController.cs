@@ -1042,6 +1042,7 @@ namespace apinovo.Controllers
         [HttpGet]
         public IEnumerable<tb_os> GetAllOsData(string clientesDoUsuario, string data1, string data2)
         {
+            var c = 1;
             IQueryable<tb_os> user;
             var data11 = Convert.ToDateTime(data1);
             var data22 = Convert.ToDateTime(data2);
