@@ -44,7 +44,6 @@ namespace apinovo
         public DbSet<tb_ata> tb_ata { get; set; }
         public DbSet<tb_diarioplantao> tb_diarioplantao { get; set; }
         public DbSet<tb_categoriaservico> tb_categoriaservico { get; set; }
-        public DbSet<tb_ordemservico> tb_ordemservico { get; set; }
         public DbSet<grupotramitacao> grupotramitacao { get; set; }
         public DbSet<tramitacao> tramitacao { get; set; }
         public DbSet<videoaula> videoaula { get; set; }
@@ -93,5 +92,6 @@ namespace apinovo
         public DbSet<tb_fontes> tb_fontes { get; set; }
         public DbSet<tb_insumo> tb_insumo { get; set; }
         public DbSet<tb_servico> tb_servico { get; set; }
+        public DbSet<tb_ordemservico> tb_ordemservico { get; set; }
     }
 }

@@ -47,7 +47,7 @@ namespace apinovo.Controllers
         [HttpPost]
         public string IncluirOrdemServico()
         {
-            //Debug.WriteLine("------------------------------------------------- ");
+           // Debug.WriteLine("------------------------------------------------- ");
             var mensagem = "";
 
             var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
@@ -57,7 +57,7 @@ namespace apinovo.Controllers
             var valor = Convert.ToDecimal(HttpContext.Current.Request.Form["valor"].ToString().Trim());
             var nomeSistema = HttpContext.Current.Request.Form["nomeSistema"].ToString().Trim();
             var autonumeroSistema = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroSistema"].ToString().Trim());
-            //Debug.WriteLine("11111111111------------------------ ");
+           // Debug.WriteLine("11111111111------------------------ ");
 
             var processo = HttpContext.Current.Request.Form["processo"].ToString().Trim();
             var cap = HttpContext.Current.Request.Form["cap"].ToString().Trim();
@@ -66,7 +66,7 @@ namespace apinovo.Controllers
             var nomeItem = HttpContext.Current.Request.Form["nomeItem"].ToString().Trim();
             var tipoAtendimento = HttpContext.Current.Request.Form["tipoAtendimento"].ToString().Trim();
             var autonumeroServico = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroServico"].ToString());
-            //Debug.WriteLine("222222222222222------------------------ ");
+           // Debug.WriteLine("222222222222222------------------------ ");
 
             var siglaItem = HttpContext.Current.Request.Form["siglaItem"].ToString().Trim();
             var resumoServico = HttpContext.Current.Request.Form["resumoServico"].ToString().Trim();
@@ -78,25 +78,25 @@ namespace apinovo.Controllers
             //var medicao = HttpContext.Current.Request.Form["medicao"].ToString().Trim();
             var codigoOs = HttpContext.Current.Request.Form["codigoOs"].ToString().Trim();
             var nroOsInformado = HttpContext.Current.Request.Form["nroOsInformado"].ToString().Trim();
-            //Debug.WriteLine("333333333333------------------------ ");
+           // Debug.WriteLine("333333333333------------------------ ");
 
             if (DataClienteController.IsDate(HttpContext.Current.Request.Form["dataInicio"].ToString()) &&
                 DataClienteController.IsDate(HttpContext.Current.Request.Form["dataFim"].ToString()) &&
                 DataClienteController.IsDate(HttpContext.Current.Request.Form["dataEmissao"].ToString()))
             {
-                //Debug.WriteLine("44444444------------------------ ");
+               // Debug.WriteLine("44444444------------------------ ");
                 var data11 = Convert.ToDateTime(HttpContext.Current.Request.Form["dataInicio"].ToString());
                 var data22 = Convert.ToDateTime(HttpContext.Current.Request.Form["dataFim"].ToString());
 
                 using (var dc = new manutEntities())
                 {
-                    Debug.WriteLine("5555555555------------------------ ");
+                   // Debug.WriteLine("5555555555------------------------ ");
                     using (var transaction = dc.Database.BeginTransaction())
                     {
                         try
                         {
 
-                            Debug.WriteLine(" ------------------------------ dc.tb_cliente.Find(autonumeroCliente) ");
+                           // Debug.WriteLine(" ------------------------------ dc.tb_cliente.Find(autonumeroCliente) ");
                             var linha = dc.tb_cliente.Find(autonumeroCliente); // sempre irá procurar pela chave primaria
                             if (linha != null)
                             {
@@ -145,12 +145,12 @@ namespace apinovo.Controllers
        
                                 dc.tb_ordemservico.Add(k);
                                 dc.SaveChanges();
-                                //Debug.WriteLine(" 9999999999999999");
+                               // Debug.WriteLine(" 9999999999999999");
                                 var auto = Convert.ToInt64(k.autonumero);
 
                                 if (k.valor > 0)
                                 {
-                                    //Debug.WriteLine(" ------------------------------- if (string.IsNullOrEmpty(codigoOs))");
+                                   // Debug.WriteLine(" ------------------------------- if (string.IsNullOrEmpty(codigoOs))");
                                     if (string.IsNullOrEmpty(codigoOs))
                                     {
                                         // Sistema !=  ORÇAMENTO pode ter mais de 1 S.S por O.S. -------------------------------------------------
@@ -172,12 +172,12 @@ namespace apinovo.Controllers
                                              x.p.codigoOrdemServico = codigo;
                                          });
 
-                                        //Debug.WriteLine("--------------------------- FIM - if (string.IsNullOrEmpty(codigoOs))");
+                                       // Debug.WriteLine("--------------------------- FIM - if (string.IsNullOrEmpty(codigoOs))");
                                     }
                                     else
                                     {
                                         // INICIO - Utilizado para que se tenha 1 S.S == 1 O.S ( quando o sistema for ORÇAMENTO ) ->  i.codigoOs == codigoOs -------------------------------------------------
-                                        //Debug.WriteLine("------------------- (from i in dc.tb_os_itens");
+                                       // Debug.WriteLine("------------------- (from i in dc.tb_os_itens");
                                         (from i in dc.tb_os_itens
                                          join p in dc.tb_os
                                          on i.codigoOs equals p.codigoOs
@@ -195,7 +195,7 @@ namespace apinovo.Controllers
                                              x.p.codigoOrdemServico = codigo;
                                          });
                                         // FIM - Utilizado para que se tenha 1 S.S == 1 O.S ( quando o sistema for ORÇAMENTO ) ->  i.codigoOs == codigoOs ----------------------------------------------
-                                        //Debug.WriteLine("---------------------FIM -  (from i in dc.tb_os_itens");
+                                       // Debug.WriteLine("---------------------FIM -  (from i in dc.tb_os_itens");
                                     }
                                 }
                                 else
@@ -237,7 +237,7 @@ namespace apinovo.Controllers
 
                                     }
                                 }
-                                //Debug.WriteLine("-----------------   dc.SaveChanges();");
+                               // Debug.WriteLine("-----------------   dc.SaveChanges();");
                                 dc.SaveChanges();
 
                                 transaction.Commit();
@@ -453,16 +453,16 @@ namespace apinovo.Controllers
 
                     var totalPF = dc.tb_os_itens.Where(k => k.codigoOrdemServico == os.codigoOs && k.autonumeroCliente == auto && k.cancelado != "S").Sum(k => (k.totalPF));
 
-                    //Debug.WriteLine("--------");
-                    //Debug.WriteLine(os.valor);
-                    //Debug.WriteLine("--------");
+                   // Debug.WriteLine("--------");
+                   // Debug.WriteLine(os.valor);
+                   // Debug.WriteLine("--------");
                     etapa = os.etapa;
                     medicao = os.medicao;
-                    //Debug.WriteLine(valor);
+                   // Debug.WriteLine(valor);
                     //var xx = Convert.ToDecimal(valor);
                     //Debug.WriteLine(xx);
                     os.valor = Convert.ToDecimal(totalPF);
-                    //Debug.WriteLine(os.valor);
+                   // Debug.WriteLine(os.valor);
                     dc.tb_ordemservico.AddOrUpdate(os);
 
                     dc.SaveChanges();
