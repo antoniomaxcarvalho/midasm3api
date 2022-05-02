@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Validation;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -971,8 +970,49 @@ namespace apinovo.Controllers
 
             using (var dc = new manutEntities())
             {
+                var c = 1;
 
                 List<tb_os> j = null;
+
+
+                if (autonumero > 0)
+                {
+
+                    var alterou = false;
+                    var p = dc.tb_os_itens.Where(a => a.autonumeroOs == autonumero && a.cancelado != "S").ToList();
+
+                    if (p != null)
+                    {
+                        foreach (var valuex in p)
+                        {
+
+                            var tot = (Math.Truncate((decimal)valuex.quantidade * (decimal)valuex.precoUnitario * 100)) / 100;
+                            var totPlanilha = (Math.Truncate((decimal)valuex.quantidadePF * (decimal)valuex.precoUnitarioPF * 100)) / 100;
+
+                            if (valuex.total != tot || valuex.totalPF != totPlanilha)
+                            {
+                                alterou = true;
+                                valuex.total = tot;
+                                valuex.totalPF = totPlanilha;
+                                dc.tb_os_itens.AddOrUpdate(valuex);
+                                dc.SaveChanges();
+                            }
+
+                        }
+
+                        if (alterou)
+                        {
+                            var totalItens = dc.tb_os_itens.Where(a => a.autonumeroOs == autonumero && a.cancelado != "S").Sum(k => k.total);
+
+                            dc.tb_os.Where(a => a.cancelado != "S" && a.autonumero == autonumero).ToList().ForEach(x =>
+                            {
+                                x.valor = totalItens;
+                            });
+                            dc.SaveChanges();
+
+                        }
+                    }
+                }
 
                 if (string.IsNullOrEmpty(codigoOs) && autonumero == 0)
                 {
@@ -1053,7 +1093,7 @@ namespace apinovo.Controllers
                 {
                     if (clientesDoUsuario.IndexOf("0") == -1)  // Não exite o Nro Zero na String
                     {
-                   
+
                         user = from p in dc.tb_os.Where((a => a.cancelado != "S"
                         && ((a.dataSolicitacao >= data11 && a.dataSolicitacao <= data22) ||
                         (a.dataSolicitacao <= data11 && a.nomeStatus != "Fechada" && a.nomeStatus != "O.S. Medida"))
@@ -1063,7 +1103,7 @@ namespace apinovo.Controllers
                     else
                     {
 
-                        user = from p in dc.tb_os.Where((a => a.cancelado != "S" 
+                        user = from p in dc.tb_os.Where((a => a.cancelado != "S"
                                && clientesDoUsuario.Contains(a.siglaCliente)
                           && ((a.dataSolicitacao >= data11 && a.dataSolicitacao <= data22) ||
                           (a.dataSolicitacao <= data11 && a.nomeStatus != "Fechada" && a.nomeStatus != "O.S. Medida"))

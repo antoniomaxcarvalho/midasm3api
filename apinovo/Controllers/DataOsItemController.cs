@@ -248,7 +248,7 @@ namespace apinovo.Controllers
 
                         if (nomeFonte.Contains("MANUT") || nomeFonte.Contains("EQUIPE"))
                         {
-                            var tot = (Math.Truncate((decimal)Os.quantidade * (decimal)Os.precoUnitarioPF * 100)) / 100;
+                            //var tot = (Math.Truncate((decimal)Os.quantidade * (decimal)Os.precoUnitarioPF * 100)) / 100;
                             Os.nomePF = Os.nome;
                             Os.quantidadePF = Os.quantidade;
                             Os.precoUnitarioPF = Os.precoUnitario;
@@ -470,7 +470,9 @@ namespace apinovo.Controllers
 
 
                             linha.quantidade = qtde;
-                            linha.total = qtde * Convert.ToDecimal(linha.precoUnitario);
+                            //linha.total = qtde * Convert.ToDecimal(linha.precoUnitario);
+
+                            linha.total = (Math.Truncate((decimal)qtde * Convert.ToDecimal(linha.precoUnitario) * 100)) / 100;
 
                             if (linha.nomeFonte.Contains("MANUT") || linha.nomeFonte.Contains("EQUIPE"))
                             {
