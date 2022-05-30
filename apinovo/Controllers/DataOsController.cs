@@ -378,7 +378,10 @@ namespace apinovo.Controllers
                         codigoOrdemServico = "",
                         etapa = "",
                         medicao = "",
-                        localAtendido = ""
+                        localAtendido = "",
+                        bdiServico = 0,
+                        autonumeroAutorizado = 0,
+                        autonumeroUsuario = 0,
 
                     };
 
@@ -398,6 +401,8 @@ namespace apinovo.Controllers
                             }
                         }
                     }
+                 
+
 
                     Os.autonumeroUsuario = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroUsuario"].ToString().Trim());
                     Os.autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
@@ -428,6 +433,13 @@ namespace apinovo.Controllers
                     Os.bdiServico = Convert.ToDouble(HttpContext.Current.Request.Form["bdiServico"].ToString());
                     Os.siglaCliente = HttpContext.Current.Request.Form["siglaCliente"].ToString();
                     Os.localAtendido = HttpContext.Current.Request.Form["localAtendido"].ToString();
+
+                    var nomeSubSistema = HttpContext.Current.Request.Form["nomeSubSistema"].ToString();
+                    if (nomeSubSistema.ToUpper().Contains("MÃO DE") || nomeSubSistema.ToUpper().Contains("MAO DE"))
+                    {
+                        Os.bdiMaterial = 0;
+                        Os.bdiServico = 0;
+                    }
 
                     if (string.IsNullOrEmpty(Os.nomeStatus))
                     {
