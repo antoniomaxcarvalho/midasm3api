@@ -724,7 +724,7 @@ namespace apinovo.Controllers
                 if (autonumeroPredio > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroPredio} = " + autonumeroPredio; }
                 if (autonumeroSetor > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroSetor} = " + autonumeroSetor; }
                 if (autonumeroLocalFisico > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroLocalFisico} = " + autonumeroLocalFisico; }
-                if (autonumeroLocalAtendido > 0) { filtro = filtro + " and {tb_cadastro1.local} = " + autonumeroLocalAtendido; }
+                if (autonumeroLocalAtendido > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroLocalAtendido} = " + autonumeroLocalAtendido; }
                 if (autonumeroSistema > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroSistema} = " + autonumeroSistema; }
                 if (autonumeroSubSistema > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroSubSistema} = " + autonumeroSubSistema; }
                 if (autonumeroEquipe > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroEquipe} = " + autonumeroEquipe; }
@@ -814,6 +814,295 @@ namespace apinovo.Controllers
 
 
         }
+
+
+        [HttpPost]
+        public HttpResponseMessage ImprimirEquipamentosGestao()
+
+        {
+            var c1 = 1;
+            var message = String.Empty;
+
+            try
+            {
+                var modelo = HttpContext.Current.Request.Form["modelo"].ToString();
+
+                var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
+                var autonumeroSistema = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroSistema"].ToString());
+                var autonumeroSubSistema = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroSubSistema"].ToString());
+                var autonumeroPredio = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroPredio"].ToString());
+                var autonumeroSetor = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroSetor"].ToString());
+                var autonumeroLocal = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroLocal"].ToString());
+                var codigoEquipamento = Convert.ToInt64(HttpContext.Current.Request.Form["codigoEquipamento"].ToString());
+
+                var nomeCliente = HttpContext.Current.Request.Form["nomeCliente"].ToString();
+                var nomeSistema = HttpContext.Current.Request.Form["nomeSistema"].ToString();
+                var nomeSetor = HttpContext.Current.Request.Form["nomeSetor"].ToString();
+                var nomePredio = HttpContext.Current.Request.Form["nomePredio"].ToString();
+                var nomeLocal = HttpContext.Current.Request.Form["nomeLocal"].ToString();
+
+                var inativo = Convert.ToSByte(HttpContext.Current.Request.Form["inativo"].ToString());
+                var tipoData = HttpContext.Current.Request.Form["tipoData"].ToString();
+                var pdfExcelWord = HttpContext.Current.Request.Form["pdfExcelWord"].ToString();
+
+
+                //var data1 = HttpContext.Current.Request.Form["data1"].ToString().Trim();
+                //var data2 = HttpContext.Current.Request.Form["data2"].ToString();
+
+                //var autonumeroLocalFisico = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroLocalFisico"].ToString());
+                //var autonumeroLocalAtendido = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroLocalAtendido"].ToString());
+                //var autonumeroEquipe = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroEquipe"].ToString());
+
+
+                DateTime? dataInicio = null;
+                if (IsDate(HttpContext.Current.Request.Form["dataInicio"].ToString()))
+                {
+                    dataInicio = Convert.ToDateTime(HttpContext.Current.Request.Form["dataInicio"].ToString());
+                }
+
+                DateTime? dataFim = null;
+
+                if (IsDate(HttpContext.Current.Request.Form["dataFim"].ToString()))
+                {
+                    dataFim = Convert.ToDateTime(HttpContext.Current.Request.Form["dataFim"].ToString());
+                }
+
+                var filtro = " { tb_cadastro1.cancelado} <> 'S' ";
+
+                var campo = "";
+
+                if (tipoData.Contains("DataCompra"))
+                {
+                    campo = "{tb_cadastro1.dataCompra}";
+                }
+
+                if (tipoData.Contains("DataGarantia"))
+                {
+                    campo = "{tb_cadastro1.dataGarantia}";
+                }
+
+
+                if (tipoData.Contains("DataInstalacao"))
+                {
+                    campo = "{tb_cadastro1.dataInstalacao}";
+                }
+
+
+                if (tipoData.Contains("DataAnvisa"))
+                {
+                    campo = "{tb_cadastro1.dataValidade}";
+                }
+
+
+                if (!string.IsNullOrEmpty(campo))
+                {
+                    filtro = filtro + " and " + campo + " >= DATE (" +
+                         Convert.ToDateTime(dataInicio).Year.ToString("####") + ", " +
+                         Convert.ToDateTime(dataInicio).Month.ToString("####") + ", " +
+                         Convert.ToDateTime(dataInicio).Day.ToString("####") + ") AND " +
+                         campo + " <= DATE (" +
+                         Convert.ToDateTime(dataFim).Year.ToString("####") + ", " +
+                         Convert.ToDateTime(dataFim).Month.ToString("####") + ", " +
+                         Convert.ToDateTime(dataFim).Day.ToString("####") + ")   ";
+                }
+
+
+
+                if (autonumeroCliente == 0) { nomeCliente = "TODOS"; } else { filtro = filtro + " and {tb_cadastro1.autonumeroCliente} = " + autonumeroCliente; }
+
+                if (codigoEquipamento == 0)
+                {
+                    if (autonumeroSistema == 0) { nomeSistema = "TODOS"; } else { filtro = filtro + " and {tb_cadastro1.autonumeroSistema} = " + autonumeroSistema; }
+                    if (autonumeroSubSistema > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroSubSistema} = " + autonumeroSubSistema; }
+                    if (autonumeroLocal == 0) { nomeLocal = "TODOS"; } else { filtro = filtro + " and {tb_cadastro1.autonumeroLocalFisico} = " + autonumeroLocal; }
+                    if (autonumeroPredio == 0) { nomePredio = "TODOS"; } else { filtro = filtro + " and {tb_cadastro1.autonumeroPredio} = " + autonumeroPredio; }
+                    if (autonumeroSetor == 0) { nomeSetor = "TODOS"; } else { filtro = filtro + " and {tb_cadastro1.autonumeroSetor} = " + autonumeroSetor; }
+                }
+                else
+                {
+                    filtro = filtro + " and {tb_cadastro1.autonumero} = " + codigoEquipamento;
+                }
+
+                if (inativo == 1)
+                {
+                    filtro = filtro + " and {tb_cadastro1.inativo} = 1 ";
+                }
+                else
+                {
+                    filtro = filtro + " and {tb_cadastro1.inativo} = 0 ";
+                }
+
+                using (var rd = new ReportDocument())
+                {
+                    var Response = HttpContext.Current.ApplicationInstance.Response;
+
+                    var local = HttpContext.Current.Server.MapPath("~/rpt/equipamento.rpt");
+
+                    if (modelo.Equals("Itens Gastos O.S"))
+                    {
+                        if (codigoEquipamento > 0)
+                        {
+                            filtro = filtro + " and {os1.autonumeroEquipamento} = " + codigoEquipamento + " and {os1.cancelado} <> 'S'  and {os_itens1.cancelado} <> 'S'  ";
+                        }
+                        else
+                        {
+                            filtro = filtro + " and {os1.autonumeroEquipamento} > 0 and {os1.cancelado} <> 'S'  and {os_itens1.cancelado} <> 'S'  ";
+                        }
+
+                        local = HttpContext.Current.Server.MapPath("~/rpt/equipamentoOS.rpt");
+                    }
+
+
+                    if (modelo.Equals("Gastos O.S Sintético"))
+                    {
+                        filtro = filtro + " and {os1.autonumeroEquipamento} > 0 and {os1.cancelado} <> 'S'  and {os_itens1.cancelado} <> 'S'  ";
+
+                        local = HttpContext.Current.Server.MapPath("~/rpt/equipamentoOSSintetico.rpt");
+                    }
+
+
+                    if (modelo.Equals("Equipamentos Por Hora Trabalhada"))
+                    {
+                        filtro = filtro + " and {os1.autonumeroEquipamento} > 0 and {os1.cancelado} <> 'S'  ";
+
+                        local = HttpContext.Current.Server.MapPath("~/rpt/equipamentoOSHoras.rpt");
+                    }
+
+
+                    if (modelo.Equals("Equipamentos Por Hora Trabalhada - Sintético"))
+                    {
+                        filtro = filtro + " and {os1.autonumeroEquipamento} > 0 and {os1.cancelado} <> 'S'  ";
+
+                        local = HttpContext.Current.Server.MapPath("~/rpt/equipamentoOSHorasSintetico.rpt");
+                    }
+
+                    if (modelo.Equals("Indicadores"))
+                    {
+                        local = HttpContext.Current.Server.MapPath("~/rpt/indicadores.rpt");
+                    }
+
+                    if (modelo.Equals("Indicadores Completo"))
+                    {
+                        local = HttpContext.Current.Server.MapPath("~/rpt/indicadoresCompleto.rpt");
+                    }
+
+                    if (modelo.Equals("Indicadores Com Ocorrências"))
+                    {
+                        filtro = filtro + " and {equipamentodefeito1.cancelado}  <> 'S'  ";
+                        local = HttpContext.Current.Server.MapPath("~/rpt/indicadoresOcorrencia.rpt");
+                    }
+
+                    //if (codigoEquipamento > 0 && !modelo.Equals("Itens Gastos O.S"))
+                    //{
+                    //    local = HttpContext.Current.Server.MapPath("~/rpt/equipamentoOSHoras.rpt");
+                    //}
+
+
+                    if (modelo.Equals("Obsolescência - Depreciação Fiscal e Contábil"))
+
+                    {
+                        filtro = filtro + " and {tb_cadastro1.valorEquipamentoNovo} > 0 and year({ tb_cadastro1.dataInstalacao}) > 0 ";
+
+                        local = HttpContext.Current.Server.MapPath("~/rpt/equipamentoObsoletos.rpt");
+                    }
+
+                    rd.Load(local);
+
+                    rd.SetParameterValue("@nomeCliente", nomeCliente);
+                    rd.SetParameterValue("@nomeSistema", nomeSistema);
+                    rd.SetParameterValue("@nomePredio", nomePredio);
+                    rd.SetParameterValue("@nomeSetor", nomeSetor);
+                    rd.SetParameterValue("@nomeLocal", nomeLocal);
+
+                    rd.RecordSelectionFormula = filtro;
+
+                    Response.Buffer = false;
+                    //Response.ClearContent();
+                    //Response.ClearHeaders();
+                    Stream stream = null;
+
+                    if (pdfExcelWord == "Pdf")
+                    {
+                        stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
+                    }
+                    if (pdfExcelWord == "Excel")
+                    {
+                        stream = rd.ExportToStream(ExportFormatType.Excel);
+                    }
+                    if (pdfExcelWord == "Word")
+                    {
+                        stream = rd.ExportToStream(ExportFormatType.WordForWindows);
+                    }
+                    stream.Seek(0, SeekOrigin.Begin);
+
+
+
+                    //var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
+                    //stream.Seek(0, SeekOrigin.Begin);
+
+                    ////75 is my print job limit.
+                    //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
+                    //return CreateReport(reportClass);
+
+                    rd.Close();
+                    rd.Dispose();
+
+                    var resp = Request.CreateResponse(HttpStatusCode.OK);
+                    resp.Content = new StreamContent(stream);
+                    return resp;
+                }
+            }
+
+            catch (LogOnException ex)
+            {
+                var c = string.Empty;
+                if (ex.InnerException != null)
+                {
+                    c = ex.InnerException.ToString().Substring(0, 130);
+                }
+                message = message + ex.Message + " ---- " + c;
+                //message = "Incorrect Logon Parameters. Check your user name and password";
+            }
+            catch (DataSourceException ex)
+            {
+                var c = string.Empty;
+                if (ex.InnerException != null)
+                {
+                    c = ex.InnerException.ToString().Substring(0, 130);
+                }
+                message = message + ex.Message + " ---- " + c;
+                //message = "An error has occurred while connecting to the database.";
+            }
+            catch (EngineException ex)
+            {
+                var c = string.Empty;
+                if (ex.InnerException != null)
+                {
+                    c = ex.InnerException.ToString().Substring(0, 130);
+                }
+                message = message + ex.Message + " ---- " + c;
+                //message = ex.InnerException  != null ? ex.InnerException.ToString().Substring(0, 130) : ex.Message;
+            }
+            catch (Exception ex)
+            {
+                var c = string.Empty;
+                if (ex.InnerException != null)
+                {
+                    c = ex.InnerException.ToString().Substring(0, 130);
+                }
+                message = message + ex.Message + " ---- " + c;
+                //message = ex.InnerException  != null ? ex.InnerException.ToString().Substring(0, 130) : ex.Message;
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
+            }
+            return null;
+        }
+
 
         [HttpPost]
         public HttpResponseMessage ImprimirFotoOs()
@@ -4851,6 +5140,20 @@ namespace apinovo.Controllers
 
             }
             return null;
+        }
+
+
+        public static bool IsDate(string MyString)
+        {
+            try
+            {
+                DateTime.Parse(MyString); // or Double.Parse if you want to use double
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
 
