@@ -256,7 +256,88 @@ namespace apinovo.Controllers
                     mesManuTri01 = string.Empty,
                     mesManuTri02 = string.Empty,
                     mesManuTri03 = string.Empty,
-                    mesManuTri04 = string.Empty
+                    mesManuTri04 = string.Empty,
+                    mesManuSemestre = "",
+                    contadorPmocEquipamento = 0,
+                    mes01 = 1,
+                    mes02 = 1,
+                    mes03 = 1,
+                    mes04 = 1,
+                    mes05 = 1,
+                    mes06 = 1,
+                    mes07 = 1,
+                    mes08 = 1,
+                    mes09 = 1,
+                    mes10 = 1,
+                    mes11 = 1,
+                    mes12 = 1,
+                    bim01 = 0,
+                    bim02 = 0,
+                    bim03 = 0,
+                    bim04 = 0,
+                    bim05 = 0,
+                    bim06 = 0,
+                    bim07 = 0,
+                    bim08 = 0,
+                    bim09 = 0,
+                    bim10 = 0,
+                    bim11 = 0,
+                    bim12 = 0,
+                    tri01 = 0,
+                    tri02 = 0,
+                    tri03 = 0,
+                    tri04 = 0,
+                    tri05 = 0,
+                    tri06 = 0,
+                    tri07 = 0,
+                    tri08 = 0,
+                    tri09 = 0,
+                    tri10 = 0,
+                    tri11 = 0,
+                    tri12 = 0,
+                    sem01 = 0,
+                    sem02 = 0,
+                    sem03 = 0,
+                    sem04 = 0,
+                    sem05 = 0,
+                    sem06 = 0,
+                    sem07 = 0,
+                    sem08 = 0,
+                    sem09 = 0,
+                    sem10 = 0,
+                    sem11 = 0,
+                    sem12 = 0,
+                    ano01 = 0,
+                    ano02 = 0,
+                    ano03 = 0,
+                    ano04 = 0,
+                    ano05 = 0,
+                    ano06 = 0,
+                    ano07 = 0,
+                    ano08 = 0,
+                    ano09 = 0,
+                    ano10 = 0,
+                    ano11 = 0,
+                    ano12 = 0,
+                    obsLocal = "",
+                    anoFabricacao = 0,
+                    dataInstalacao = null,
+                    dataValidade = null,
+                    registroAnvisa = "",
+                    obs = "",
+                    inativo = 0,
+                    confiabilidade = 0,
+                    cpmv = 0,
+                    disponibilidade = 0,
+                    mtbf = 0,
+                    mttr = 0,
+                    valorEquipamentoNovo = 0,
+                    taxaDepreciacaoFiscalAnual = 0,
+                    vidaUtilAnos = 0,
+                    depreciacaoContabilMensal = 0,
+                    depreciacaoFiscalMensal = 0,
+                    
+                    
                 };
 
                 if (autonumero > 0)
@@ -369,6 +450,43 @@ namespace apinovo.Controllers
                 {
                     linha.mesManuTri04 = "";
                 }
+
+
+                if (IsDate(HttpContext.Current.Request.Form["dataInstalacao"].ToString()))
+                {
+                    linha.dataInstalacao = Convert.ToDateTime(HttpContext.Current.Request.Form["dataInstalacao"].ToString());
+                }
+                if (IsDate(HttpContext.Current.Request.Form["dataValidade"].ToString()))
+                {
+                    linha.dataValidade = Convert.ToDateTime(HttpContext.Current.Request.Form["dataValidade"].ToString());
+                }
+
+                linha.periodicidade = Convert.ToInt32(HttpContext.Current.Request.Form["periodicidade"].ToString());
+
+                linha.anoFabricacao = Convert.ToInt16(HttpContext.Current.Request.Form["anoFabricacao"].ToString());
+                linha.registroAnvisa = HttpContext.Current.Request.Form["registroAnvisa"].ToString().Trim();
+                linha.obs = " ";
+                if (HttpContext.Current.Request.Form["obs"] != null)
+                {
+                    linha.obs = HttpContext.Current.Request.Form["obs"].ToString();
+                }
+                linha.inativo = Convert.ToSByte(HttpContext.Current.Request.Form["inativo"].ToString());
+                linha.valorEquipamentoNovo = Convert.ToDecimal(HttpContext.Current.Request.Form["valorEquipamentoNovo"].ToString());
+                linha.taxaDepreciacaoFiscalAnual = Convert.ToDecimal(HttpContext.Current.Request.Form["taxaDepreciacaoFiscalAnual"].ToString());
+                linha.vidaUtilAnos = Convert.ToInt16(HttpContext.Current.Request.Form["vidaUtilAnos"].ToString());
+
+
+                linha.depreciacaoFiscalMensal = 0;
+                if (linha.taxaDepreciacaoFiscalAnual > 0)
+                {
+                    linha.depreciacaoFiscalMensal = (linha.valorEquipamentoNovo * linha.taxaDepreciacaoFiscalAnual / 100) / 12;
+                }
+                linha.depreciacaoContabilMensal = 0;
+                if (linha.vidaUtilAnos > 0)
+                {
+                    linha.depreciacaoContabilMensal = linha.valorEquipamentoNovo / linha.vidaUtilAnos / 12;
+                }
+
 
                 dc.tb_cadastro.AddOrUpdate(linha);
                 dc.SaveChanges();

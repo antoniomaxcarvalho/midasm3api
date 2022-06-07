@@ -257,6 +257,7 @@
     <Compile Include="Controllers\DataDiarioPlantaoController.cs" />
     <Compile Include="Controllers\DataDocumentoContratoController.cs" />
     <Compile Include="Controllers\DataEquipamentoController.cs" />
+    <Compile Include="Controllers\DataEquipamentoDefeitoController.cs" />
     <Compile Include="Controllers\DataEtapaController.cs" />
     <Compile Include="Controllers\DataFeriadoController.cs" />
     <Compile Include="Controllers\DataFuncionarioController.cs" />
@@ -299,6 +300,9 @@
     <Compile Include="Controllers\ImprimirController.cs" />
     <Compile Include="Cors\AllowCrossSiteAttribute.cs" />
     <Compile Include="documentocontrato.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="equipamentodefeito.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="funcionario.cs">

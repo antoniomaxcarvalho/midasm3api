@@ -93,5 +93,6 @@ namespace apinovo
         public DbSet<tb_insumo> tb_insumo { get; set; }
         public DbSet<tb_servico> tb_servico { get; set; }
         public DbSet<tb_ordemservico> tb_ordemservico { get; set; }
+        public DbSet<equipamentodefeito> equipamentodefeito { get; set; }
     }
 }

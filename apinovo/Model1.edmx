@@ -240,6 +240,22 @@
           <Property Name="autonumeroContrato" Type="int" />
           <Property Name="nomeContrato" Type="varchar" MaxLength="60" />
         </EntityType>
+        <EntityType Name="equipamentodefeito">
+          <Key>
+            <PropertyRef Name="autonumero" />
+          </Key>
+          <Property Name="autonumero" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="autonumeroEquipamento" Type="bigint" />
+          <Property Name="dataInicio" Type="date" />
+          <Property Name="dataFim" Type="date" />
+          <Property Name="horaInicio" Type="time" Precision="0" />
+          <Property Name="horaFim" Type="time" Precision="0" />
+          <Property Name="totalHorasFuncionando" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="totalSegundosFuncionando" Type="bigint" />
+          <Property Name="totalHorasParado" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="totalSegundosParado" Type="bigint" />
+          <Property Name="cancelado" Type="char" MaxLength="1" />
+        </EntityType>
         <EntityType Name="funcionario">
           <Key>
             <PropertyRef Name="autonumero" />
@@ -607,6 +623,22 @@
           <Property Name="ano10" Type="tinyint" />
           <Property Name="ano11" Type="tinyint" />
           <Property Name="ano12" Type="tinyint" />
+          <Property Name="anoFabricacao" Type="smallint" />
+          <Property Name="registroAnvisa" Type="varchar" MaxLength="20" />
+          <Property Name="dataValidade" Type="date" />
+          <Property Name="dataInstalacao" Type="date" />
+          <Property Name="inativo" Type="tinyint" />
+          <Property Name="obs" Type="mediumtext" />
+          <Property Name="mtbf" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="mttr" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="disponibilidade" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="confiabilidade" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="cpmv" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="valorEquipamentoNovo" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="taxaDepreciacaoFiscalAnual" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="vidaUtilAnos" Type="smallint" />
+          <Property Name="depreciacaoFiscalMensal" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="depreciacaoContabilMensal" Type="decimal" Precision="10" Scale="2" />
         </EntityType>
         <EntityType Name="tb_categoriaservico">
           <Key>
@@ -1220,6 +1252,7 @@
           <EntitySet Name="checklistveiculo" EntityType="Self.checklistveiculo" Schema="manut" store:Type="Tables" />
           <EntitySet Name="contratofuncionario" EntityType="Self.contratofuncionario" Schema="manut" store:Type="Tables" />
           <EntitySet Name="documentocontrato" EntityType="Self.documentocontrato" Schema="manut" store:Type="Tables" />
+          <EntitySet Name="equipamentodefeito" EntityType="Self.equipamentodefeito" Schema="manut" store:Type="Tables" />
           <EntitySet Name="funcionario" EntityType="Self.funcionario" Schema="manut" store:Type="Tables" />
           <EntitySet Name="funcionariocurso" EntityType="Self.funcionariocurso" Schema="manut" store:Type="Tables" />
           <EntitySet Name="funcionariodocumento" EntityType="Self.funcionariodocumento" Schema="manut" store:Type="Tables" />
@@ -1374,6 +1407,7 @@
           <EntitySet Name="tb_insumo" EntityType="manutModel.tb_insumo" />
           <EntitySet Name="tb_servico" EntityType="manutModel.tb_servico" />
           <EntitySet Name="tb_ordemservico" EntityType="manutModel.tb_ordemservico" />
+          <EntitySet Name="equipamentodefeito" EntityType="manutModel.equipamentodefeito" />
         </EntityContainer>
         <EntityType Name="tb_tipo_usuario">
           <Key>
@@ -2328,6 +2362,22 @@
           <Property Name="ano10" Type="SByte" />
           <Property Name="ano11" Type="SByte" />
           <Property Name="ano12" Type="SByte" />
+          <Property Name="anoFabricacao" Type="Int16" />
+          <Property Name="registroAnvisa" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="dataValidade" Type="DateTime" />
+          <Property Name="dataInstalacao" Type="DateTime" />
+          <Property Name="inativo" Type="SByte" />
+          <Property Name="obs" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="mtbf" Type="Decimal" />
+          <Property Name="mttr" Type="Decimal" />
+          <Property Name="disponibilidade" Type="Decimal" />
+          <Property Name="confiabilidade" Type="Decimal" />
+          <Property Name="cpmv" Type="Decimal" />
+          <Property Name="valorEquipamentoNovo" Type="Decimal" />
+          <Property Name="taxaDepreciacaoFiscalAnual" Type="Decimal" />
+          <Property Name="vidaUtilAnos" Type="Int16" />
+          <Property Name="depreciacaoFiscalMensal" Type="Decimal" />
+          <Property Name="depreciacaoContabilMensal" Type="Decimal" />
         </EntityType>
         <EntityType Name="tb_sistema">
           <Key>
@@ -2556,6 +2606,22 @@
           <Property Name="etapa" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="medicao" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="local" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="equipamentodefeito">
+          <Key>
+            <PropertyRef Name="autonumero" />
+          </Key>
+          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="autonumeroEquipamento" Type="Int64" />
+          <Property Name="dataInicio" Type="DateTime" />
+          <Property Name="dataFim" Type="DateTime" />
+          <Property Name="horaInicio" Type="Time" />
+          <Property Name="horaFim" Type="Time" />
+          <Property Name="totalHorasFuncionando" Type="Decimal" />
+          <Property Name="totalSegundosFuncionando" Type="Int64" />
+          <Property Name="totalHorasParado" Type="Decimal" />
+          <Property Name="totalSegundosParado" Type="Int64" />
+          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3493,6 +3559,22 @@
           <EntitySetMapping Name="tb_cadastro">
             <EntityTypeMapping TypeName="manutModel.tb_cadastro">
               <MappingFragment StoreEntitySet="tb_cadastro">
+                <ScalarProperty Name="depreciacaoContabilMensal" ColumnName="depreciacaoContabilMensal" />
+                <ScalarProperty Name="depreciacaoFiscalMensal" ColumnName="depreciacaoFiscalMensal" />
+                <ScalarProperty Name="vidaUtilAnos" ColumnName="vidaUtilAnos" />
+                <ScalarProperty Name="taxaDepreciacaoFiscalAnual" ColumnName="taxaDepreciacaoFiscalAnual" />
+                <ScalarProperty Name="valorEquipamentoNovo" ColumnName="valorEquipamentoNovo" />
+                <ScalarProperty Name="cpmv" ColumnName="cpmv" />
+                <ScalarProperty Name="confiabilidade" ColumnName="confiabilidade" />
+                <ScalarProperty Name="disponibilidade" ColumnName="disponibilidade" />
+                <ScalarProperty Name="mttr" ColumnName="mttr" />
+                <ScalarProperty Name="mtbf" ColumnName="mtbf" />
+                <ScalarProperty Name="obs" ColumnName="obs" />
+                <ScalarProperty Name="inativo" ColumnName="inativo" />
+                <ScalarProperty Name="dataInstalacao" ColumnName="dataInstalacao" />
+                <ScalarProperty Name="dataValidade" ColumnName="dataValidade" />
+                <ScalarProperty Name="registroAnvisa" ColumnName="registroAnvisa" />
+                <ScalarProperty Name="anoFabricacao" ColumnName="anoFabricacao" />
                 <ScalarProperty Name="ano12" ColumnName="ano12" />
                 <ScalarProperty Name="ano11" ColumnName="ano11" />
                 <ScalarProperty Name="ano10" ColumnName="ano10" />
@@ -3829,6 +3911,23 @@
                 <ScalarProperty Name="sigla" ColumnName="sigla" />
                 <ScalarProperty Name="nomeCliente" ColumnName="nomeCliente" />
                 <ScalarProperty Name="autonumeroCliente" ColumnName="autonumeroCliente" />
+                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="equipamentodefeito">
+            <EntityTypeMapping TypeName="manutModel.equipamentodefeito">
+              <MappingFragment StoreEntitySet="equipamentodefeito">
+                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
+                <ScalarProperty Name="totalSegundosParado" ColumnName="totalSegundosParado" />
+                <ScalarProperty Name="totalHorasParado" ColumnName="totalHorasParado" />
+                <ScalarProperty Name="totalSegundosFuncionando" ColumnName="totalSegundosFuncionando" />
+                <ScalarProperty Name="totalHorasFuncionando" ColumnName="totalHorasFuncionando" />
+                <ScalarProperty Name="horaFim" ColumnName="horaFim" />
+                <ScalarProperty Name="horaInicio" ColumnName="horaInicio" />
+                <ScalarProperty Name="dataFim" ColumnName="dataFim" />
+                <ScalarProperty Name="dataInicio" ColumnName="dataInicio" />
+                <ScalarProperty Name="autonumeroEquipamento" ColumnName="autonumeroEquipamento" />
                 <ScalarProperty Name="autonumero" ColumnName="autonumero" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -114,5 +114,21 @@ namespace apinovo
         public Nullable<sbyte> ano10 { get; set; }
         public Nullable<sbyte> ano11 { get; set; }
         public Nullable<sbyte> ano12 { get; set; }
+        public Nullable<short> anoFabricacao { get; set; }
+        public string registroAnvisa { get; set; }
+        public Nullable<System.DateTime> dataValidade { get; set; }
+        public Nullable<System.DateTime> dataInstalacao { get; set; }
+        public Nullable<sbyte> inativo { get; set; }
+        public string obs { get; set; }
+        public Nullable<decimal> mtbf { get; set; }
+        public Nullable<decimal> mttr { get; set; }
+        public Nullable<decimal> disponibilidade { get; set; }
+        public Nullable<decimal> confiabilidade { get; set; }
+        public Nullable<decimal> cpmv { get; set; }
+        public Nullable<decimal> valorEquipamentoNovo { get; set; }
+        public Nullable<decimal> taxaDepreciacaoFiscalAnual { get; set; }
+        public Nullable<short> vidaUtilAnos { get; set; }
+        public Nullable<decimal> depreciacaoFiscalMensal { get; set; }
+        public Nullable<decimal> depreciacaoContabilMensal { get; set; }
     }
 }

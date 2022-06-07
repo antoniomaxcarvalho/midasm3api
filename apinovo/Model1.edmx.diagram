@@ -73,6 +73,7 @@
         <EntityTypeShape EntityType="manutModel.tb_insumo" Width="1.5" PointX="0.625" PointY="1.75" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_servico" Width="1.5" PointX="0.625" PointY="1.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_ordemservico" Width="1.5" PointX="9.5" PointY="4.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="manutModel.equipamentodefeito" Width="1.5" PointX="0.5" PointY="5.875" IsExpanded="false" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
