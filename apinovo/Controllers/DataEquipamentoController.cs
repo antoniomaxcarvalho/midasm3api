@@ -26,101 +26,192 @@ namespace apinovo.Controllers
             }
         }
 
+        //[HttpGet]
+        //public IEnumerable<tb_cadastro> GetEquipamentoCliente(Int64 autonumeroCliente, int nroDeLinhas, int autonumeroSubSistema, int autonumeroEquipe,
+        //    int autonumeroLocalFisico, int autonumeroSetor, int autonumeroLocalAtendido)
+        //{
+        //    using (var dc = new manutEntities())
+        //    {
+
+
+        //        if (autonumeroSubSistema > 0)
+        //        {
+
+        //            var user1 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema).OrderBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema).ThenBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico) select p;
+
+        //            if (nroDeLinhas > 0)
+        //            {
+        //                return user1.ToList().Take(nroDeLinhas);
+        //            }
+        //            else
+        //            {
+        //                return user1.ToList();
+        //            }
+        //        }
+        //        if (autonumeroEquipe > 0)
+        //        {
+
+        //            var user2 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroEquipe == autonumeroEquipe).OrderBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema).ThenBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico) select p;
+
+        //            if (nroDeLinhas > 0)
+        //            {
+        //                return user2.ToList().Take(nroDeLinhas);
+        //            }
+        //            else
+        //            {
+        //                return user2.ToList();
+        //            }
+        //        }
+        //        if (autonumeroLocalFisico > 0)
+        //        {
+
+        //            var user3 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroLocalFisico == autonumeroLocalFisico).OrderBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema).ThenBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico) select p;
+
+        //            if (nroDeLinhas > 0)
+        //            {
+        //                return user3.ToList().Take(nroDeLinhas);
+        //            }
+        //            else
+        //            {
+        //                return user3.ToList();
+        //            }
+        //        }
+
+        //        if (autonumeroSetor > 0)
+        //        {
+
+        //            var user3 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSetor == autonumeroSetor).OrderBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema).ThenBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico) select p;
+
+        //            if (nroDeLinhas > 0)
+        //            {
+        //                return user3.ToList().Take(nroDeLinhas);
+        //            }
+        //            else
+        //            {
+        //                return user3.ToList();
+        //            }
+        //        }
+
+        //        if (autonumeroLocalAtendido > 0)
+        //        {
+
+        //            var user3 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroLocalAtendido == autonumeroLocalAtendido).OrderBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema).ThenBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico) select p;
+
+        //            if (nroDeLinhas > 0)
+        //            {
+        //                return user3.ToList().Take(nroDeLinhas);
+        //            }
+        //            else
+        //            {
+        //                return user3.ToList();
+        //            }
+        //        }
+
+
+        //        var user = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S").OrderBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema).ThenBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico) select p;
+
+        //        if (nroDeLinhas > 0)
+        //        {
+        //            return user.ToList().Take(nroDeLinhas);
+        //        }
+        //        else
+        //        {
+        //            return user.ToList();
+        //        }
+
+        //    }
+        //}
+
         [HttpGet]
-        public IEnumerable<tb_cadastro> GetEquipamentoCliente(Int64 autonumeroCliente, int nroDeLinhas, int autonumeroSubSistema, int autonumeroEquipe,
-            int autonumeroLocalFisico, int autonumeroSetor, int autonumeroLocalAtendido)
+        public IEnumerable<tb_cadastro> GetEquipamentoCliente(Int64 autonumeroCliente, int autonumeroPredio, int nroDeLinhas, int autonumeroSubSistema,
+    int autonumeroLocalFisico, int autonumeroSetor)
         {
+            var c = 1;
             using (var dc = new manutEntities())
             {
+
+
+                var lista = (from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S").OrderBy(p => p.nomePredio)
+                             .ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico).ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema)
+                             select p).ToList();
 
 
                 if (autonumeroSubSistema > 0)
                 {
 
-                    var user1 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSubSistema == autonumeroSubSistema).OrderBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema).ThenBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico) select p;
-
-                    if (nroDeLinhas > 0)
-                    {
-                        return user1.ToList().Take(nroDeLinhas);
-                    }
-                    else
-                    {
-                        return user1.ToList();
-                    }
+                    lista = (from p in lista.Where(a => a.autonumeroSubSistema == autonumeroSubSistema) select p).ToList();
                 }
-                if (autonumeroEquipe > 0)
+                if (autonumeroPredio > 0)
                 {
 
-                    var user2 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroEquipe == autonumeroEquipe).OrderBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema).ThenBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico) select p;
+                    lista = (from p in lista.Where(a => a.autonumeroPredio == autonumeroPredio)
+                            .OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico)
+                            .ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema)
+                             select p).ToList();
 
-                    if (nroDeLinhas > 0)
-                    {
-                        return user2.ToList().Take(nroDeLinhas);
-                    }
-                    else
-                    {
-                        return user2.ToList();
-                    }
+                    //if (nroDeLinhas > 0)
+                    //{
+                    //    return lista.Take(nroDeLinhas);
+                    //}
+                    //else
+                    //{
+                    //    return user2.ToList();
+                    //}
                 }
                 if (autonumeroLocalFisico > 0)
                 {
 
-                    var user3 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroLocalFisico == autonumeroLocalFisico).OrderBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema).ThenBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico) select p;
+                    lista = (from p in lista.Where(a => a.autonumeroLocalFisico == autonumeroLocalFisico)
+                            .OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico)
+                            .ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema)
+                             select p).ToList();
 
-                    if (nroDeLinhas > 0)
-                    {
-                        return user3.ToList().Take(nroDeLinhas);
-                    }
-                    else
-                    {
-                        return user3.ToList();
-                    }
+                    //if (nroDeLinhas > 0)
+                    //{
+                    //    return user3.ToList().Take(nroDeLinhas);
+                    //}
+                    //else
+                    //{
+                    //    return user3.ToList();
+                    //}
                 }
 
                 if (autonumeroSetor > 0)
                 {
 
-                    var user3 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroSetor == autonumeroSetor).OrderBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema).ThenBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico) select p;
+                    lista = (from p in lista.Where(a => a.autonumeroSetor == autonumeroSetor)
+                            .OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico)
+                            .ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema)
+                             select p).ToList();
 
-                    if (nroDeLinhas > 0)
-                    {
-                        return user3.ToList().Take(nroDeLinhas);
-                    }
-                    else
-                    {
-                        return user3.ToList();
-                    }
-                }
-
-                if (autonumeroLocalAtendido > 0)
-                {
-
-                    var user3 = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" && a.autonumeroLocalAtendido == autonumeroLocalAtendido).OrderBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema).ThenBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico) select p;
-
-                    if (nroDeLinhas > 0)
-                    {
-                        return user3.ToList().Take(nroDeLinhas);
-                    }
-                    else
-                    {
-                        return user3.ToList();
-                    }
+                    //if (nroDeLinhas > 0)
+                    //{
+                    //    return user3.ToList().Take(nroDeLinhas);
+                    //}
+                    //else
+                    //{
+                    //    return user3.ToList();
+                    //}
                 }
 
 
-                var user = from p in dc.tb_cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S").OrderBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema).ThenBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico) select p;
+
+                //var user = from p in dc.cadastro.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S").OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico).ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema) select p;
 
                 if (nroDeLinhas > 0)
                 {
-                    return user.ToList().Take(nroDeLinhas);
+                    return lista.Take(nroDeLinhas);
                 }
                 else
                 {
-                    return user.ToList();
+                    return lista;
                 }
 
             }
         }
+
+
+
         public IEnumerable<tb_cadastro> GetAllEquipamento()
         {
             using (var dc = new manutEntities())

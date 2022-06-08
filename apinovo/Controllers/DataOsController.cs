@@ -434,6 +434,7 @@ namespace apinovo.Controllers
                     Os.siglaCliente = HttpContext.Current.Request.Form["siglaCliente"].ToString();
                     Os.localAtendido = HttpContext.Current.Request.Form["localAtendido"].ToString();
 
+
                     var nomeSubSistema = HttpContext.Current.Request.Form["nomeSubSistema"].ToString();
                     if (nomeSubSistema.ToUpper().Contains("MÃO DE") || nomeSubSistema.ToUpper().Contains("MAO DE"))
                     {

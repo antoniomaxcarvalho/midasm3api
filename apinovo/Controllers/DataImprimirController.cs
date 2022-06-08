@@ -658,168 +658,6 @@ namespace apinovo.Controllers
         public HttpResponseMessage ImprimirEquipamentos()
 
         {
-            var message = String.Empty;
-
-            try
-            {
-                var tipoData = HttpContext.Current.Request.Form["tipoData"].ToString().Trim();
-                var data1 = HttpContext.Current.Request.Form["data1"].ToString().Trim();
-                var data2 = HttpContext.Current.Request.Form["data2"].ToString();
-                var autonumeroCliente = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
-                var autonumeroPredio = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroPredio"].ToString());
-                var autonumeroSetor = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroSetor"].ToString());
-                var autonumeroLocalFisico = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroLocalFisico"].ToString());
-                var autonumeroLocalAtendido = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroLocalAtendido"].ToString());
-                var autonumeroSistema = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroSistema"].ToString());
-                var autonumeroSubSistema = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroSubSistema"].ToString());
-                var autonumeroEquipe = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroEquipe"].ToString());
-
-
-                var p1 = string.Empty;
-
-                var filtro = "{tb_cadastro1.cancelado} <> 'S'  ";
-
-                var campo = "";
-                var nomeStatus = "";
-                if (tipoData.Equals("C"))
-                {
-                    nomeStatus = "Compra";
-                    campo = "{tb_cadastro1.dataCompra}";
-                }
-                if (tipoData.Equals("G"))
-                {
-                    nomeStatus = "Garantia";
-                    campo = "{tb_cadastro1.dataGarantia}";
-                }
-                if (tipoData.Equals("P"))
-                {
-                    nomeStatus = "Prevista";
-                    campo = "{tb_cadastro1.dataPrevista}";
-                }
-
-
-
-
-                if (!string.IsNullOrEmpty(nomeStatus))
-                {
-
-                    if (!string.IsNullOrEmpty(data1))
-                    {
-                        filtro = filtro + " and " + campo + " >= DATE (" +
-                                 Convert.ToDateTime(data1).Year.ToString("####") + ", " +
-                                 Convert.ToDateTime(data1).Month.ToString("####") + ", " +
-                                 Convert.ToDateTime(data1).Day.ToString("####") + ") AND " +
-                                 campo + " <= DATE (" +
-                                 Convert.ToDateTime(data2).Year.ToString("####") + ", " +
-                                 Convert.ToDateTime(data2).Month.ToString("####") + ", " +
-                                 Convert.ToDateTime(data2).Day.ToString("####") + ")  ";
-
-                        p1 = "Equipamento No Intervalo *" + nomeStatus + "* : " + Convert.ToDateTime(data1).ToString("dd/MM/yyyy") +
-                        @" Até " + Convert.ToDateTime(data2).ToString("dd/MM/yyyy");
-
-                    }
-                }
-
-                if (autonumeroCliente > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroCliente} = " + autonumeroCliente; }
-                if (autonumeroPredio > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroPredio} = " + autonumeroPredio; }
-                if (autonumeroSetor > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroSetor} = " + autonumeroSetor; }
-                if (autonumeroLocalFisico > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroLocalFisico} = " + autonumeroLocalFisico; }
-                if (autonumeroLocalAtendido > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroLocalAtendido} = " + autonumeroLocalAtendido; }
-                if (autonumeroSistema > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroSistema} = " + autonumeroSistema; }
-                if (autonumeroSubSistema > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroSubSistema} = " + autonumeroSubSistema; }
-                if (autonumeroEquipe > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroEquipe} = " + autonumeroEquipe; }
-                //if (autonumeroEquipe > 0) { filtro = filtro + " and {tb_cadastro1.autonumeroEquipe} = " + autonumeroEquipe; }
-
-                using (var rd = new ReportDocument())
-                {
-                    var Response = HttpContext.Current.ApplicationInstance.Response;
-
-
-                    var local = HttpContext.Current.Server.MapPath("~/rpt/componente.rpt");
-
-                    rd.Load(local);
-
-                    rd.SetParameterValue("p1", p1);
-
-                    rd.RecordSelectionFormula = filtro;
-
-                    Response.Buffer = false;
-                    Response.ClearContent();
-                    Response.ClearHeaders();
-
-                    var stream = rd.ExportToStream(ExportFormatType.PortableDocFormat);
-                    stream.Seek(0, SeekOrigin.Begin);
-
-                    ////75 is my print job limit.
-                    //if (rd.Count > 75) ((ReportClass)reportQueue.Dequeue()).Dispose();
-                    //return CreateReport(reportClass);
-
-                    rd.Close();
-                    rd.Dispose();
-
-                    var resp = Request.CreateResponse(HttpStatusCode.OK);
-                    resp.Content = new StreamContent(stream);
-                    return resp;
-                }
-            }
-
-            catch (LogOnException ex)
-            {
-                var c = string.Empty;
-                if (ex.InnerException != null)
-                {
-                    c = ex.InnerException.ToString().Substring(0, 130);
-                }
-                message = message + ex.Message + " ---- " + c;
-                //message = "Incorrect Logon Parameters. Check your user name and password";
-            }
-            catch (DataSourceException ex)
-            {
-                var c = string.Empty;
-                if (ex.InnerException != null)
-                {
-                    c = ex.InnerException.ToString().Substring(0, 130);
-                }
-                message = message + ex.Message + " ---- " + c;
-                //message = "An error has occurred while connecting to the database.";
-            }
-            catch (EngineException ex)
-            {
-                var c = string.Empty;
-                if (ex.InnerException != null)
-                {
-                    c = ex.InnerException.ToString().Substring(0, 130);
-                }
-                message = message + ex.Message + " ---- " + c;
-                //message = ex.InnerException  != null ? ex.InnerException.ToString().Substring(0, 130) : ex.Message;
-            }
-            catch (Exception ex)
-            {
-                var c = string.Empty;
-                if (ex.InnerException != null)
-                {
-                    c = ex.InnerException.ToString().Substring(0, 130);
-                }
-                message = message + ex.Message + " ---- " + c;
-                //message = ex.InnerException  != null ? ex.InnerException.ToString().Substring(0, 130) : ex.Message;
-            }
-            finally
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-
-            }
-            return null;
-
-
-        }
-
-
-        [HttpPost]
-        public HttpResponseMessage ImprimirEquipamentosGestao()
-
-        {
             var c1 = 1;
             var message = String.Empty;
 
@@ -843,7 +681,7 @@ namespace apinovo.Controllers
 
                 var inativo = Convert.ToSByte(HttpContext.Current.Request.Form["inativo"].ToString());
                 var tipoData = HttpContext.Current.Request.Form["tipoData"].ToString();
-                var pdfExcelWord = HttpContext.Current.Request.Form["pdfExcelWord"].ToString();
+                var pdfExcelWord = "Pdf";
 
 
                 //var data1 = HttpContext.Current.Request.Form["data1"].ToString().Trim();
@@ -853,6 +691,19 @@ namespace apinovo.Controllers
                 //var autonumeroLocalAtendido = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroLocalAtendido"].ToString());
                 //var autonumeroEquipe = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroEquipe"].ToString());
 
+
+                var empresa = "";
+                var endereco = "";
+
+                using (var dc = new manutEntities())
+                {
+                    var e = dc.tb_empresa.Find(1); // sempre irá procurar pela chave primaria
+                    if (e != null)
+                    {
+                        empresa = e.nome;
+                        endereco = e.endereco;
+                    }
+                }
 
                 DateTime? dataInicio = null;
                 if (IsDate(HttpContext.Current.Request.Form["dataInicio"].ToString()))
@@ -942,11 +793,11 @@ namespace apinovo.Controllers
                     {
                         if (codigoEquipamento > 0)
                         {
-                            filtro = filtro + " and {os1.autonumeroEquipamento} = " + codigoEquipamento + " and {os1.cancelado} <> 'S'  and {os_itens1.cancelado} <> 'S'  ";
+                            filtro = filtro + " and {os1.codigoEquipamento} = " + codigoEquipamento + " and {os1.cancelado} <> 'S'  and {os_itens1.cancelado} <> 'S'  ";
                         }
                         else
                         {
-                            filtro = filtro + " and {os1.autonumeroEquipamento} > 0 and {os1.cancelado} <> 'S'  and {os_itens1.cancelado} <> 'S'  ";
+                            filtro = filtro + " and {os1.codigoEquipamento} > 0 and {os1.cancelado} <> 'S'  and {os_itens1.cancelado} <> 'S'  ";
                         }
 
                         local = HttpContext.Current.Server.MapPath("~/rpt/equipamentoOS.rpt");
@@ -955,7 +806,7 @@ namespace apinovo.Controllers
 
                     if (modelo.Equals("Gastos O.S Sintético"))
                     {
-                        filtro = filtro + " and {os1.autonumeroEquipamento} > 0 and {os1.cancelado} <> 'S'  and {os_itens1.cancelado} <> 'S'  ";
+                        filtro = filtro + " and {os1.codigoEquipamento} > 0 and {os1.cancelado} <> 'S'  and {os_itens1.cancelado} <> 'S'  ";
 
                         local = HttpContext.Current.Server.MapPath("~/rpt/equipamentoOSSintetico.rpt");
                     }
@@ -963,7 +814,7 @@ namespace apinovo.Controllers
 
                     if (modelo.Equals("Equipamentos Por Hora Trabalhada"))
                     {
-                        filtro = filtro + " and {os1.autonumeroEquipamento} > 0 and {os1.cancelado} <> 'S'  ";
+                        filtro = filtro + " and {os1.codigoEquipamento} > 0 and {os1.cancelado} <> 'S'  ";
 
                         local = HttpContext.Current.Server.MapPath("~/rpt/equipamentoOSHoras.rpt");
                     }
@@ -971,7 +822,7 @@ namespace apinovo.Controllers
 
                     if (modelo.Equals("Equipamentos Por Hora Trabalhada - Sintético"))
                     {
-                        filtro = filtro + " and {os1.autonumeroEquipamento} > 0 and {os1.cancelado} <> 'S'  ";
+                        filtro = filtro + " and {os1.codigoEquipamento} > 0 and {os1.cancelado} <> 'S'  ";
 
                         local = HttpContext.Current.Server.MapPath("~/rpt/equipamentoOSHorasSintetico.rpt");
                     }
@@ -1008,6 +859,8 @@ namespace apinovo.Controllers
 
                     rd.Load(local);
 
+                    rd.SetParameterValue("@empresa", empresa);
+                    rd.SetParameterValue("@endereco", endereco);
                     rd.SetParameterValue("@nomeCliente", nomeCliente);
                     rd.SetParameterValue("@nomeSistema", nomeSistema);
                     rd.SetParameterValue("@nomePredio", nomePredio);
