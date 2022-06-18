@@ -148,15 +148,6 @@ namespace apinovo.Controllers
                             .OrderBy(p => p.nomePredio).ThenBy(p => p.nomeSetor).ThenBy(p => p.nomeLocalFisico)
                             .ThenBy(p => p.nomeSistema).ThenBy(p => p.nomeSubSistema)
                              select p).ToList();
-
-                    //if (nroDeLinhas > 0)
-                    //{
-                    //    return lista.Take(nroDeLinhas);
-                    //}
-                    //else
-                    //{
-                    //    return user2.ToList();
-                    //}
                 }
                 if (autonumeroLocalFisico > 0)
                 {

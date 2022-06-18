@@ -105,34 +105,44 @@ namespace apinovo.Controllers
         [HttpPost]
         public void AtualizarUsuario()
         {
-
+            var c = 1;
             using (var dc = new manutEntities())
             {
-                var autonumero = Convert.ToInt64(HttpContext.Current.Request.Form["autonumero"]);
-
-                var linha = dc.tb_usuario.Find(autonumero); // sempre irá procurar pela chave primaria
-                if (linha != null && linha.cancelado != "S")
+                try
                 {
-                    linha.login = HttpContext.Current.Request.Form["login"].ToString().Trim();
-                    linha.senha = HttpContext.Current.Request.Form["senha"].ToString().Trim();
-                    linha.nome = HttpContext.Current.Request.Form["nome"].ToString().Trim();
-                    linha.tipoUsuario = HttpContext.Current.Request.Form["tipoUsuario"].ToString().Trim();
-                    linha.nome = HttpContext.Current.Request.Form["nome"].ToString().Trim();
-                    linha.email = HttpContext.Current.Request.Form["email"].ToString().Trim();
-                    linha.matricula = HttpContext.Current.Request.Form["matricula"].ToString().Trim();
-                    linha.telefone = HttpContext.Current.Request.Form["telefone"].ToString().Trim();
-                    linha.telefone = HttpContext.Current.Request.Form["telefone"].ToString().Trim();
-                    linha.cliente = HttpContext.Current.Request.Form["cliente"].ToString().Trim();
-                    linha.autonumeroTipoUsuario =  Convert.ToInt32( HttpContext.Current.Request.Form["autonumeroTipoUsuario"].ToString().Trim());
+                    var autonumero = Convert.ToInt64(HttpContext.Current.Request.Form["autonumero"]);
 
-                    dc.tb_usuario.AddOrUpdate(linha);
-                    dc.SaveChanges();
-
-                    dc.tb_os.Where(x => x.autonumeroUsuario == autonumero).ToList().ForEach(x =>
+                    var linha = dc.tb_usuario.Find(autonumero); // sempre irá procurar pela chave primaria
+                    if (linha != null && linha.cancelado != "S")
                     {
-                        x.nomeUsuario = linha.nome;
-                    });
-                    dc.SaveChanges();
+                        linha.login = HttpContext.Current.Request.Form["login"].ToString().Trim();
+                        linha.senha = HttpContext.Current.Request.Form["senha"].ToString().Trim();
+                        linha.nome = HttpContext.Current.Request.Form["nome"].ToString().Trim();
+                        linha.tipoUsuario = HttpContext.Current.Request.Form["tipoUsuario"].ToString().Trim();
+                        linha.nome = HttpContext.Current.Request.Form["nome"].ToString().Trim();
+                        linha.email = HttpContext.Current.Request.Form["email"].ToString().Trim();
+                        linha.matricula = HttpContext.Current.Request.Form["matricula"].ToString().Trim();
+                        linha.telefone = HttpContext.Current.Request.Form["telefone"].ToString().Trim();
+                        linha.telefone = HttpContext.Current.Request.Form["telefone"].ToString().Trim();
+                        linha.cliente = HttpContext.Current.Request.Form["cliente"].ToString().Trim();
+                        linha.autonumeroTipoUsuario = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroTipoUsuario"].ToString().Trim());
+
+                        dc.tb_usuario.AddOrUpdate(linha);
+                        dc.SaveChanges();
+
+                        dc.tb_os.Where(x => x.autonumeroUsuario == autonumero).ToList().ForEach(x =>
+                        {
+                            x.nomeUsuario = linha.nome;
+                        });
+                        dc.SaveChanges();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var message = ex.InnerException != null
+                        ? ex.InnerException.ToString().Substring(0, 130) + " - DataprodutoController SaveFilesFoto"
+                        : ex.Message + " - DataprodutoController SaveFilesFoto";
 
                 }
 

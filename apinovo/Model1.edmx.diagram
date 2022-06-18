@@ -45,7 +45,6 @@
         <EntityTypeShape EntityType="manutModel.documentocontrato" Width="1.5" PointX="0.625" PointY="6.375" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.funcionariodocumento" Width="1.75" PointX="2.125" PointY="4.75" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.profissaocurso" Width="1.5" PointX="3.875" PointY="6.375" IsExpanded="false" />
-        <EntityTypeShape EntityType="manutModel.tb_usuario" Width="1.5" PointX="0.625" PointY="0.5" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.usuariopredio" Width="1.5" PointX="5.5" PointY="6.375" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_funcionario" Width="1.5" PointX="0.5" PointY="4.75" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.osfuncionario" Width="1.5" PointX="8.875" PointY="6.25" IsExpanded="false" />
@@ -66,7 +65,7 @@
         <EntityTypeShape EntityType="manutModel.tb_cadastro" Width="1.5" PointX="9.875" PointY="3.375" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_sistema" Width="1.5" PointX="2.375" PointY="3.75" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_subsistema" Width="1.5" PointX="2.25" PointY="4.25" IsExpanded="false" />
-        <EntityTypeShape EntityType="manutModel.tb_cliente" Width="1.5" PointX="8.375" PointY="2.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="manutModel.tb_cliente" PointX="2.75" PointY="0.625" Width="1.5" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_os" Width="1.5" PointX="7.75" PointY="4.125" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_os_itens" Width="1.5" PointX="6" PointY="4.125" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_fontes" Width="1.5" PointX="2.625" PointY="2.5" IsExpanded="false" />
@@ -74,6 +73,7 @@
         <EntityTypeShape EntityType="manutModel.tb_servico" Width="1.5" PointX="0.625" PointY="1.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_ordemservico" Width="1.5" PointX="9.5" PointY="4.125" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.equipamentodefeito" Width="1.5" PointX="0.5" PointY="5.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="manutModel.tb_usuario" Width="1.5" PointX="0.5" PointY="0.5" IsExpanded="false" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

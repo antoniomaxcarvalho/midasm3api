@@ -65,7 +65,6 @@ namespace apinovo
         public DbSet<documentocontrato> documentocontrato { get; set; }
         public DbSet<funcionariodocumento> funcionariodocumento { get; set; }
         public DbSet<profissaocurso> profissaocurso { get; set; }
-        public DbSet<tb_usuario> tb_usuario { get; set; }
         public DbSet<usuariopredio> usuariopredio { get; set; }
         public DbSet<tb_funcionario> tb_funcionario { get; set; }
         public DbSet<osfuncionario> osfuncionario { get; set; }
@@ -94,5 +93,6 @@ namespace apinovo
         public DbSet<tb_servico> tb_servico { get; set; }
         public DbSet<tb_ordemservico> tb_ordemservico { get; set; }
         public DbSet<equipamentodefeito> equipamentodefeito { get; set; }
+        public DbSet<tb_usuario> tb_usuario { get; set; }
     }
 }

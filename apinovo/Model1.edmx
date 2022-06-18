@@ -553,7 +553,7 @@
           <Property Name="dataGarantia" Type="date" />
           <Property Name="cancelado" Type="char" MaxLength="1" />
           <Property Name="periodicidade" Type="int" />
-          <Property Name="mesManuAno" Type="varchar" MaxLength="10" />
+          <Property Name="mesManuAno" Type="varchar" MaxLength="2" />
           <Property Name="mesManuSem01" Type="varchar" MaxLength="2" />
           <Property Name="mesManuSem02" Type="varchar" MaxLength="2" />
           <Property Name="mesManuTri01" Type="varchar" MaxLength="2" />
@@ -1203,7 +1203,7 @@
           <Property Name="telefone" Type="varchar" MaxLength="15" />
           <Property Name="matricula" Type="varchar" MaxLength="20" />
           <Property Name="cancelado" Type="char" MaxLength="1" />
-          <Property Name="cliente" Type="varchar" MaxLength="120" />
+          <Property Name="cliente" Type="varchar" MaxLength="400" />
           <Property Name="autonumeroTipoUsuario" Type="int" />
         </EntityType>
         <EntityType Name="tramitacao">
@@ -1379,7 +1379,6 @@
           <EntitySet Name="documentocontrato" EntityType="manutModel.documentocontrato" />
           <EntitySet Name="funcionariodocumento" EntityType="manutModel.funcionariodocumento" />
           <EntitySet Name="profissaocurso" EntityType="manutModel.profissaocurso" />
-          <EntitySet Name="tb_usuario" EntityType="manutModel.tb_usuario" />
           <EntitySet Name="usuariopredio" EntityType="manutModel.usuariopredio" />
           <EntitySet Name="tb_funcionario" EntityType="manutModel.tb_funcionario" />
           <EntitySet Name="osfuncionario" EntityType="manutModel.osfuncionario" />
@@ -1408,6 +1407,7 @@
           <EntitySet Name="tb_servico" EntityType="manutModel.tb_servico" />
           <EntitySet Name="tb_ordemservico" EntityType="manutModel.tb_ordemservico" />
           <EntitySet Name="equipamentodefeito" EntityType="manutModel.equipamentodefeito" />
+          <EntitySet Name="tb_usuario" EntityType="manutModel.tb_usuario" />
         </EntityContainer>
         <EntityType Name="tb_tipo_usuario">
           <Key>
@@ -1902,22 +1902,6 @@
           <Property Name="nome" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
           <Property Name="autonumeroProfissao" Type="Int32" />
           <Property Name="nomeProfissao" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="tb_usuario">
-          <Key>
-            <PropertyRef Name="autonumero" />
-          </Key>
-          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="login" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="senha" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="tipoUsuario" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="nome" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="telefone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="matricula" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="cliente" Type="String" MaxLength="120" FixedLength="false" Unicode="false" />
-          <Property Name="autonumeroTipoUsuario" Type="Int32" />
         </EntityType>
         <EntityType Name="usuariopredio">
           <Key>
@@ -2416,42 +2400,42 @@
           <Key>
             <PropertyRef Name="autonumero" />
           </Key>
-          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="sigla" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="nome" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
-          <Property Name="contrato" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="cep" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
-          <Property Name="endereco" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
-          <Property Name="numero" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="complemento" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="cidade" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="estado" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="email" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
-          <Property Name="telefone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="contato" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="autonumero" Nullable="false" annotation:StoreGeneratedPattern="Identity" Type="Int32" />
+          <Property Name="sigla" MaxLength="4" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="nome" MaxLength="60" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="contrato" MaxLength="20" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="cep" MaxLength="9" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="endereco" MaxLength="60" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="numero" MaxLength="10" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="complemento" MaxLength="15" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="cidade" MaxLength="30" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="estado" MaxLength="30" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="email" MaxLength="40" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="telefone" MaxLength="20" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="contato" MaxLength="20" FixedLength="false" Unicode="false" Type="String" />
           <Property Name="dataInicio" Type="DateTime" />
-          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="dataBase" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="cancelado" MaxLength="1" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="dataBase" MaxLength="6" FixedLength="false" Unicode="false" Type="String" />
           <Property Name="bdiServico" Type="Double" />
           <Property Name="bdiMaterial" Type="Double" />
           <Property Name="contadorOs" Type="Int64" />
           <Property Name="dataLimite" Type="DateTime" />
-          <Property Name="planilhaFechada" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="planilhaFechada" MaxLength="1" FixedLength="false" Unicode="false" Type="String" />
           <Property Name="prazoInicialMeses" Type="Int32" />
           <Property Name="prorrogacoesMeses" Type="Int32" />
           <Property Name="reducao" Type="Decimal" />
           <Property Name="contadorOrcamento" Type="Int64" />
-          <Property Name="margem" Type="Decimal" Nullable="false" />
-          <Property Name="qtdeCustoFixoEtapa" Type="Decimal" Nullable="false" />
-          <Property Name="obra" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="margem" Nullable="false" Type="Decimal" />
+          <Property Name="qtdeCustoFixoEtapa" Nullable="false" Type="Decimal" />
+          <Property Name="obra" MaxLength="200" FixedLength="false" Unicode="false" Type="String" />
           <Property Name="contadorOrdemServico" Type="Int64" />
-          <Property Name="cap" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="processo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="prazoInicialDias" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="cap" MaxLength="6" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="processo" MaxLength="20" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="prazoInicialDias" MaxLength="45" FixedLength="false" Unicode="false" Type="String" />
           <Property Name="acrescimoEstoque" Type="Decimal" />
           <Property Name="contadorPmocCivil" Type="Int64" />
           <Property Name="contadorPmocEquipamento" Type="Int64" />
-          <Property Name="informacoesPMOC" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="informacoesPMOC" MaxLength="200" FixedLength="false" Unicode="false" Type="String" />
         </EntityType>
         <EntityType Name="tb_os">
           <Key>
@@ -2622,6 +2606,22 @@
           <Property Name="totalHorasParado" Type="Decimal" />
           <Property Name="totalSegundosParado" Type="Int64" />
           <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tb_usuario">
+          <Key>
+            <PropertyRef Name="autonumero" />
+          </Key>
+          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="login" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="senha" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="tipoUsuario" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="nome" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="telefone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="matricula" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="cliente" Type="String" MaxLength="400" FixedLength="false" Unicode="false" />
+          <Property Name="autonumeroTipoUsuario" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3179,23 +3179,6 @@
                 <ScalarProperty Name="nomeProfissao" ColumnName="nomeProfissao" />
                 <ScalarProperty Name="autonumeroProfissao" ColumnName="autonumeroProfissao" />
                 <ScalarProperty Name="nome" ColumnName="nome" />
-                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tb_usuario">
-            <EntityTypeMapping TypeName="manutModel.tb_usuario">
-              <MappingFragment StoreEntitySet="tb_usuario">
-                <ScalarProperty Name="autonumeroTipoUsuario" ColumnName="autonumeroTipoUsuario" />
-                <ScalarProperty Name="cliente" ColumnName="cliente" />
-                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
-                <ScalarProperty Name="matricula" ColumnName="matricula" />
-                <ScalarProperty Name="telefone" ColumnName="telefone" />
-                <ScalarProperty Name="email" ColumnName="email" />
-                <ScalarProperty Name="nome" ColumnName="nome" />
-                <ScalarProperty Name="tipoUsuario" ColumnName="tipoUsuario" />
-                <ScalarProperty Name="senha" ColumnName="senha" />
-                <ScalarProperty Name="login" ColumnName="login" />
                 <ScalarProperty Name="autonumero" ColumnName="autonumero" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -3928,6 +3911,23 @@
                 <ScalarProperty Name="dataFim" ColumnName="dataFim" />
                 <ScalarProperty Name="dataInicio" ColumnName="dataInicio" />
                 <ScalarProperty Name="autonumeroEquipamento" ColumnName="autonumeroEquipamento" />
+                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tb_usuario">
+            <EntityTypeMapping TypeName="manutModel.tb_usuario">
+              <MappingFragment StoreEntitySet="tb_usuario">
+                <ScalarProperty Name="autonumeroTipoUsuario" ColumnName="autonumeroTipoUsuario" />
+                <ScalarProperty Name="cliente" ColumnName="cliente" />
+                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
+                <ScalarProperty Name="matricula" ColumnName="matricula" />
+                <ScalarProperty Name="telefone" ColumnName="telefone" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="nome" ColumnName="nome" />
+                <ScalarProperty Name="tipoUsuario" ColumnName="tipoUsuario" />
+                <ScalarProperty Name="senha" ColumnName="senha" />
+                <ScalarProperty Name="login" ColumnName="login" />
                 <ScalarProperty Name="autonumero" ColumnName="autonumero" />
               </MappingFragment>
             </EntityTypeMapping>
