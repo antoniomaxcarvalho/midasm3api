@@ -50,5 +50,6 @@ namespace apinovo
         public Nullable<long> contadorPmocCivil { get; set; }
         public Nullable<long> contadorPmocEquipamento { get; set; }
         public string informacoesPMOC { get; set; }
+        public Nullable<sbyte> desabilitado { get; set; }
     }
 }

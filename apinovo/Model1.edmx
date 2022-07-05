@@ -687,6 +687,7 @@
           <Property Name="contadorPmocCivil" Type="bigint" />
           <Property Name="contadorPmocEquipamento" Type="bigint" />
           <Property Name="informacoesPMOC" Type="varchar" MaxLength="200" />
+          <Property Name="desabilitado" Type="tinyint" />
         </EntityType>
         <EntityType Name="tb_diarioplantao">
           <Key>
@@ -978,6 +979,7 @@
           <Property Name="localAtendido" Type="varchar" MaxLength="45" />
           <Property Name="autonumeroAutorizado" Type="int" />
           <Property Name="nomeAutorizado" Type="varchar" MaxLength="45" />
+          <Property Name="desabilitado" Type="tinyint" />
         </EntityType>
         <EntityType Name="tb_os_acompanhamento">
           <Key>
@@ -1203,7 +1205,7 @@
           <Property Name="telefone" Type="varchar" MaxLength="15" />
           <Property Name="matricula" Type="varchar" MaxLength="20" />
           <Property Name="cancelado" Type="char" MaxLength="1" />
-          <Property Name="cliente" Type="varchar" MaxLength="400" />
+          <Property Name="cliente" Type="varchar" MaxLength="120" />
           <Property Name="autonumeroTipoUsuario" Type="int" />
         </EntityType>
         <EntityType Name="tramitacao">
@@ -2436,6 +2438,7 @@
           <Property Name="contadorPmocCivil" Type="Int64" />
           <Property Name="contadorPmocEquipamento" Type="Int64" />
           <Property Name="informacoesPMOC" MaxLength="200" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="desabilitado" Type="SByte" />
         </EntityType>
         <EntityType Name="tb_os">
           <Key>
@@ -2490,6 +2493,7 @@
           <Property Name="localAtendido" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
           <Property Name="autonumeroAutorizado" Type="Int32" />
           <Property Name="nomeAutorizado" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="desabilitado" Type="SByte" />
         </EntityType>
         <EntityType Name="tb_os_itens">
           <Key>
@@ -3699,6 +3703,7 @@
           <EntitySetMapping Name="tb_cliente">
             <EntityTypeMapping TypeName="manutModel.tb_cliente">
               <MappingFragment StoreEntitySet="tb_cliente">
+                <ScalarProperty Name="desabilitado" ColumnName="desabilitado" />
                 <ScalarProperty Name="informacoesPMOC" ColumnName="informacoesPMOC" />
                 <ScalarProperty Name="contadorPmocEquipamento" ColumnName="contadorPmocEquipamento" />
                 <ScalarProperty Name="contadorPmocCivil" ColumnName="contadorPmocCivil" />
@@ -3741,6 +3746,7 @@
           <EntitySetMapping Name="tb_os">
             <EntityTypeMapping TypeName="manutModel.tb_os">
               <MappingFragment StoreEntitySet="tb_os">
+                <ScalarProperty Name="desabilitado" ColumnName="desabilitado" />
                 <ScalarProperty Name="nomeAutorizado" ColumnName="nomeAutorizado" />
                 <ScalarProperty Name="autonumeroAutorizado" ColumnName="autonumeroAutorizado" />
                 <ScalarProperty Name="localAtendido" ColumnName="localAtendido" />

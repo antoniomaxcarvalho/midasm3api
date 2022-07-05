@@ -63,5 +63,6 @@ namespace apinovo
         public string localAtendido { get; set; }
         public Nullable<int> autonumeroAutorizado { get; set; }
         public string nomeAutorizado { get; set; }
+        public Nullable<sbyte> desabilitado { get; set; }
     }
 }

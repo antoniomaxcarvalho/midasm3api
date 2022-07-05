@@ -46,7 +46,7 @@ namespace apinovo.Controllers
         {
             using (var dc = new manutEntities())
             {
-                var user = from p in dc.tb_cliente.Where((a => a.cancelado != "S" && cliente.Contains(a.sigla)))
+                var user = from p in dc.tb_cliente.Where((a => a.cancelado != "S" && a.desabilitado == 0 && cliente.Contains(a.sigla) ))
                            select new
                            {
                                label = p.nome,
@@ -123,6 +123,7 @@ namespace apinovo.Controllers
                     contadorPmocEquipamento = 0,
                     prazoInicialDias = "",
                     informacoesPMOC = "",
+                    desabilitado = 0,
                     
                     
 
@@ -184,6 +185,7 @@ namespace apinovo.Controllers
                     linha.cap = HttpContext.Current.Request.Form["cap"].ToString().Trim();
                     linha.processo = HttpContext.Current.Request.Form["processo"].ToString().Trim();
                     linha.prazoInicialDias = HttpContext.Current.Request.Form["prazoInicialDias"].ToString().Trim();
+                    linha.desabilitado = Convert.ToSByte(HttpContext.Current.Request.Form["prazoInicialMeses"].ToString().Trim());
                     //linha.qtdeCustoFixoEtapa = Convert.ToDecimal(HttpContext.Current.Request.Form["margem"].ToString().Trim());
                     dc.tb_cliente.AddOrUpdate(linha);
                     dc.SaveChanges();
