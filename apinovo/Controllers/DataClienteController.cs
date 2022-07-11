@@ -26,6 +26,7 @@ namespace apinovo.Controllers
 
         public IEnumerable<tb_cliente> GetAllCliente()
         {
+            var c = 1;
             using (var dc = new manutEntities())
             {
                 var user = from p in dc.tb_cliente.Where((a => a.cancelado != "S")) orderby p.nome select p;
@@ -44,6 +45,7 @@ namespace apinovo.Controllers
 
         public IEnumerable GetAllClienteUsuario(string cliente)
         {
+            var c = 1;
             using (var dc = new manutEntities())
             {
                 var user = from p in dc.tb_cliente.Where((a => a.cancelado != "S" && a.desabilitado == 0 && cliente.Contains(a.sigla) ))
@@ -185,7 +187,7 @@ namespace apinovo.Controllers
                     linha.cap = HttpContext.Current.Request.Form["cap"].ToString().Trim();
                     linha.processo = HttpContext.Current.Request.Form["processo"].ToString().Trim();
                     linha.prazoInicialDias = HttpContext.Current.Request.Form["prazoInicialDias"].ToString().Trim();
-                    linha.desabilitado = Convert.ToSByte(HttpContext.Current.Request.Form["prazoInicialMeses"].ToString().Trim());
+                    //linha.desabilitado = Convert.ToSByte(HttpContext.Current.Request.Form["desabilitado"].ToString().Trim());
                     //linha.qtdeCustoFixoEtapa = Convert.ToDecimal(HttpContext.Current.Request.Form["margem"].ToString().Trim());
                     dc.tb_cliente.AddOrUpdate(linha);
                     dc.SaveChanges();
@@ -269,6 +271,38 @@ namespace apinovo.Controllers
 
             }
 
+        }
+
+
+        [HttpPost]
+        public string DesabilitarCliente()
+        {
+            var message = "* Erro Não foi possível atualizar o banco de dados";
+
+            var autonumero = Convert.ToInt32(HttpContext.Current.Request.Form["autonumero"]);
+            var desabilitado = Convert.ToSByte(HttpContext.Current.Request.Form["desabilitado"].ToString().Trim());
+
+            using (var dc = new manutEntities())
+            {
+                var linha = dc.tb_cliente.Find(autonumero); // sempre irá procurar pela chave primaria
+                if (linha != null && linha.cancelado != "S")
+                {
+                    linha.desabilitado = desabilitado;
+                    dc.tb_cliente.AddOrUpdate(linha);
+                    dc.SaveChanges();
+
+
+                    dc.tb_os.Where(x => x.autonumeroCliente == autonumero ).ToList().ForEach(x =>
+                    {
+                        x.desabilitado = desabilitado;
+                    });
+                    dc.SaveChanges();
+
+                    return string.Empty;
+                }
+            }
+
+            return message;
         }
 
 
