@@ -1160,14 +1160,26 @@ namespace apinovo.Controllers
                     var Response = HttpContext.Current.ApplicationInstance.Response;
 
 
-                    var local = HttpContext.Current.Server.MapPath("~/rpt/medicao.rpt");
+                    var caminho = HttpContext.Current.Server.MapPath("~/rpt/");
+
+                    // saude -----------------
+                    if (autonumeroCliente > 10 && autonumeroCliente < 14) // Saude ----------------------------
+                    {
+                        caminho = HttpContext.Current.Server.MapPath("~/rpt/saude/");
+                    }
+
+                    var local = caminho + "medicao.rpt";
+
                     if (modeloImprimirComCodigo == "S" || modeloImprimirComCodigo == "T")
                     {
-                        local = HttpContext.Current.Server.MapPath("~/rpt/medicao.rpt");
+                        if (autonumeroCliente > 10 && autonumeroCliente < 14) // Saude ----------------------------
+                        {
+                            local = caminho + "medicao.rpt";
+                        }
                     }
                     else
                     {
-                        local = HttpContext.Current.Server.MapPath("~/rpt/medicaoComNome.rpt");
+                        local = caminho + "medicaoComNome.rpt";
                     }
 
 

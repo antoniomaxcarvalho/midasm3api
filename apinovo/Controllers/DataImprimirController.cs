@@ -2668,38 +2668,54 @@ namespace apinovo.Controllers
                 {
                     var Response = HttpContext.Current.ApplicationInstance.Response;
 
-                    var local = HttpContext.Current.Server.MapPath("~/rpt/ordemServico.rpt");
+
+                    var caminho = HttpContext.Current.Server.MapPath("~/rpt/");
+
+                    // saude -----------------
+                    if (autonumeroCliente > 10 && autonumeroCliente < 14) // Saude ----------------------------
+                    {
+                        caminho = HttpContext.Current.Server.MapPath("~/rpt/saude/");
+                    }
+
+
+                    var local = caminho + "ordemServico.rpt";
 
                     if (custoFinal == "S")
                     {
-                        local = HttpContext.Current.Server.MapPath("~/rpt/oServicoCFinal.rpt");
+                        local = caminho + "oServicoCFinal.rpt";
+                        //local = HttpContext.Current.Server.MapPath("~/rpt/oServicoCFinal.rpt");
 
                         //if (qtdeItens > 30)
                         //{
-                        local = HttpContext.Current.Server.MapPath("~/rpt/oServicoCFinalMuitosItens.rpt");
+                        local = caminho + "oServicoCFinalMuitosItens.rpt";
+                        //local = HttpContext.Current.Server.MapPath("~/rpt/oServicoCFinalMuitosItens.rpt");
                         //}
 
                     }
                     if (custoFinal == "F")
                     {
-                        local = HttpContext.Current.Server.MapPath("~/rpt/oServicoCFinalComQtdeMaoObra.rpt");
+                        local = caminho + "oServicoCFinalComQtdeMaoObra.rpt";
+                        //local = HttpContext.Current.Server.MapPath("~/rpt/oServicoCFinalComQtdeMaoObra.rpt");
                     }
 
                     if (valorOs > 0)
                     {
                         if (qtde > 27)
                         {
-                            local = HttpContext.Current.Server.MapPath("~/rpt/ordemServicoComVariasSS.rpt");
+                            local = caminho + "ordemServicoComVariasSS.rpt";
+                            //local = HttpContext.Current.Server.MapPath("~/rpt/ordemServicoComVariasSS.rpt");
 
                             if (custoFinal == "S")
                             {
-                                local = HttpContext.Current.Server.MapPath("~/rpt/oServicoComVariasSSCFinal.rpt");
+                                local = caminho + "oServicoComVariasSSCFinal.rpt";
+                                //local = HttpContext.Current.Server.MapPath("~/rpt/oServicoComVariasSSCFinal.rpt");
                             }
 
 
                             if (custoFinal == "F")
                             {
-                                local = HttpContext.Current.Server.MapPath("~/rpt/ordemSComVariasSSComMaoObra.rpt");
+                                local = caminho + "ordemSComVariasSSComMaoObra.rpt";
+                                //local = HttpContext.Current.Server.MapPath("~/rpt/ordemSComVariasSSComMaoObra.rpt");
                             }
 
                         }
