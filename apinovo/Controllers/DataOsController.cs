@@ -1434,7 +1434,8 @@ namespace apinovo.Controllers
         [HttpGet]
         public IEnumerable<resumoPlanilha> GetAllResumoOs(Int64 autonumeroCliente, string data1, string data2)
         {
-            IQueryable<resumoPlanilha> itensPlanilha;
+            var c = 1;
+            List<resumoPlanilha> itensPlanilha;
             var data11 = Convert.ToDateTime(data1);
             var data22 = Convert.ToDateTime(data2);
 
@@ -1481,7 +1482,7 @@ namespace apinovo.Controllers
                                         codigoOs = g.Key.codigoOs
                                         //totalPF = Math.Round((decimal)g.Sum(a => a.totalPF), 2)
                                     }
-                                 );
+                                 ).ToList();
 
                 // QTDE DE OS por sistema ----------------------------------------------------------------------------------
                 var qtdeOS = (from i in dc.tb_os
