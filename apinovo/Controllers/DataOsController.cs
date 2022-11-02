@@ -83,11 +83,11 @@ namespace apinovo.Controllers
             {
                 if (!string.IsNullOrEmpty(clientesDoUsuario))
                 {
-                    user = from p in dc.tb_os.Where((a => (a.cancelado != "S" && a.desabilitado == 0 && clientesDoUsuario.Contains(a.siglaCliente)))).OrderByDescending(p => p.autonumero) select p;
+                    user = from p in dc.tb_os.Where((a => (a.cancelado != "S" && (a.desabilitado == 0 || a.desabilitado == null) && clientesDoUsuario.Contains(a.siglaCliente)))).OrderByDescending(p => p.autonumero) select p;
                 }
                 else
                 {
-                    user = from p in dc.tb_os.Where(a => (a.cancelado != "S" && a.desabilitado == 0)).OrderByDescending(p => p.autonumero) select p;
+                    user = from p in dc.tb_os.Where(a => (a.cancelado != "S" && (a.desabilitado == 0 || a.desabilitado == null))).OrderByDescending(p => p.autonumero) select p;
                 }
                 return user.ToList(); ;
             }
@@ -402,7 +402,7 @@ namespace apinovo.Controllers
                             }
                         }
                     }
-                 
+
 
 
                     Os.autonumeroUsuario = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroUsuario"].ToString().Trim());
@@ -603,6 +603,11 @@ namespace apinovo.Controllers
 
                     linha.codigoEquipamento = Convert.ToInt64(HttpContext.Current.Request.Form["codigoEquipamento"].ToString());
 
+                    if (linha.desabilitado == null)
+                    {
+                        linha.desabilitado = 0;
+                    }
+
                     dc.tb_os.AddOrUpdate(linha);
                     dc.SaveChanges();
 
@@ -649,6 +654,11 @@ namespace apinovo.Controllers
                             }
                         }
 
+                    }
+
+                    if (linha.desabilitado == null)
+                    {
+                        linha.desabilitado = 0;
                     }
 
                     dc.tb_os.AddOrUpdate(linha);
@@ -825,6 +835,7 @@ namespace apinovo.Controllers
                                 Os.etapa = "";
                                 Os.medicao = "";
                                 Os.localAtendido = linha.localAtendido;
+                                Os.desabilitado = 0;
 
                                 dc.tb_os.AddOrUpdate(Os);
                                 dc.SaveChanges();
@@ -1079,6 +1090,10 @@ namespace apinovo.Controllers
                             valueJ.valorMaterial = Convert.ToDecimal(totalItensMaterial.ToString("#######0.00"));
                             valueJ.valor = Convert.ToDecimal((valueJ.valorServico + valueJ.valorMaterial));
 
+                            if (valueJ.desabilitado == null)
+                            {
+                                valueJ.desabilitado = 0;
+                            }
                             //Debug.WriteLine("OS" + valueJ.codigoOs + " - valorServico " + valueJ.valorServico.ToString() + " - valorMaterial " + valueJ.valorMaterial.ToString() + " - Valor " + valueJ.valor.ToString());
                             //var ccc = valueJ.valorMaterial;
                             dc.tb_os.AddOrUpdate(valueJ);
@@ -1108,7 +1123,7 @@ namespace apinovo.Controllers
                     if (clientesDoUsuario.IndexOf("0") == -1)  // Não exite o Nro Zero na String
                     {
 
-                        user = from p in dc.tb_os.Where((a => a.cancelado != "S" && a.desabilitado == 0
+                        user = from p in dc.tb_os.Where((a => a.cancelado != "S" && (a.desabilitado == 0 || a.desabilitado == null)
                         && ((a.dataSolicitacao >= data11 && a.dataSolicitacao <= data22) ||
                         (a.dataSolicitacao <= data11 && a.nomeStatus != "Fechada" && a.nomeStatus != "O.S. Medida"))
                         )).OrderByDescending(p => p.autonumero)
@@ -1117,7 +1132,7 @@ namespace apinovo.Controllers
                     else
                     {
 
-                        user = from p in dc.tb_os.Where((a => a.cancelado != "S" && a.desabilitado == 0
+                        user = from p in dc.tb_os.Where((a => a.cancelado != "S" && (a.desabilitado == 0 || a.desabilitado == null)
                                && clientesDoUsuario.Contains(a.siglaCliente)
                           && ((a.dataSolicitacao >= data11 && a.dataSolicitacao <= data22) ||
                           (a.dataSolicitacao <= data11 && a.nomeStatus != "Fechada" && a.nomeStatus != "O.S. Medida"))
@@ -1130,7 +1145,7 @@ namespace apinovo.Controllers
                 }
                 else
                 {
-                    user = from p in dc.tb_os.Where((a => a.cancelado != "S" && a.desabilitado == 0
+                    user = from p in dc.tb_os.Where((a => a.cancelado != "S" && (a.desabilitado == 0 || a.desabilitado == null)
                         && ((a.dataSolicitacao >= data11 && a.dataSolicitacao <= data22) ||
                         (a.dataSolicitacao <= data11 && a.nomeStatus != "Fechada" && a.nomeStatus != "O.S. Medida"))
                         )).OrderByDescending(p => p.autonumero)
@@ -1149,7 +1164,7 @@ namespace apinovo.Controllers
 
             using (var dc = new manutEntities())
             {
-                return (from p in dc.tb_os.Where(a => a.cancelado != "S" && a.desabilitado == 0
+                return (from p in dc.tb_os.Where(a => a.cancelado != "S" && (a.desabilitado == 0 || a.desabilitado == null)
                        && a.autonumeroCliente == autonumeroCliente && a.dataSolicitacao >= data11 && a.dataSolicitacao <= data22).OrderByDescending(p => p.autonumero)
                         select p).ToList();
             }
@@ -1170,7 +1185,7 @@ namespace apinovo.Controllers
                 {
                     itensForaDaPlanilha = (from a in dc.tb_os
                                            join b in dc.tb_os_itens on a.autonumero equals b.autonumeroOs
-                                           where a.cancelado != "S" && b.cancelado != "S" && a.desabilitado == 0 && b.autonumeroCliente == autonumeroCliente
+                                           where a.cancelado != "S" && b.cancelado != "S" && (a.desabilitado == 0 || a.desabilitado == null) && b.autonumeroCliente == autonumeroCliente
                                              && a.dataTermino >= data11 && a.dataTermino <= data22 &&
                                              a.nomeStatus == "Fechada" && a.autonumeroSistema == autonumeroSistema && !b.nomeFonte.Contains("MANUT") && !b.nomeFonte.Contains("EQUIPE")
                                            select b).OrderBy(p => p.autonumeroOs);
@@ -1179,7 +1194,7 @@ namespace apinovo.Controllers
                 {
                     itensForaDaPlanilha = (from a in dc.tb_os
                                            join b in dc.tb_os_itens on a.autonumero equals b.autonumeroOs
-                                           where a.cancelado != "S" && b.cancelado != "S" && a.desabilitado == 0 && b.autonumeroCliente == autonumeroCliente
+                                           where a.cancelado != "S" && b.cancelado != "S" && (a.desabilitado == 0 || a.desabilitado == null) && b.autonumeroCliente == autonumeroCliente
                                              && a.dataTermino >= data11 && a.dataTermino <= data22 &&
                                              a.nomeStatus == "Fechada" && a.autonumeroSistema == autonumeroSistema && !b.nomeFonte.Contains("MANUT") && !b.nomeFonte.Contains("EQUIPE") && a.autonumeroServico == autonumeroServico
                                            select b).OrderBy(p => p.autonumeroOs);
@@ -1211,7 +1226,7 @@ namespace apinovo.Controllers
 
                     var resposta = (from a in dc.tb_os
                                     join b in dc.tb_os_itens on a.autonumero equals b.autonumeroOs
-                                    where a.cancelado != "S" && a.desabilitado == 0 && b.cancelado != "S" && b.autonumeroCliente == autonumeroCliente
+                                    where a.cancelado != "S" && (a.desabilitado == 0 || a.desabilitado == null) && b.cancelado != "S" && b.autonumeroCliente == autonumeroCliente
                                       && a.dataTermino >= data11 && a.dataTermino <= data22 &&
                                       a.nomeStatus == "Fechada" && a.autonumeroSistema == autonumeroSistema
                                     select b).OrderBy(p => p.autonumeroOs);
@@ -1221,7 +1236,7 @@ namespace apinovo.Controllers
                 {
                     var resposta = (from a in dc.tb_os
                                     join b in dc.tb_os_itens on a.autonumero equals b.autonumeroOs
-                                    where a.cancelado != "S" && a.desabilitado == 0 && b.cancelado != "S" && b.autonumeroCliente == autonumeroCliente
+                                    where a.cancelado != "S" && (a.desabilitado == 0 || a.desabilitado == null) && b.cancelado != "S" && b.autonumeroCliente == autonumeroCliente
                                       && a.dataTermino >= data11 && a.dataTermino <= data22 &&
                                       a.nomeStatus == "Fechada" && a.autonumeroSistema == autonumeroSistema && a.autonumeroServico == autonumeroServico
                                     select b).OrderBy(p => p.autonumeroOs);
@@ -1272,6 +1287,11 @@ namespace apinovo.Controllers
                         valueOs.valorServico = Convert.ToDecimal(totalItensServico.ToString("#######0.00"));
                         valueOs.valorMaterial = Convert.ToDecimal(totalItensMaterial.ToString("#######0.00"));
                         valueOs.valor = Convert.ToDecimal(valueOs.valorServico + valueOs.valorMaterial);
+
+                        if (valueOs.desabilitado == null)
+                        {
+                            valueOs.desabilitado = 0;
+                        }
 
                         dc.tb_os.AddOrUpdate(valueOs);
                         dc.SaveChanges();
@@ -1733,12 +1753,32 @@ namespace apinovo.Controllers
             return message;
         }
 
+        [HttpPost]
+        public string AcertarOSDesabilitado()
+        {
+            var c = 1;
+            using (var dc = new manutEntities())
+            {
+                var osX = (from a in dc.tb_os
 
+                           where a.cancelado != "S" && a.desabilitado == null
+                           select new
+                           {
+                               a
+                           }).ToList();
+
+                osX.ForEach(x =>
+                {
+                    x.a.desabilitado = 0;
+                });
+                dc.SaveChanges();
+
+                return string.Empty;
+
+            }
+
+        }
 
     }
 
-
-
 }
-
-

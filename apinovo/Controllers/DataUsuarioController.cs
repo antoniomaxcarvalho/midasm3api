@@ -10,10 +10,26 @@ namespace apinovo.Controllers
 {
     public class DataUsuarioController : ApiController
     {
+        static DateTime dummy;
+
         [HttpGet]
         public IEnumerable<tb_usuario> GetUsuarioSenha(string login, string senha)
         {
             var c = 1;
+
+
+            //You this logig within your method.
+            if (dummy != DateTime.Today)
+            {
+                dummy = DateTime.Today;
+
+                var k = new DataOsController();
+                k.AcertarOSDesabilitado();
+           
+
+            }
+
+
             using (var dc = new manutEntities())
             {
                 var user = from p in dc.tb_usuario.Where((a => (a.login == login) && a.senha == senha && a.cancelado != "S")) select p;

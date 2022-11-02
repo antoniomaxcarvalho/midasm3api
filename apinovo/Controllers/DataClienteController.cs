@@ -48,7 +48,7 @@ namespace apinovo.Controllers
             var c = 1;
             using (var dc = new manutEntities())
             {
-                var user = from p in dc.tb_cliente.Where((a => a.cancelado != "S" && a.desabilitado == 0 && cliente.Contains(a.sigla) ))
+                var user = from p in dc.tb_cliente.Where((a => a.cancelado != "S" && (a.desabilitado == 0 || a.desabilitado == null) && cliente.Contains(a.sigla) ))
                            select new
                            {
                                label = p.nome,
