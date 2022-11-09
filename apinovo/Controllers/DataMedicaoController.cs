@@ -650,21 +650,40 @@ namespace apinovo.Controllers
 
                 // Debug.WriteLine(1111111);
                 //dc.tb_ordemservico.Where(x => x.medicao == medicao && x.etapa == etapa && x.cancelado != "S" && x.autonumeroCliente == autonumeroCliente).ToList().ForEach(x =>
-                ordem.ForEach(x =>
-                {
 
-                    Debug.WriteLine(x.codigoOs);
+                //try
+                //{
+
+                    ordem.ForEach(x =>
+                    {
+
+                        Debug.WriteLine(x.codigoOs);
                     //var totalPF = dc.tb_os_itens.Where(k => k.codigoOrdemServico == x.codigoOs && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S").Sum(k => (k.totalPF));
 
 
                     var totalPF = dc.tb_os_itens.Where(k => k.codigoOrdemServico == x.codigoOs && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S")
-                    .Sum(j => (Math.Truncate( (decimal)j.quantidadePF * (decimal)j.precoUnitarioPF * 100)) / 100);
+                        .Sum(j => (Math.Truncate((decimal)j.quantidadePF * (decimal)j.precoUnitarioPF * 100)) / 100);
 
-                    Debug.WriteLine(totalPF);
-                    x.valor = totalPF;
-                    dc.tb_ordemservico.AddOrUpdate(x);
-                    dc.SaveChanges();
-                });
+                        Debug.WriteLine(totalPF);
+                        x.valor = totalPF;
+                        dc.tb_ordemservico.AddOrUpdate(x);
+                        dc.SaveChanges();
+                    });
+                //}
+
+                //catch (Exception ex)
+                //{
+
+
+
+                //    var c11 = string.Empty;
+                //    if (ex.InnerException != null)
+                //    {
+                //        c11 = ex.InnerException.ToString().Substring(0, 130);
+                //    }
+                //    // Debug.WriteLine(ex.Message + " ---- " + c);
+                //    return "Erro";
+                //}
 
 
                 //Debug.WriteLine("00000000000000000000000000000000000000000");
