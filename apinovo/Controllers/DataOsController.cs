@@ -1201,8 +1201,8 @@ namespace apinovo.Controllers
 
 
                 }
-
-                return itensForaDaPlanilha.ToList(); ;
+                var k = itensForaDaPlanilha.ToList();
+                return k;
             }
         }
 
@@ -1230,7 +1230,8 @@ namespace apinovo.Controllers
                                       && a.dataTermino >= data11 && a.dataTermino <= data22 &&
                                       a.nomeStatus == "Fechada" && a.autonumeroSistema == autonumeroSistema
                                     select b).OrderBy(p => p.autonumeroOs);
-                    return resposta.ToList();
+                    var k = resposta.ToList();
+                    return k;
                 }
                 else
                 {
@@ -1240,7 +1241,8 @@ namespace apinovo.Controllers
                                       && a.dataTermino >= data11 && a.dataTermino <= data22 &&
                                       a.nomeStatus == "Fechada" && a.autonumeroSistema == autonumeroSistema && a.autonumeroServico == autonumeroServico
                                     select b).OrderBy(p => p.autonumeroOs);
-                    return resposta.ToList();
+                    var k = resposta.ToList();
+                    return k;
                 }
 
 
