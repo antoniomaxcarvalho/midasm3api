@@ -180,8 +180,8 @@ namespace apinovo.Controllers
 
                         var precoUnitario = Convert.ToDecimal(HttpContext.Current.Request.Form["precoUnitario"].ToString());
                         var total = Convert.ToDecimal(HttpContext.Current.Request.Form["total"].ToString());
-                        var bdiServico = Convert.ToDouble(HttpContext.Current.Request.Form["bdiServico"].ToString().Trim());
-                        var bdiMaterial = Convert.ToDouble(HttpContext.Current.Request.Form["bdiMaterial"].ToString().Trim());
+                        var bdiServico = Convert.ToDecimal(HttpContext.Current.Request.Form["bdiServico"].ToString().Trim());
+                        var bdiMaterial = Convert.ToDecimal(HttpContext.Current.Request.Form["bdiMaterial"].ToString().Trim());
                         var autonumeroOs = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroOs"].ToString());
                         var codigoOs = HttpContext.Current.Request.Form["codigoOs"].ToString().Trim();
                         var autonumeroUsuario = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroUsuario"].ToString());
@@ -588,8 +588,8 @@ namespace apinovo.Controllers
                         var codigoOs = HttpContext.Current.Request.Form["codigoOs"].ToString().Trim();
                         var autonumeroUsuario = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroUsuario"].ToString());
                         var nomeUsuario = HttpContext.Current.Request.Form["nomeUsuario"].ToString().Trim();
-                        var bdiServico = Convert.ToDouble(HttpContext.Current.Request.Form["bdiServico"].ToString().Trim());
-                        var bdiMaterial = Convert.ToDouble(HttpContext.Current.Request.Form["bdiMaterial"].ToString().Trim());
+                        var bdiServico = Convert.ToDecimal(HttpContext.Current.Request.Form["bdiServico"].ToString().Trim());
+                        var bdiMaterial = Convert.ToDecimal(HttpContext.Current.Request.Form["bdiMaterial"].ToString().Trim());
                         var dataLimite = HttpContext.Current.Request.Form["dataLimite"].ToString();
 
                         var dataIncluir = DateTime.Now;
@@ -785,8 +785,8 @@ namespace apinovo.Controllers
                         var codigoOs = HttpContext.Current.Request.Form["codigoOs"].ToString().Trim();
                         var autonumeroUsuario = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroUsuario"].ToString());
                         var nomeUsuario = HttpContext.Current.Request.Form["nomeUsuario"].ToString().Trim();
-                        var bdiServico = Convert.ToDouble(HttpContext.Current.Request.Form["bdiServico"].ToString().Trim());
-                        var bdiMaterial = Convert.ToDouble(HttpContext.Current.Request.Form["bdiMaterial"].ToString().Trim());
+                        var bdiServico = Convert.ToDecimal(HttpContext.Current.Request.Form["bdiServico"].ToString().Trim());
+                        var bdiMaterial = Convert.ToDecimal(HttpContext.Current.Request.Form["bdiMaterial"].ToString().Trim());
                         var dataLimite = HttpContext.Current.Request.Form["dataLimite"].ToString();
                         var ultimaEtapa = HttpContext.Current.Request.Form["ultimaEtapa"].ToString();
                         var prazoInicialMeses = Convert.ToInt32(HttpContext.Current.Request.Form["prazoInicialMeses"].ToString());

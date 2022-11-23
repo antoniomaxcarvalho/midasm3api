@@ -70,7 +70,6 @@ namespace apinovo
         public DbSet<osfuncionario> osfuncionario { get; set; }
         public DbSet<funcionario> funcionario { get; set; }
         public DbSet<funcionariocurso> funcionariocurso { get; set; }
-        public DbSet<subsistemaqtdepmoc> subsistemaqtdepmoc { get; set; }
         public DbSet<tb_empresa> tb_empresa { get; set; }
         public DbSet<osfotos> osfotos { get; set; }
         public DbSet<checklist> checklist { get; set; }
@@ -86,13 +85,14 @@ namespace apinovo
         public DbSet<tb_sistema> tb_sistema { get; set; }
         public DbSet<tb_subsistema> tb_subsistema { get; set; }
         public DbSet<tb_cliente> tb_cliente { get; set; }
-        public DbSet<tb_os_itens> tb_os_itens { get; set; }
         public DbSet<tb_fontes> tb_fontes { get; set; }
         public DbSet<tb_insumo> tb_insumo { get; set; }
         public DbSet<tb_servico> tb_servico { get; set; }
-        public DbSet<tb_ordemservico> tb_ordemservico { get; set; }
         public DbSet<equipamentodefeito> equipamentodefeito { get; set; }
         public DbSet<tb_usuario> tb_usuario { get; set; }
         public DbSet<tb_os> tb_os { get; set; }
+        public DbSet<tb_ordemservico> tb_ordemservico { get; set; }
+        public DbSet<tb_os_itens> tb_os_itens { get; set; }
+        public DbSet<subsistemaqtdepmoc> subsistemaqtdepmoc { get; set; }
     }
 }

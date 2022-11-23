@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
-using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -29,7 +28,7 @@ namespace apinovo.Controllers
 
             using (var dc = new manutEntities())
             {
-                var user = from p in dc.tb_ordemservico.Where(a => a.autonumeroCliente == autonumeroCliente && a.codigoOs.Contains(nroOs)  && a.cancelado != "S").OrderByDescending(p => p.codigoOs) select p;
+                var user = from p in dc.tb_ordemservico.Where(a => a.autonumeroCliente == autonumeroCliente && a.codigoOs.Contains(nroOs) && a.cancelado != "S").OrderByDescending(p => p.codigoOs) select p;
                 return user.ToList(); ;
             }
         }
@@ -47,7 +46,7 @@ namespace apinovo.Controllers
         [HttpPost]
         public string IncluirOrdemServico()
         {
-           // Debug.WriteLine("------------------------------------------------- ");
+            // Debug.WriteLine("------------------------------------------------- ");
             var mensagem = "";
 
             var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
@@ -57,7 +56,7 @@ namespace apinovo.Controllers
             var valor = Convert.ToDecimal(HttpContext.Current.Request.Form["valor"].ToString().Trim());
             var nomeSistema = HttpContext.Current.Request.Form["nomeSistema"].ToString().Trim();
             var autonumeroSistema = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroSistema"].ToString().Trim());
-           // Debug.WriteLine("11111111111------------------------ ");
+            // Debug.WriteLine("11111111111------------------------ ");
 
             var processo = HttpContext.Current.Request.Form["processo"].ToString().Trim();
             var cap = HttpContext.Current.Request.Form["cap"].ToString().Trim();
@@ -66,7 +65,7 @@ namespace apinovo.Controllers
             var nomeItem = HttpContext.Current.Request.Form["nomeItem"].ToString().Trim();
             var tipoAtendimento = HttpContext.Current.Request.Form["tipoAtendimento"].ToString().Trim();
             var autonumeroServico = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroServico"].ToString());
-           // Debug.WriteLine("222222222222222------------------------ ");
+            // Debug.WriteLine("222222222222222------------------------ ");
 
             var siglaItem = HttpContext.Current.Request.Form["siglaItem"].ToString().Trim();
             var resumoServico = HttpContext.Current.Request.Form["resumoServico"].ToString().Trim();
@@ -78,25 +77,25 @@ namespace apinovo.Controllers
             //var medicao = HttpContext.Current.Request.Form["medicao"].ToString().Trim();
             var codigoOs = HttpContext.Current.Request.Form["codigoOs"].ToString().Trim();
             var nroOsInformado = HttpContext.Current.Request.Form["nroOsInformado"].ToString().Trim();
-           // Debug.WriteLine("333333333333------------------------ ");
+            // Debug.WriteLine("333333333333------------------------ ");
 
             if (DataClienteController.IsDate(HttpContext.Current.Request.Form["dataInicio"].ToString()) &&
                 DataClienteController.IsDate(HttpContext.Current.Request.Form["dataFim"].ToString()) &&
                 DataClienteController.IsDate(HttpContext.Current.Request.Form["dataEmissao"].ToString()))
             {
-               // Debug.WriteLine("44444444------------------------ ");
+                // Debug.WriteLine("44444444------------------------ ");
                 var data11 = Convert.ToDateTime(HttpContext.Current.Request.Form["dataInicio"].ToString());
                 var data22 = Convert.ToDateTime(HttpContext.Current.Request.Form["dataFim"].ToString());
 
                 using (var dc = new manutEntities())
                 {
-                   // Debug.WriteLine("5555555555------------------------ ");
+                    // Debug.WriteLine("5555555555------------------------ ");
                     using (var transaction = dc.Database.BeginTransaction())
                     {
                         try
                         {
 
-                           // Debug.WriteLine(" ------------------------------ dc.tb_cliente.Find(autonumeroCliente) ");
+                            // Debug.WriteLine(" ------------------------------ dc.tb_cliente.Find(autonumeroCliente) ");
                             var linha = dc.tb_cliente.Find(autonumeroCliente); // sempre irá procurar pela chave primaria
                             if (linha != null)
                             {
@@ -142,15 +141,15 @@ namespace apinovo.Controllers
                                     local = local
 
                                 };
-       
+
                                 dc.tb_ordemservico.Add(k);
                                 dc.SaveChanges();
-                               // Debug.WriteLine(" 9999999999999999");
+                                // Debug.WriteLine(" 9999999999999999");
                                 var auto = Convert.ToInt64(k.autonumero);
 
                                 if (k.valor > 0)
                                 {
-                                   // Debug.WriteLine(" ------------------------------- if (string.IsNullOrEmpty(codigoOs))");
+                                    // Debug.WriteLine(" ------------------------------- if (string.IsNullOrEmpty(codigoOs))");
                                     if (string.IsNullOrEmpty(codigoOs))
                                     {
                                         // Sistema !=  ORÇAMENTO pode ter mais de 1 S.S por O.S. -------------------------------------------------
@@ -172,12 +171,12 @@ namespace apinovo.Controllers
                                              x.p.codigoOrdemServico = codigo;
                                          });
 
-                                       // Debug.WriteLine("--------------------------- FIM - if (string.IsNullOrEmpty(codigoOs))");
+                                        // Debug.WriteLine("--------------------------- FIM - if (string.IsNullOrEmpty(codigoOs))");
                                     }
                                     else
                                     {
                                         // INICIO - Utilizado para que se tenha 1 S.S == 1 O.S ( quando o sistema for ORÇAMENTO ) ->  i.codigoOs == codigoOs -------------------------------------------------
-                                       // Debug.WriteLine("------------------- (from i in dc.tb_os_itens");
+                                        // Debug.WriteLine("------------------- (from i in dc.tb_os_itens");
                                         (from i in dc.tb_os_itens
                                          join p in dc.tb_os
                                          on i.codigoOs equals p.codigoOs
@@ -195,7 +194,7 @@ namespace apinovo.Controllers
                                              x.p.codigoOrdemServico = codigo;
                                          });
                                         // FIM - Utilizado para que se tenha 1 S.S == 1 O.S ( quando o sistema for ORÇAMENTO ) ->  i.codigoOs == codigoOs ----------------------------------------------
-                                       // Debug.WriteLine("---------------------FIM -  (from i in dc.tb_os_itens");
+                                        // Debug.WriteLine("---------------------FIM -  (from i in dc.tb_os_itens");
                                     }
                                 }
                                 else
@@ -223,21 +222,73 @@ namespace apinovo.Controllers
                                         // INICIO - Utilizado para que se tenha 1 S.S == 1 O.S ( quando o sistema for ORÇAMENTO ) ->  i.codigoOs == codigoOs -------------------------------------------------
 
                                         (from p in dc.tb_os
-                                          where p.autonumeroCliente == autonumeroCliente && p.cancelado != "S" &&
-                                                 p.nomeStatus == "Fechada" && p.autonumeroSistema == autonumeroSistema && p.autonumeroServico == autonumeroServico
-                                                   && p.dataTermino >= data11 && p.dataTermino <= data22 && p.codigoOs == codigoOs
-                                          select new
-                                          {
-                                              p
-                                          }).ToList().ForEach(x =>
-                                          {
-                                              x.p.codigoOrdemServico = codigo;
-                                          });
+                                         where p.autonumeroCliente == autonumeroCliente && p.cancelado != "S" &&
+                                                p.nomeStatus == "Fechada" && p.autonumeroSistema == autonumeroSistema && p.autonumeroServico == autonumeroServico
+                                                  && p.dataTermino >= data11 && p.dataTermino <= data22 && p.codigoOs == codigoOs
+                                         select new
+                                         {
+                                             p
+                                         }).ToList().ForEach(x =>
+                                         {
+                                             x.p.codigoOrdemServico = codigo;
+                                         });
                                         // FIM - Utilizado para que se tenha 1 S.S == 1 O.S ( quando o sistema for ORÇAMENTO ) ->  i.codigoOs == codigoOs ----------------------------------------------
 
                                     }
                                 }
-                               // Debug.WriteLine("-----------------   dc.SaveChanges();");
+                                // Debug.WriteLine("-----------------   dc.SaveChanges();");
+                                dc.SaveChanges();
+
+
+
+                                var totalPFBdiServico1 = (from i in dc.tb_os_itens
+                                                         join p in dc.tb_os
+                                                         on i.codigoOs equals p.codigoOs
+
+                                                         where i.codigoOrdemServico == codigo
+                                                                            && i.autonumeroCliente == autonumeroCliente
+                                                                            && i.cancelado != "S"
+                                                                                  && i.servico == "S"
+
+                                                          select new
+                                                         {
+                                                             i.total,
+                                                             bdiServico = p.bdiServico
+                                                         }).ToList();
+
+
+                                var totalPFBdiServico = totalPFBdiServico1.Sum(p => p.total * Convert.ToDecimal(p.bdiServico) / 100);
+
+                                if (totalPFBdiServico == null)
+                                {
+                                    totalPFBdiServico = 0;
+                                }
+
+                                var totalPFBdiMaterial1 = (from i in dc.tb_os_itens
+                                                          join p in dc.tb_os
+                                                          on i.codigoOs equals p.codigoOs
+
+                                                          where i.codigoOrdemServico == codigo
+                                                                             && i.autonumeroCliente == autonumeroCliente
+                                                                             && i.cancelado != "S"
+                                                                             && i.servico != "S"
+
+                                                          select new
+                                                          {
+                                                              i.total,
+                                                              bdiMaterial = p.bdiMaterial
+                                                          }).ToList();
+
+
+                                var totalPFBdiMaterial = totalPFBdiMaterial1.Sum(p => p.total * Convert.ToDecimal(p.bdiMaterial) / 100);
+
+                                if (totalPFBdiMaterial == null)
+                                {
+                                    totalPFBdiMaterial = 0;
+                                }
+
+                                k.valorTotalBdi = totalPFBdiServico + totalPFBdiMaterial;
+                                k.valor = k.valor;
                                 dc.SaveChanges();
 
                                 transaction.Commit();
@@ -248,7 +299,7 @@ namespace apinovo.Controllers
                         catch (Exception ex)
                         {
                             transaction.Rollback();
-                            mensagem =  ex.Message.ToString();
+                            mensagem = ex.Message.ToString();
                         }
 
                         return mensagem;
@@ -390,7 +441,7 @@ namespace apinovo.Controllers
 
                         transaction.Commit();
                         return string.Empty;
-                       
+
                     }
                     catch (Exception ex)
                     {
@@ -433,8 +484,8 @@ namespace apinovo.Controllers
                                 i.autonumeroSistema == autonumeroSistema
                                  && i.dataInicio <= df && di <= i.dataFim && i.dataInicio != di && df != i.dataFim
                          select i);
-
-                return itens.ToList(); ;
+                var xx = itens.ToList();
+                return xx;
             }
         }
 
@@ -453,16 +504,61 @@ namespace apinovo.Controllers
 
                     var totalPF = dc.tb_os_itens.Where(k => k.codigoOrdemServico == os.codigoOs && k.autonumeroCliente == auto && k.cancelado != "S").Sum(k => (k.totalPF));
 
-                   // Debug.WriteLine("--------");
-                   // Debug.WriteLine(os.valor);
-                   // Debug.WriteLine("--------");
+                    var totalPFBdiServico1 = (from i in dc.tb_os_itens
+                                              join p in dc.tb_os
+                                              on i.codigoOs equals p.codigoOs
+
+                                              where i.codigoOrdemServico == os.codigoOs
+                                                                 && i.autonumeroCliente == auto
+                                                                 && i.cancelado != "S"
+                                                                       && i.servico == "S"
+
+                                              select new
+                                              {
+                                                  i.total,
+                                                  p.bdiServico
+                                              }).ToList();
+
+
+                    var totalPFBdiServico = totalPFBdiServico1.Sum(p => p.total * Convert.ToDecimal(p.bdiServico) / 100);
+
+                    if (totalPFBdiServico == null)
+                    {
+                        totalPFBdiServico = 0;
+                    }
+
+                    var totalPFBdiMaterial1 = (from i in dc.tb_os_itens
+                                               join p in dc.tb_os
+                                               on i.codigoOs equals p.codigoOs
+
+                                               where i.codigoOrdemServico == os.codigoOs
+                                                                  && i.autonumeroCliente == auto
+                                                                  && i.cancelado != "S"
+                                                                  && i.servico != "S"
+
+                                               select new
+                                               {
+                                                   i.total,
+                                                   p.bdiMaterial
+                                               }).ToList();
+
+
+                    var totalPFBdiMaterial = totalPFBdiMaterial1.Sum(p => p.total * Convert.ToDecimal(p.bdiMaterial) / 100);
+
+                    if (totalPFBdiMaterial == null)
+                    {
+                        totalPFBdiMaterial = 0;
+                    }
+
+
+                    // Debug.WriteLine("--------");
+                    // Debug.WriteLine(os.valor);
+                    // Debug.WriteLine("--------");
                     etapa = os.etapa;
                     medicao = os.medicao;
-                   // Debug.WriteLine(valor);
-                    //var xx = Convert.ToDecimal(valor);
-                    //Debug.WriteLine(xx);
+                    os.valorTotalBdi = totalPFBdiServico + totalPFBdiMaterial;
                     os.valor = Convert.ToDecimal(totalPF);
-                   // Debug.WriteLine(os.valor);
+                    // Debug.WriteLine(os.valor);
                     dc.tb_ordemservico.AddOrUpdate(os);
 
                     dc.SaveChanges();
@@ -479,76 +575,76 @@ namespace apinovo.Controllers
             }
         }
 
-        [HttpPost]
-        public string CorrigirOrdemServico()
-        {
-            var c = 1;
-            var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
-            var codigoOs = HttpContext.Current.Request.Form["codigoOs"].ToString().Trim();
-            var data11 = Convert.ToDateTime(HttpContext.Current.Request.Form["dataInicio"].ToString());
-            var data22 = Convert.ToDateTime(HttpContext.Current.Request.Form["dataFim"].ToString());
-            var autonumeroSistema = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroSistema"].ToString().Trim());
+        //[HttpPost]
+        //public string CorrigirOrdemServico()
+        //{
+        //    var c = 1;
+        //    var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
+        //    var codigoOs = HttpContext.Current.Request.Form["codigoOs"].ToString().Trim();
+        //    var data11 = Convert.ToDateTime(HttpContext.Current.Request.Form["dataInicio"].ToString());
+        //    var data22 = Convert.ToDateTime(HttpContext.Current.Request.Form["dataFim"].ToString());
+        //    var autonumeroSistema = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroSistema"].ToString().Trim());
 
-            var valor = Convert.ToDecimal(HttpContext.Current.Request.Form["valor"].ToString().Trim());
+        //    var valor = Convert.ToDecimal(HttpContext.Current.Request.Form["valor"].ToString().Trim());
 
-            var autonumeroServico = 2;
-            if (codigoOs.Contains("P")) autonumeroServico = 1;
+        //    var autonumeroServico = 2;
+        //    if (codigoOs.Contains("P")) autonumeroServico = 1;
 
-            using (var dc = new manutEntities())
-            {
+        //    using (var dc = new manutEntities())
+        //    {
 
-                var etapa = string.Empty;
-                var medicao = string.Empty;
+        //        var etapa = string.Empty;
+        //        var medicao = string.Empty;
 
-                //Encontrar a Medição --------------------------
-                var linha2 = dc.tb_medicao.FirstOrDefault(a => a.dataInicioMedicao == data11 && a.dataFimMedicao == data22 && a.autonumeroCliente == autonumeroCliente && a.cancelado != "S");
-                if (linha2 != null)
-                {
-                    etapa = linha2.etapa;
-                    medicao = linha2.medicao;
+        //        //Encontrar a Medição --------------------------
+        //        var linha2 = dc.tb_medicao.FirstOrDefault(a => a.dataInicioMedicao == data11 && a.dataFimMedicao == data22 && a.autonumeroCliente == autonumeroCliente && a.cancelado != "S");
+        //        if (linha2 != null)
+        //        {
+        //            etapa = linha2.etapa;
+        //            medicao = linha2.medicao;
 
-                }
-                //FIM - Encontrar a Medição --------------------------
+        //        }
+        //        //FIM - Encontrar a Medição --------------------------
 
-                if (!string.IsNullOrEmpty(etapa) && !string.IsNullOrEmpty(medicao))
-                {
+        //        if (!string.IsNullOrEmpty(etapa) && !string.IsNullOrEmpty(medicao))
+        //        {
 
-                    (from i in dc.tb_os_itens
-                     join p in dc.tb_os
-                     on i.codigoOs equals p.codigoOs
-                     where i.autonumeroCliente == autonumeroCliente && i.cancelado != "S" && p.cancelado != "S" &&
-                           i.autonumeroCliente == p.autonumeroCliente &&
-                            p.nomeStatus == "Fechada" && p.autonumeroSistema == autonumeroSistema && p.autonumeroServico == autonumeroServico
-                              && p.dataTermino >= data11 && p.dataTermino <= data22
-                     select new
-                     {
-                         i,
-                         p
-                     }).ToList().ForEach(x =>
-                     {
-                         x.i.codigoOrdemServico = codigoOs;
-                         x.p.codigoOrdemServico = codigoOs;
-                         x.i.etapa = etapa;
-                         x.p.etapa = etapa;
-                         x.i.medicao = medicao;
-                         x.p.medicao = medicao;
-                     });
+        //            (from i in dc.tb_os_itens
+        //             join p in dc.tb_os
+        //             on i.codigoOs equals p.codigoOs
+        //             where i.autonumeroCliente == autonumeroCliente && i.cancelado != "S" && p.cancelado != "S" &&
+        //                   i.autonumeroCliente == p.autonumeroCliente &&
+        //                    p.nomeStatus == "Fechada" && p.autonumeroSistema == autonumeroSistema && p.autonumeroServico == autonumeroServico
+        //                      && p.dataTermino >= data11 && p.dataTermino <= data22
+        //             select new
+        //             {
+        //                 i,
+        //                 p
+        //             }).ToList().ForEach(x =>
+        //             {
+        //                 x.i.codigoOrdemServico = codigoOs;
+        //                 x.p.codigoOrdemServico = codigoOs;
+        //                 x.i.etapa = etapa;
+        //                 x.p.etapa = etapa;
+        //                 x.i.medicao = medicao;
+        //                 x.p.medicao = medicao;
+        //             });
 
-                    dc.SaveChanges();
-                }
+        //            dc.SaveChanges();
+        //        }
 
-                var linha = dc.tb_ordemservico.FirstOrDefault(a => a.codigoOs == codigoOs && a.autonumeroCliente == autonumeroCliente && a.cancelado != "S");
-                if (linha != null)
-                {
-                    linha.valor = valor;
-                    dc.tb_ordemservico.AddOrUpdate(linha);
-                    dc.SaveChanges();
-                }
+        //        var linha = dc.tb_ordemservico.FirstOrDefault(a => a.codigoOs == codigoOs && a.autonumeroCliente == autonumeroCliente && a.cancelado != "S");
+        //        if (linha != null)
+        //        {
+        //            linha.valor = valor;
+        //            dc.tb_ordemservico.AddOrUpdate(linha);
+        //            dc.SaveChanges();
+        //        }
 
-                return "";
-            }
+        //        return "";
+        //    }
 
-        }
+        //}
 
 
         public IEnumerable<tb_ordemservico> GetOsNoIntervaloCustoFixo(Int64 autonumeroCliente, string dataInicio, string dataFim)
@@ -645,7 +741,7 @@ namespace apinovo.Controllers
                         j++;
                     }
 
-                _continue:;
+                    _continue:;
 
                 });
 

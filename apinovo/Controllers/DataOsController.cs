@@ -1539,7 +1539,8 @@ namespace apinovo.Controllers
                 }
 
                 dc.SaveChanges();
-                return lista.ToList();
+                var xx = lista.ToList();
+                return xx;
 
             }
             // FIM - QTDE DE OS por sistema ----------------------------------------------------------------------------------

@@ -21,8 +21,8 @@ namespace apinovo
         public Nullable<decimal> quantidade { get; set; }
         public Nullable<decimal> precoUnitario { get; set; }
         public Nullable<decimal> total { get; set; }
-        public Nullable<double> bdiServico { get; set; }
-        public Nullable<double> bdiMaterial { get; set; }
+        public Nullable<decimal> bdiServico { get; set; }
+        public Nullable<decimal> bdiMaterial { get; set; }
         public Nullable<long> autonumeroOs { get; set; }
         public string codigoOs { get; set; }
         public Nullable<long> autonumeroUsuario { get; set; }

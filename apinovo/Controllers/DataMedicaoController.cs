@@ -588,7 +588,7 @@ namespace apinovo.Controllers
             var autonumeroCliente = Convert.ToInt64(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
             var medicao = HttpContext.Current.Request.Form["medicao"].ToString();
             var etapa = HttpContext.Current.Request.Form["etapa"].ToString();
-            var bdiServico = Convert.ToDecimal(HttpContext.Current.Request.Form["bdiServico"].ToString());
+            //var bdiServico = Convert.ToDecimal(HttpContext.Current.Request.Form["bdiServico"].ToString());
 
             var sequenciaInformada = Convert.ToInt32(HttpContext.Current.Request.Form["sequencia"].ToString());
 
@@ -605,6 +605,10 @@ namespace apinovo.Controllers
                 dataFimMedicao = Convert.ToDateTime(HttpContext.Current.Request.Form["dataFimMedicao"]);
             }
 
+
+            var bdiServico = 0m;
+            var bdiMaterial = 0m;
+
             using (var dc = new manutEntities())
             {
                 dc.tb_medicaoitens.Where(x => x.medicao == medicao && x.etapa == etapa).ToList().ForEach(x =>
@@ -612,6 +616,15 @@ namespace apinovo.Controllers
                     x.cancelado = "S";
                 });
                 dc.SaveChanges();
+
+                var linhaCliente = dc.tb_cliente.Find(autonumeroCliente); // sempre irá procurar pela chave primaria
+                if (linhaCliente != null && linhaCliente.cancelado != "S")
+                {
+                    bdiServico = Convert.ToDecimal(linhaCliente.bdiServico);
+                    bdiMaterial = Convert.ToDecimal(linhaCliente.bdiMaterial);
+
+
+                }
             }
 
             using (var dc = new manutEntities())
@@ -635,7 +648,7 @@ namespace apinovo.Controllers
 
                 var ordem = (from p in dc.tb_ordemservico.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" &&
                            a.dataEmissao >= dataInicioMedicao && a.dataEmissao <= dataFimMedicao)
-                            select p).ToList();
+                             select p).ToList();
 
                 // Debug.WriteLine(ordem.Count());
                 ordem.ForEach(x =>
@@ -654,21 +667,102 @@ namespace apinovo.Controllers
                 //try
                 //{
 
-                    ordem.ForEach(x =>
-                    {
+                ordem.ForEach(x =>
+                {
 
-                        Debug.WriteLine(x.codigoOs);
+                    Debug.WriteLine(x.codigoOs);
                     //var totalPF = dc.tb_os_itens.Where(k => k.codigoOrdemServico == x.codigoOs && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S").Sum(k => (k.totalPF));
 
 
-                    var totalPF = dc.tb_os_itens.Where(k => k.codigoOrdemServico == x.codigoOs && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S")
-                        .Sum(j => (Math.Truncate((decimal)j.quantidadePF * (decimal)j.precoUnitarioPF * 100)) / 100);
 
-                        Debug.WriteLine(totalPF);
-                        x.valor = totalPF;
-                        dc.tb_ordemservico.AddOrUpdate(x);
-                        dc.SaveChanges();
-                    });
+                    var totalPF = dc.tb_os_itens.Where(k => k.codigoOrdemServico == x.codigoOs && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S").Sum(k => (k.totalPF));
+
+
+                    //var totalPF = dc.tb_os_itens.Where(k => k.codigoOrdemServico == x.codigoOs && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S")
+                    //    .Sum(j => (Math.Truncate((decimal)j.quantidadePF * (decimal)j.precoUnitarioPF * 100)) / 100);
+
+                    Debug.WriteLine(totalPF);
+
+                    //var totalPFBdiServico = dc.tb_os_itens.Where(k => k.codigoOrdemServico == x.codigoOs
+                    //                          && k.autonumeroCliente == autonumeroCliente
+                    //                          && k.cancelado != "S"
+                    //                          && k.servico == "S"
+                    //                          && k.bdiServico > 0).Sum(k => k.totalPF * (1 + (decimal)k.bdiServico / 100));
+
+                    //if (totalPFBdiServico == null)
+                    //{
+                    //    totalPFBdiServico = 0;
+                    //}
+
+                    //var totalPFBdiMaterial = dc.tb_os_itens.Where(k => k.codigoOrdemServico == x.codigoOs
+                    //       && k.autonumeroCliente == autonumeroCliente
+                    //       && k.cancelado != "S"
+                    //       && k.servico != "S"
+                    //       && k.bdiServico > 0).Sum(k => k.totalPF * (1 + (decimal)k.bdiMaterial / 100));
+
+                    //if (totalPFBdiServico == null)
+                    //{
+                    //    totalPFBdiServico = 0;
+                    //}
+
+                    var totalPFBdiServico1 = (from i in dc.tb_os_itens
+                                              join p in dc.tb_os
+                                              on i.codigoOs equals p.codigoOs
+
+                                              where i.codigoOrdemServico == x.codigoOs
+                                                                 && i.autonumeroCliente == autonumeroCliente
+                                                                 && i.cancelado != "S"
+                                                                       && i.servico == "S"
+
+                                              select new
+                                              {
+                                                  i.total,
+                                                  bdiServico = p.bdiServico
+                                              }).ToList();
+
+
+                    var totalPFBdiServico = totalPFBdiServico1.Sum(p => p.total * Convert.ToDecimal(p.bdiServico) / 100);
+
+                    if (totalPFBdiServico == null)
+                    {
+                        totalPFBdiServico = 0;
+                    }
+
+                    var totalPFBdiMaterial1 = (from i in dc.tb_os_itens
+                                               join p in dc.tb_os
+                                               on i.codigoOs equals p.codigoOs
+
+                                               where i.codigoOrdemServico == x.codigoOs
+                                                                  && i.autonumeroCliente == autonumeroCliente
+                                                                  && i.cancelado != "S"
+                                                                  && i.servico != "S"
+
+                                               select new
+                                               {
+                                                   i.total,
+                                                   bdiMaterial = p.bdiMaterial
+                                               }).ToList();
+
+
+                    var totalPFBdiMaterial = totalPFBdiMaterial1.Sum(p => p.total * Convert.ToDecimal(p.bdiMaterial) / 100);
+
+                    if (totalPFBdiMaterial == null)
+                    {
+                        totalPFBdiMaterial = 0;
+                    }
+
+
+                    x.valorTotalBdi = totalPFBdiServico + totalPFBdiMaterial;
+                    x.valor = Convert.ToDecimal(totalPF);
+
+                    dc.SaveChanges();
+
+
+
+                    //x.valor = totalPF + totalPFBdiMaterial + totalPFBdiServico;
+                    //dc.tb_ordemservico.AddOrUpdate(x);
+                    //dc.SaveChanges();
+                });
                 //}
 
                 //catch (Exception ex)
@@ -727,7 +821,7 @@ namespace apinovo.Controllers
                                                  o.qtdeContratada,
                                                  x.medicaoAtual,
                                                  x.valorAposMedicao,
-                                               
+
                                              })
                                   join f in dc.tb_planilhafechada
                                   on y.codigo equals f.codigo
@@ -844,8 +938,12 @@ namespace apinovo.Controllers
                     }
 
 
-                    var valorMedicaoAtual =  (decimal) dc.tb_ordemservico.Where(k => k.medicao == medicao && k.etapa == etapa && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S").Sum(k => (k.valor));
+                    //var valorTotalBdiServico = Math.Truncate(valorMedicaoAtual * (bdiServico / 100) * 100) / 100;
 
+                    var valorMedicaoAtual = (decimal)dc.tb_ordemservico.Where(k => k.medicao == medicao && k.etapa == etapa && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S").Sum(k => (k.valor));
+
+                    // Usar para somar os BDI separado  ( Quando Perc BDI material != servico ) ----------------------
+                    var valorMedicaoAtualBDI = (decimal)dc.tb_ordemservico.Where(k => k.medicao == medicao && k.etapa == etapa && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S").Sum(k => (k.valorTotalBdi));
 
 
                     var pf = dc.tb_planilhafechada.Where(a => a.autonumeroCliente == autonumeroCliente).ToList();
@@ -909,10 +1007,6 @@ namespace apinovo.Controllers
 
                     foreach (var item in d)
                     {
-                        //if (item.medicao == medicao)
-                        //{
-                        //    break;
-                        //}
                         var sequenciaBD = item.sequencia;
 
                         if (sequenciaBD < sequenciaInformada)
@@ -922,21 +1016,37 @@ namespace apinovo.Controllers
 
                     }
 
-
                     var linha = dc.tb_medicao.Find(autonumeroMedicao); // sempre irá procurar pela chave primaria
                     if (linha != null && linha.cancelado != "S")
                     {
-                        //var c2 = 1;
+                        c1 = 1;
 
                         var valorTotalBdiServico = Math.Truncate(valorMedicaoAtual * (bdiServico / 100) * 100) / 100;
-               
+
+
+                        if (bdiServico == bdiMaterial || bdiMaterial ==0)
+                        {
+                            // Usar apenas o percentual do BDI de servico ----------------------
+                            valorMedicaoAtualBDI = valorTotalBdiServico;
+                        }
+                        else
+                        {
+                            // Usar para somar os BDI separado  ( Quando Perc BDI material != servico ) ----------------------
+                            // Math.Abs mODULO - SEMPRE positivo ---------
+                            if (Math.Abs(valorTotalBdiServico - valorMedicaoAtualBDI) > 0M
+                                    && Math.Abs(valorTotalBdiServico - valorMedicaoAtualBDI) < 2M)
+                                {
+                                    valorMedicaoAtualBDI = valorTotalBdiServico;
+                                }
+    
+                        }
 
                         //Debug.WriteLine("valorMedicaoAtual = " + valorMedicaoAtual.ToString());
                         //Debug.WriteLine("linha.reducao = " + linha.reducao.ToString());
 
-           
-                        valorMedicaoAtual = valorMedicaoAtual + valorTotalBdiServico;
-                        var vContratual = Math.Truncate((((decimal)linha.reducao / 100) * valorMedicaoAtual) * 100) / 100;
+
+                        //valorMedicaoAtual = valorMedicaoAtual + valorMedicaoAtualBDI;
+                        var vContratual = Math.Truncate((((decimal)linha.reducao / 100) * (valorMedicaoAtual + valorMedicaoAtualBDI)) * 100) / 100;
                         //Debug.WriteLine("linha.vContratual = " + vContratual.ToString());
 
 
@@ -961,7 +1071,7 @@ namespace apinovo.Controllers
                         linha.valorGlobalMedido = valorGlobalMedido + aFaturar;
                         linha.variacaoContratual = vContratual;
                         linha.aFaturar = aFaturar;
-                        linha.valorTotalBdiServico = valorTotalBdiServico;
+                        linha.valorTotalBdiServico = valorMedicaoAtualBDI;
 
 
                         dc.tb_medicao.AddOrUpdate(linha);
@@ -1118,7 +1228,7 @@ namespace apinovo.Controllers
                             // LIMPAR Tb_ordemservico  -----------------------------------------------------------------------------------------
                             var ordem = (from p in dc.tb_ordemservico.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S" &&
                                         a.medicao == medicao && a.etapa == etapa)
-                                        select p).ToList();
+                                         select p).ToList();
                             ordem.ForEach(x =>
                             {
                                 x.etapa = "";
@@ -1164,9 +1274,10 @@ namespace apinovo.Controllers
                 }
 
                 decimal? totalMedicao = 0m;
+
                 using (var dc = new manutEntities())
                 {
-                    totalMedicao = dc.tb_ordemservico.Where(k => k.medicao == medicao && k.etapa == etapa && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S").Sum(k => (k.valor));
+                    totalMedicao = dc.tb_ordemservico.Where(k => k.medicao == medicao && k.etapa == etapa && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S").Sum(k => (k.valor - k.valorTotalBdi));
                 }
 
                 if (totalMedicao == null)

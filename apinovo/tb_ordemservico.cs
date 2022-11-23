@@ -39,5 +39,6 @@ namespace apinovo
         public string etapa { get; set; }
         public string medicao { get; set; }
         public string local { get; set; }
+        public Nullable<decimal> valorTotalBdi { get; set; }
     }
 }
