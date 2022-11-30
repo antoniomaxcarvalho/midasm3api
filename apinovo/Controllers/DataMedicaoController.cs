@@ -755,6 +755,12 @@ namespace apinovo.Controllers
                     x.valorTotalBdi = totalPFBdiServico + totalPFBdiMaterial;
                     x.valor = Convert.ToDecimal(totalPF);
 
+                    Debug.WriteLine(" totalPFBdiServico = " + totalPFBdiServico.ToString());
+                    Debug.WriteLine(" totalPFBdiMaterial = " + totalPFBdiMaterial.ToString());
+
+                    Debug.WriteLine(" x.valorTotalBdi = " + x.valorTotalBdi.ToString());
+                    Debug.WriteLine("x.valor = " + totalPF.ToString());
+
                     dc.SaveChanges();
 
 
@@ -1041,13 +1047,13 @@ namespace apinovo.Controllers
     
                         }
 
-                        //Debug.WriteLine("valorMedicaoAtual = " + valorMedicaoAtual.ToString());
-                        //Debug.WriteLine("linha.reducao = " + linha.reducao.ToString());
+                        Debug.WriteLine("valorMedicaoAtual = " + valorMedicaoAtual.ToString());
+                        Debug.WriteLine("linha.reducao = " + linha.reducao.ToString());
 
 
                         //valorMedicaoAtual = valorMedicaoAtual + valorMedicaoAtualBDI;
                         var vContratual = Math.Truncate((((decimal)linha.reducao / 100) * (valorMedicaoAtual + valorMedicaoAtualBDI)) * 100) / 100;
-                        //Debug.WriteLine("linha.vContratual = " + vContratual.ToString());
+                        Debug.WriteLine("linha.vContratual = " + vContratual.ToString());
 
 
                         //var c3 = 1;
@@ -1056,15 +1062,16 @@ namespace apinovo.Controllers
                         //valorMedicaoAtual = valorMedicaoAtual + valorTotalBdiServico;
                         //var vContratual = ((decimal)linha.reducao / 100) * valorMedicaoAtual;
 
-                        var aFaturar = (valorMedicaoAtual - vContratual);
+                        var aFaturar = (valorMedicaoAtual + valorMedicaoAtualBDI - vContratual);
 
 
-                        //Debug.WriteLine("linha.valorMedicao = " + valorMedicaoAtual.ToString());
-                        //Debug.WriteLine("linha.valorGlobalPrevisto = " + valorGlobalPrevisto.ToString());
-                        //Debug.WriteLine("linha.valorGlobalMedido = " + (valorGlobalMedido + aFaturar).ToString());
-                        //Debug.WriteLine("linha.vContratual = " + vContratual.ToString()); Debug.WriteLine("linha.valorMedicao = " + valorMedicaoAtual.ToString());
-                        //Debug.WriteLine("linha.aFaturar = " + aFaturar.ToString());
-                        //Debug.WriteLine("linha.valorTotalBdiServico = " + valorTotalBdiServico.ToString());
+                        Debug.WriteLine("linha.valorMedicao = " + valorMedicaoAtual.ToString());
+                        Debug.WriteLine("linha.valorMedicaoAtualBDI = " + valorMedicaoAtualBDI.ToString());
+                        Debug.WriteLine("linha.valorGlobalPrevisto = " + valorGlobalPrevisto.ToString());
+                        Debug.WriteLine("linha.valorGlobalMedido = " + (valorGlobalMedido + aFaturar).ToString());
+                        Debug.WriteLine("linha.vContratual = " + vContratual.ToString()); Debug.WriteLine("linha.valorMedicao = " + valorMedicaoAtual.ToString());
+                        Debug.WriteLine("linha.aFaturar = " + aFaturar.ToString());
+                        Debug.WriteLine("linha.valorTotalBdiServico = " + valorTotalBdiServico.ToString());
 
                         linha.valorMedicao = valorMedicaoAtual;
                         linha.valorGlobalPrevisto = valorGlobalPrevisto;
@@ -1277,7 +1284,7 @@ namespace apinovo.Controllers
 
                 using (var dc = new manutEntities())
                 {
-                    totalMedicao = dc.tb_ordemservico.Where(k => k.medicao == medicao && k.etapa == etapa && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S").Sum(k => (k.valor - k.valorTotalBdi));
+                    totalMedicao = dc.tb_ordemservico.Where(k => k.medicao == medicao && k.etapa == etapa && k.autonumeroCliente == autonumeroCliente && k.cancelado != "S").Sum(k => (k.valor));
                 }
 
                 if (totalMedicao == null)
@@ -1439,6 +1446,12 @@ namespace apinovo.Controllers
 
 
                     var local = HttpContext.Current.Server.MapPath("~/rpt/planilha3.rpt");
+
+                    // saude -----------------
+                    if (autonumeroCliente > 10 && autonumeroCliente < 14) // Saude ----------------------------
+                    {
+                        local = HttpContext.Current.Server.MapPath("~/rpt/saude/planilha3.rpt");
+                    }
 
                     rd.Load(local);
                     rd.SetParameterValue("unidadeSMS", unidadeDaSMS);
