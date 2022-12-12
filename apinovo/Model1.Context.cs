@@ -66,7 +66,6 @@ namespace apinovo
         public DbSet<funcionariodocumento> funcionariodocumento { get; set; }
         public DbSet<profissaocurso> profissaocurso { get; set; }
         public DbSet<usuariopredio> usuariopredio { get; set; }
-        public DbSet<tb_funcionario> tb_funcionario { get; set; }
         public DbSet<osfuncionario> osfuncionario { get; set; }
         public DbSet<funcionario> funcionario { get; set; }
         public DbSet<funcionariocurso> funcionariocurso { get; set; }
@@ -77,7 +76,6 @@ namespace apinovo
         public DbSet<checklisthistitemnrofolha> checklisthistitemnrofolha { get; set; }
         public DbSet<checklisthistoricocivil> checklisthistoricocivil { get; set; }
         public DbSet<checklisthistoricocivilitem> checklisthistoricocivilitem { get; set; }
-        public DbSet<checklistveiculo> checklistveiculo { get; set; }
         public DbSet<tb_planilhafechada> tb_planilhafechada { get; set; }
         public DbSet<checklisthistorico> checklisthistorico { get; set; }
         public DbSet<checklisthistoriconrofolha> checklisthistoriconrofolha { get; set; }

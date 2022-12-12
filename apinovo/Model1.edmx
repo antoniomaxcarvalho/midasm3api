@@ -17,7 +17,7 @@
           <Property Name="autonumeroSubsistema" Type="int" />
           <Property Name="nomeSubSistema" Type="varchar" MaxLength="45" />
           <Property Name="item" Type="varchar" MaxLength="10" />
-          <Property Name="nome" Type="varchar" MaxLength="400" />
+          <Property Name="nome" Type="varchar" MaxLength="200" />
           <Property Name="d" Type="char" MaxLength="1" />
           <Property Name="e" Type="char" MaxLength="1" />
           <Property Name="q" Type="char" MaxLength="1" />
@@ -40,7 +40,7 @@
           <Property Name="nomeSubSistema" Type="varchar" MaxLength="45" />
           <Property Name="autonumeroCheckList" Type="int" />
           <Property Name="item" Type="varchar" MaxLength="10" />
-          <Property Name="nome" Type="varchar" MaxLength="400" />
+          <Property Name="nome" Type="varchar" MaxLength="300" />
           <Property Name="d" Type="char" MaxLength="1" />
           <Property Name="e" Type="char" MaxLength="1" />
           <Property Name="q" Type="char" MaxLength="1" />
@@ -62,7 +62,7 @@
           <Property Name="autonumeroSubSistema" Type="int" />
           <Property Name="contadorPmocEquipamento" Type="bigint" />
           <Property Name="item" Type="varchar" MaxLength="10" />
-          <Property Name="nome" Type="varchar" MaxLength="400" />
+          <Property Name="nome" Type="varchar" MaxLength="300" />
           <Property Name="d" Type="char" MaxLength="1" />
           <Property Name="e" Type="char" MaxLength="1" />
           <Property Name="q" Type="char" MaxLength="1" />
@@ -207,18 +207,6 @@
           <Property Name="trimestral" Type="tinyint" />
           <Property Name="semestral" Type="tinyint" />
           <Property Name="anual" Type="tinyint" />
-        </EntityType>
-        <EntityType Name="checklistveiculo">
-          <Key>
-            <PropertyRef Name="autonumero" />
-          </Key>
-          <Property Name="autonumero" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="item" Type="smallint" />
-          <Property Name="nome" Type="varchar" MaxLength="100" />
-          <Property Name="sim" Type="bool" />
-          <Property Name="nao" Type="bool" />
-          <Property Name="avariado" Type="bool" />
-          <Property Name="grupo" Type="varchar" MaxLength="15" />
         </EntityType>
         <EntityType Name="contratofuncionario">
           <Key>
@@ -743,15 +731,6 @@
           <Property Name="autonumero" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="nome" Type="varchar" MaxLength="15" />
         </EntityType>
-        <EntityType Name="tb_funcionario">
-          <Key>
-            <PropertyRef Name="autonumero" />
-          </Key>
-          <Property Name="autonumero" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="nome" Type="varchar" MaxLength="45" />
-          <Property Name="profissao" Type="varchar" MaxLength="45" />
-          <Property Name="cancelado" Type="char" MaxLength="1" />
-        </EntityType>
         <EntityType Name="tb_insumo">
           <Key>
             <PropertyRef Name="autonumero" />
@@ -780,7 +759,7 @@
           <Property Name="autonumero" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="autonumeroCliente" Type="int" />
           <Property Name="nome" Type="varchar" MaxLength="70" />
-          <Property Name="nomeCliente" Type="varchar" MaxLength="45" />
+          <Property Name="nomeCliente" Type="varchar" MaxLength="60" />
           <Property Name="cancelado" Type="char" MaxLength="1" />
         </EntityType>
         <EntityType Name="tb_local_fisico">
@@ -835,7 +814,7 @@
           <Property Name="autonumeroPlanilhaFechada" Type="bigint" />
           <Property Name="item" Type="bigint" />
           <Property Name="codigo" Type="varchar" MaxLength="20" />
-          <Property Name="nome" Type="varchar" MaxLength="330" />
+          <Property Name="nome" Type="varchar" MaxLength="600" />
           <Property Name="unidade" Type="varchar" MaxLength="6" />
           <Property Name="preco" Type="decimal" Precision="10" Scale="2" />
           <Property Name="qtdeContratada" Type="decimal" Precision="10" Scale="4" />
@@ -1047,7 +1026,7 @@
           <Property Name="item" Type="bigint" Nullable="false" />
           <Property Name="codigo" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="nome" Type="varchar" MaxLength="1050" Nullable="false" />
-          <Property Name="unidade" Type="varchar" MaxLength="6" Nullable="false" />
+          <Property Name="unidade" Type="varchar" MaxLength="8" Nullable="false" />
           <Property Name="qtdeContratada" Type="decimal" Precision="12" Scale="4" Nullable="false" />
           <Property Name="preco" Type="decimal" Precision="10" Scale="3" Nullable="false" />
           <Property Name="estoque" Type="decimal" Precision="12" Scale="4" Nullable="false" />
@@ -1252,7 +1231,6 @@
           <EntitySet Name="checklisthistoricocivil" EntityType="Self.checklisthistoricocivil" Schema="manut" store:Type="Tables" />
           <EntitySet Name="checklisthistoricocivilitem" EntityType="Self.checklisthistoricocivilitem" Schema="manut" store:Type="Tables" />
           <EntitySet Name="checklisthistoriconrofolha" EntityType="Self.checklisthistoriconrofolha" Schema="manut" store:Type="Tables" />
-          <EntitySet Name="checklistveiculo" EntityType="Self.checklistveiculo" Schema="manut" store:Type="Tables" />
           <EntitySet Name="contratofuncionario" EntityType="Self.contratofuncionario" Schema="manut" store:Type="Tables" />
           <EntitySet Name="documentocontrato" EntityType="Self.documentocontrato" Schema="manut" store:Type="Tables" />
           <EntitySet Name="equipamentodefeito" EntityType="Self.equipamentodefeito" Schema="manut" store:Type="Tables" />
@@ -1284,7 +1262,6 @@
           <EntitySet Name="tb_etapa" EntityType="Self.tb_etapa" Schema="manut" store:Type="Tables" />
           <EntitySet Name="tb_feriado" EntityType="Self.tb_feriado" Schema="manut" store:Type="Tables" />
           <EntitySet Name="tb_fontes" EntityType="Self.tb_fontes" Schema="manut" store:Type="Tables" />
-          <EntitySet Name="tb_funcionario" EntityType="Self.tb_funcionario" Schema="manut" store:Type="Tables" />
           <EntitySet Name="tb_insumo" EntityType="Self.tb_insumo" Schema="manut" store:Type="Tables" />
           <EntitySet Name="tb_local" EntityType="Self.tb_local" Schema="manut" store:Type="Tables" />
           <EntitySet Name="tb_local_atendido" EntityType="Self.tb_local_atendido" Schema="manut" store:Type="Tables" />
@@ -1383,7 +1360,6 @@
           <EntitySet Name="funcionariodocumento" EntityType="manutModel.funcionariodocumento" />
           <EntitySet Name="profissaocurso" EntityType="manutModel.profissaocurso" />
           <EntitySet Name="usuariopredio" EntityType="manutModel.usuariopredio" />
-          <EntitySet Name="tb_funcionario" EntityType="manutModel.tb_funcionario" />
           <EntitySet Name="osfuncionario" EntityType="manutModel.osfuncionario" />
           <EntitySet Name="funcionario" EntityType="manutModel.funcionario" />
           <EntitySet Name="funcionariocurso" EntityType="manutModel.funcionariocurso" />
@@ -1394,7 +1370,6 @@
           <EntitySet Name="checklisthistitemnrofolha" EntityType="manutModel.checklisthistitemnrofolha" />
           <EntitySet Name="checklisthistoricocivil" EntityType="manutModel.checklisthistoricocivil" />
           <EntitySet Name="checklisthistoricocivilitem" EntityType="manutModel.checklisthistoricocivilitem" />
-          <EntitySet Name="checklistveiculo" EntityType="manutModel.checklistveiculo" />
           <EntitySet Name="tb_planilhafechada" EntityType="manutModel.tb_planilhafechada" />
           <EntitySet Name="checklisthistorico" EntityType="manutModel.checklisthistorico" />
           <EntitySet Name="checklisthistoriconrofolha" EntityType="manutModel.checklisthistoriconrofolha" />
@@ -1916,15 +1891,6 @@
           <Property Name="autonumeroPredio" Type="Int32" />
           <Property Name="nomePredio" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="tb_funcionario">
-          <Key>
-            <PropertyRef Name="autonumero" />
-          </Key>
-          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="nome" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="profissao" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="cancelado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="osfuncionario">
           <Key>
             <PropertyRef Name="autonumero" />
@@ -2128,18 +2094,6 @@
           <Property Name="executou" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="autonumeroLocal" Type="Int32" />
           <Property Name="nomeLocal" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="checklistveiculo">
-          <Key>
-            <PropertyRef Name="autonumero" />
-          </Key>
-          <Property Name="autonumero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="item" Type="Int16" />
-          <Property Name="nome" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="sim" Type="Boolean" />
-          <Property Name="nao" Type="Boolean" />
-          <Property Name="avariado" Type="Boolean" />
-          <Property Name="grupo" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="tb_planilhafechada">
           <Key>
@@ -3200,16 +3154,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tb_funcionario">
-            <EntityTypeMapping TypeName="manutModel.tb_funcionario">
-              <MappingFragment StoreEntitySet="tb_funcionario">
-                <ScalarProperty Name="cancelado" ColumnName="cancelado" />
-                <ScalarProperty Name="profissao" ColumnName="profissao" />
-                <ScalarProperty Name="nome" ColumnName="nome" />
-                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="osfuncionario">
             <EntityTypeMapping TypeName="manutModel.osfuncionario">
               <MappingFragment StoreEntitySet="osfuncionario">
@@ -3420,19 +3364,6 @@
                 <ScalarProperty Name="nomeCliente" ColumnName="nomeCliente" />
                 <ScalarProperty Name="autonumeroCliente" ColumnName="autonumeroCliente" />
                 <ScalarProperty Name="autonumeroHistoricoCivil" ColumnName="autonumeroHistoricoCivil" />
-                <ScalarProperty Name="autonumero" ColumnName="autonumero" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="checklistveiculo">
-            <EntityTypeMapping TypeName="manutModel.checklistveiculo">
-              <MappingFragment StoreEntitySet="checklistveiculo">
-                <ScalarProperty Name="grupo" ColumnName="grupo" />
-                <ScalarProperty Name="avariado" ColumnName="avariado" />
-                <ScalarProperty Name="nao" ColumnName="nao" />
-                <ScalarProperty Name="sim" ColumnName="sim" />
-                <ScalarProperty Name="nome" ColumnName="nome" />
-                <ScalarProperty Name="item" ColumnName="item" />
                 <ScalarProperty Name="autonumero" ColumnName="autonumero" />
               </MappingFragment>
             </EntityTypeMapping>
