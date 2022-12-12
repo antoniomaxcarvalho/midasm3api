@@ -2722,15 +2722,25 @@ namespace apinovo.Controllers
 
                         var xx = " {tb_os_itens1.quantidadePF} > 0 and {tb_ordemservico1.cancelado}  <> 'S'  and {tb_os_itens1.cancelado} <> 'S' and  {tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and {tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
 
-                        //Debug.WriteLine(xx);
+                                             //Debug.WriteLine(xx);
 
                         rd.Load(local);
 
                         rd.SetParameterValue("p1", qtde.ToString());
                         //rd.OpenSubreport("SCO").RecordSelectionFormula = "";
 
+
+
                         //*Debug.WriteLine(local);
+                        //rd.RecordSelectionFormula = " {tb_os_itens1.quantidadePF} > 0 and {tb_ordemservico1.cancelado}  <> 'S'  and {tb_os_itens1.cancelado} <> 'S' and  {tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and {tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
+                        //rd.RecordSelectionFormula = "  { tb_os_itens1.cancelado} <> 'S' and {tb_os_itens1.autonumeroCliente} = {?Pm-tb_ordemservico1.autonumeroCliente} and { tb_os_itens1.codigoOrdemServico} = {?Pm-tb_ordemservico1.codigoOs} and { tb_os_itens1.codigoInsumoServico} <> { tb_os_itens1.codigoPF} and  {tb_ordemservico1.codigoOs} = ' " + codigoOrdemServico.Trim() + "' and {tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
+
                         rd.RecordSelectionFormula = " {tb_os_itens1.quantidadePF} > 0 and {tb_ordemservico1.cancelado}  <> 'S'  and {tb_os_itens1.cancelado} <> 'S' and  {tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and {tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
+
+
+                        //*Debug.WriteLine(local);
+                        //rd.RecordSelectionFormula = " {tb_os_itens1.quantidadePF} > 0 and {tb_ordemservico1.cancelado}  <> 'S'  and {tb_os_itens1.cancelado} <> 'S' and  {tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and {tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
+
 
                         //  var filtroDoSubReport = "{tb_os_itens1.autonumeroCliente} = {?Pm-tb_ordemservico1.autonumeroCliente} and " +
                         //" { tb_os_itens1.codigoOrdemServico} = {?Pm-tb_os_itens1.codigoOrdemServico} " +
@@ -2750,7 +2760,8 @@ namespace apinovo.Controllers
                         var xxx = " {tb_ordemservico1.cancelado}  <> 'S' and  {tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and {tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
                         //Debug.WriteLine(xxx);
                         //Debug.WriteLine(local);
-                        rd.RecordSelectionFormula = " {tb_ordemservico1.cancelado}  <> 'S' and  {tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and {tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
+                        //rd.RecordSelectionFormula = " {tb_ordemservico1.cancelado}  <> 'S' and  {tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and {tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
+                        rd.RecordSelectionFormula = " {tb_os_itens1.quantidadePF} > 0 and {tb_ordemservico1.cancelado}  <> 'S'  and {tb_os_itens1.cancelado} <> 'S' and  {tb_ordemservico1.codigoOs} = '" + codigoOrdemServico.Trim() + "' and {tb_ordemservico1.autonumeroCliente} = " + autonumeroCliente.ToString();
 
 
                     }
