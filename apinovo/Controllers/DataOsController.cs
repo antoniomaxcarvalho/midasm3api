@@ -300,6 +300,7 @@ namespace apinovo.Controllers
         [HttpPost]
         public tb_os IncluirOs()
         {
+            var c = 1;
             var sigla = HttpContext.Current.Request.Form["sigla"].ToString();
             var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
 
