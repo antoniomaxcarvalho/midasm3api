@@ -87,10 +87,10 @@ namespace apinovo
         public DbSet<tb_servico> tb_servico { get; set; }
         public DbSet<equipamentodefeito> equipamentodefeito { get; set; }
         public DbSet<tb_usuario> tb_usuario { get; set; }
-        public DbSet<tb_ordemservico> tb_ordemservico { get; set; }
         public DbSet<tb_os_itens> tb_os_itens { get; set; }
         public DbSet<subsistemaqtdepmoc> subsistemaqtdepmoc { get; set; }
         public DbSet<tb_cliente> tb_cliente { get; set; }
         public DbSet<tb_os> tb_os { get; set; }
+        public DbSet<tb_ordemservico> tb_ordemservico { get; set; }
     }
 }
