@@ -300,7 +300,6 @@ namespace apinovo.Controllers
         [HttpPost]
         public tb_os IncluirOs()
         {
-            var c = 1;
             var sigla = HttpContext.Current.Request.Form["sigla"].ToString();
             var autonumeroCliente = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroCliente"].ToString());
 
@@ -331,7 +330,7 @@ namespace apinovo.Controllers
                 using (var transaction = dc.Database.BeginTransaction())
                 {
 
-                    var Os = new tb_os
+                        var Os = new tb_os
                     {
 
                         codigoOs = "",
@@ -436,8 +435,17 @@ namespace apinovo.Controllers
                     Os.siglaCliente = HttpContext.Current.Request.Form["siglaCliente"].ToString();
                     Os.localAtendido = HttpContext.Current.Request.Form["localAtendido"].ToString();
 
-
                     var nomeSubSistema = HttpContext.Current.Request.Form["nomeSubSistema"].ToString();
+
+                    var linhaCliente = dc.tb_cliente.Find(autonumeroCliente); // sempre irá procurar pela chave primaria
+                    if (linhaCliente == null && linhaCliente.cancelado != "S")
+                    {
+                        throw new ArgumentException("Erro: Cliente Não Encontrado");
+                    }
+
+                    Os.bdiMaterial = linhaCliente.bdiMaterial;
+                    Os.bdiServico = linhaCliente.bdiServico;
+
                     if (nomeSubSistema.ToUpper().Contains("MÃO DE") || nomeSubSistema.ToUpper().Contains("MAO DE"))
                     {
                         Os.bdiMaterial = 0;
@@ -584,8 +592,27 @@ namespace apinovo.Controllers
                     linha.descricao = HttpContext.Current.Request.Form["descricao"].ToString().Trim();
                     linha.prazoPrioridade = HttpContext.Current.Request.Form["prazoPrioridade"].ToString().Trim();
                     linha.nomeStatus = HttpContext.Current.Request.Form["nomeStatus"].ToString().Trim();
-                    linha.bdiMaterial = Convert.ToDouble(HttpContext.Current.Request.Form["bdiMaterial"].ToString());
-                    linha.bdiServico = Convert.ToDouble(HttpContext.Current.Request.Form["bdiServico"].ToString());
+
+
+
+                    var linhaCliente = dc.tb_cliente.Find(linha.autonumeroCliente); // sempre irá procurar pela chave primaria
+                    if (linhaCliente == null && linhaCliente.cancelado != "S")
+                    {
+                        throw new ArgumentException("Erro: Cliente Não Encontrado");
+                    }
+
+                    linha.bdiMaterial = linhaCliente.bdiMaterial;
+                    linha.bdiServico = linhaCliente.bdiServico;
+
+                    if (linha.nomeSubSistema.ToUpper().Contains("MÃO DE") || linha.nomeSubSistema.ToUpper().Contains("MAO DE"))
+                    {
+                        linha.bdiMaterial = 0;
+                        linha.bdiServico = 0;
+                    }
+
+
+                    //linha.bdiMaterial = Convert.ToDouble(HttpContext.Current.Request.Form["bdiMaterial"].ToString());
+                    //linha.bdiServico = Convert.ToDouble(HttpContext.Current.Request.Form["bdiServico"].ToString());
                     linha.siglaCliente = HttpContext.Current.Request.Form["siglaCliente"].ToString().Trim();
                     //linha.autonumeroEquipe = Convert.ToInt32(HttpContext.Current.Request.Form["autonumeroEquipe"].ToString());
                     linha.nomeEquipe = HttpContext.Current.Request.Form["nomeEquipe"].ToString().Trim();

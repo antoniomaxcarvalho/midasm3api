@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -242,19 +243,19 @@ namespace apinovo.Controllers
 
 
                                 var totalPFBdiServico1 = (from i in dc.tb_os_itens
-                                                         join p in dc.tb_os
-                                                         on i.codigoOs equals p.codigoOs
+                                                          join p in dc.tb_os
+                                                          on i.codigoOs equals p.codigoOs
 
-                                                         where i.codigoOrdemServico == codigo
-                                                                            && i.autonumeroCliente == autonumeroCliente
-                                                                            && i.cancelado != "S"
-                                                                                  && i.servico == "S"
+                                                          where i.codigoOrdemServico == codigo
+                                                                             && i.autonumeroCliente == autonumeroCliente
+                                                                             && i.cancelado != "S"
+                                                                                   && i.servico == "S"
 
                                                           select new
-                                                         {
-                                                             i.total,
-                                                             bdiServico = p.bdiServico
-                                                         }).ToList();
+                                                          {
+                                                              i.total,
+                                                              bdiServico = p.bdiServico
+                                                          }).ToList();
 
 
                                 var totalPFBdiServico = totalPFBdiServico1.Sum(p => p.total * Convert.ToDecimal(p.bdiServico) / 100);
@@ -265,19 +266,19 @@ namespace apinovo.Controllers
                                 }
 
                                 var totalPFBdiMaterial1 = (from i in dc.tb_os_itens
-                                                          join p in dc.tb_os
-                                                          on i.codigoOs equals p.codigoOs
+                                                           join p in dc.tb_os
+                                                           on i.codigoOs equals p.codigoOs
 
-                                                          where i.codigoOrdemServico == codigo
-                                                                             && i.autonumeroCliente == autonumeroCliente
-                                                                             && i.cancelado != "S"
-                                                                             && i.servico != "S"
+                                                           where i.codigoOrdemServico == codigo
+                                                                              && i.autonumeroCliente == autonumeroCliente
+                                                                              && i.cancelado != "S"
+                                                                              && i.servico != "S"
 
-                                                          select new
-                                                          {
-                                                              i.total,
-                                                              bdiMaterial = p.bdiMaterial
-                                                          }).ToList();
+                                                           select new
+                                                           {
+                                                               i.total,
+                                                               bdiMaterial = p.bdiMaterial
+                                                           }).ToList();
 
 
                                 var totalPFBdiMaterial = totalPFBdiMaterial1.Sum(p => p.total * Convert.ToDecimal(p.bdiMaterial) / 100);
@@ -489,6 +490,47 @@ namespace apinovo.Controllers
             }
         }
 
+
+        [HttpGet]
+        public void AtualizarAllValorOrdemServico(int autonumeroCliente)
+        {
+            var c = 1;
+            using (var dc = new manutEntities())
+            {
+
+                var osLista = dc.tb_ordemservico.Where(a => a.autonumeroCliente == autonumeroCliente && a.cancelado != "S").ToList();
+                var osItemTotalPFLista = dc.tb_os_itens.Where(h => h.autonumeroCliente == autonumeroCliente && h.cancelado != "S")
+                    .GroupBy(h => new { h.codigoOrdemServico })
+                    .Select(g => new { total = g.Sum(k => k.totalPF), codigoOs = g.Key.codigoOrdemServico }).ToList();
+
+
+
+                var listaOS = (from i in osLista
+                               join p in osItemTotalPFLista
+                               on i.codigoOs equals p.codigoOs
+
+                               where i.valor != p.total
+                               select new
+                               {
+                                   i,
+                                   p.total
+                               }).ToList();
+
+
+
+                foreach (var item in listaOS)
+                {
+                    item.i.valor = item.total;
+
+                    dc.tb_ordemservico.AddOrUpdate(item.i);
+
+                }
+                dc.SaveChanges();
+
+            }
+        }
+
+
         [HttpGet]
         public IEnumerable<tb_medicao> AtualizarValorOrdemServico(string codigoOrdemServico, string autonumeroCliente, string valor)
         {
@@ -516,7 +558,7 @@ namespace apinovo.Controllers
                                               select new
                                               {
                                                   i.total,
-                                                  p.bdiServico
+                                                  bdiServico = p.bdiServico
                                               }).ToList();
 
 
@@ -539,7 +581,7 @@ namespace apinovo.Controllers
                                                select new
                                                {
                                                    i.total,
-                                                   p.bdiMaterial
+                                                   bdiMaterial = p.bdiMaterial
                                                }).ToList();
 
 
@@ -556,6 +598,9 @@ namespace apinovo.Controllers
                     // Debug.WriteLine("--------");
                     etapa = os.etapa;
                     medicao = os.medicao;
+                    // Debug.WriteLine(valor);
+                    //var xx = Convert.ToDecimal(valor);
+                    Debug.WriteLine(totalPF);
                     os.valorTotalBdi = totalPFBdiServico + totalPFBdiMaterial;
                     os.valor = Convert.ToDecimal(totalPF);
                     // Debug.WriteLine(os.valor);
