@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="65b194a95656484c81c31b4561c129ed" Name="Diagram1" ZoomLevel="88">
+      <Diagram DiagramId="65b194a95656484c81c31b4561c129ed" Name="Diagram1" ZoomLevel="102">
         <EntityTypeShape EntityType="manutModel.tb_prioridade" Width="1.5" PointX="0.625" PointY="3" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_status_os" Width="1.5" PointX="2.625" PointY="3" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_tipo_servico" Width="1.5" PointX="0.5" PointY="3.625" IsExpanded="false" />
@@ -71,7 +71,7 @@
         <EntityTypeShape EntityType="manutModel.subsistemaqtdepmoc" Width="1.875" PointX="2.125" PointY="5.875" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_cliente" Width="1.5" PointX="2.75" PointY="0.625" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_os" Width="1.5" PointX="10.5" PointY="6.25" IsExpanded="false" />
-        <EntityTypeShape EntityType="manutModel.tb_ordemservico" Width="1.5" PointX="9.5" PointY="4.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="manutModel.tb_ordemservico" Width="1.5" PointX="8.125" PointY="4.125" IsExpanded="false" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
