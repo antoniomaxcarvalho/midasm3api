@@ -828,7 +828,7 @@ namespace apinovo.Controllers
                                 Os.codigoOs = codigo;
                                 Os.autonumeroCliente = linha.autonumeroCliente;
                                 Os.nomeCliente = linha.nomeCliente;
-                                Os.autonumeroSistema = linha.autonumeroCliente;
+                                Os.autonumeroSistema = linha.autonumeroSistema;
                                 Os.nomeSistema = linha.nomeSistema;
                                 Os.autonumeroSubSistema = linha.autonumeroSubSistema;
                                 Os.nomeSubSistema = linha.nomeSubSistema;
