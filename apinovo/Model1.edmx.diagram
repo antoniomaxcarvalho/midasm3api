@@ -67,11 +67,11 @@
         <EntityTypeShape EntityType="manutModel.tb_servico" Width="1.5" PointX="0.625" PointY="1.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.equipamentodefeito" Width="1.5" PointX="0.5" PointY="5.875" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_usuario" Width="1.5" PointX="0.5" PointY="0.5" IsExpanded="false" />
-        <EntityTypeShape EntityType="manutModel.tb_os_itens" Width="1.5" PointX="6.25" PointY="4.125" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.subsistemaqtdepmoc" Width="1.875" PointX="2.125" PointY="5.875" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_cliente" Width="1.5" PointX="2.75" PointY="0.625" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_os" Width="1.5" PointX="10.5" PointY="6.25" IsExpanded="false" />
         <EntityTypeShape EntityType="manutModel.tb_ordemservico" Width="1.5" PointX="8.125" PointY="4.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="manutModel.tb_os_itens" Width="1.5" PointX="10.5" PointY="5.75" IsExpanded="false" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

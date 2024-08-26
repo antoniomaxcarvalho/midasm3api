@@ -26,5 +26,6 @@ namespace apinovo
         public decimal estoque { get; set; }
         public decimal qtdeCustoFixo { get; set; }
         public decimal qtdeUsada { get; set; }
+        public Nullable<decimal> qtdeIncluida { get; set; }
     }
 }
